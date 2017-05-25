@@ -49,22 +49,60 @@
 	step="1" oninput="synthChanger('modulationIndex', value)">
 <output for="fader" id="modulationIndex">10</output>
 
+<hr>
+
+<p> Envelope </p>
+
 <label for="fader">Attack</label>
 <input type="range" min="0" max="100" value="50" id="fader" 
 	step="1" oninput="synthChanger('attack', value)">
 <output for="fader" id="attack">50</output>
 
+<label for="fader">Decay</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('decay', value)">
+<output for="fader" id="decay">50</output>
+
+<label for="fader">Sustain</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('sustain', value)">
+<output for="fader" id="sustain">50</output>
+
+<label for="fader">Release</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('release', value)">
+<output for="fader" id="release">50</output>
+
+<hr>
+
 <label for="fader">Distortion</label>
-<input type="range" min="0" max="100" value="100" id="fader" 
+<input type="range" min="0" max="100" value="50" id="fader" 
 	step="1" oninput="effectChanger('distortion', value)">
 <output for="fader" id="distortion">100</output>
 
 
-
 <label for="fader">Reverb</label>
-<input type="range" min="0" max="100" value="100" id="fader" 
+<input type="range" min="0" max="100" value="50" id="fader" 
 	step="1" oninput="effectChanger('reverb', value)">
 <output for="fader" id="reverb">100</output>
+
+<hr>
+<p> Delay <p>
+
+<label for="fader">Wet/Dry</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="effectChanger('delay', value)">
+<output for="fader" id="delay">100</output>	
+
+<label for="fader">Feedback</label>
+<input type="range" min="0" max="100" value="100" id="fader" 
+	step="1" oninput="effectChanger('feedback', value)">
+<output for="fader" id="feedback">100</output>
+
+<label for="fader">Time</label>
+<input type="range" min="0" max="100" value="100" id="fader" 
+	step="1" oninput="effectChanger('time', value)">
+<output for="fader" id="time">100</output>
 
 
 
@@ -94,16 +132,6 @@
 	var squareSize = 20;
 	var totalButtons = 16;
 	
-	/*
-	function makeSequencerArray(){ // Makes the 2d array of 0's to represent the sequencer
-		for (x=0;x< totalButtons;x++){
-			sequencerArray.push([]);
-			for (y=0;y<totalButtons;y++){
-				sequencerArray[x].push(0)
-			}
-		}
-	}
-	*/
 	function makeSequencerArray(array){ // Makes the 2d array of 0's to represent the sequencer
 		for (x=0;x< totalButtons;x++){
 			array.push([]);
@@ -112,27 +140,6 @@
 			}
 		}
 	}
-	
-	/*
-	function randomSequencerArray(){ // Makes the 2d array of 0's to represent the sequencer
-		sequencerArray = [];
-		for (x=0;x< totalButtons;x++){
-			sequencerArray.push([]);
-			for (y=0;y<totalButtons;y++){
-				var randomizer = Math.floor(Math.random() * 10);
-				if (randomizer == 1){
-					sequencerArray[x].push(1);
-				} else {
-					sequencerArray[x].push(0);
-				}
-				
-			}
-		}
-		drawGrid();
-	}
-	*/
-	
-	
 	
 	function randomSequencerArray(){ // Makes a randomly generated collection of buttons turn on.
 		sequencerArray = [];
@@ -222,32 +229,37 @@ function arrayEdit(xClick,yClick){ // Draws the grid and changes the colour of a
 	//setup a synth
 	var reverb = new Tone.Freeverb();
 	var distortion = new Tone.Distortion();
-	var synth = new Tone.PolySynth(12, Tone.FMSynth).chain(distortion, reverb, Tone.Master);
+	var delay = new Tone.PingPongDelay()
+	var synth = new Tone.PolySynth(12, Tone.FMSynth).chain(distortion, reverb, delay, Tone.Master);
 	
 	synth.set({
 		"envelope" : {
 			"attack" : 0.25,
-			"decay" : 0.5,
-			"sustain" : 100,
-			"release" : 0,
+			"decay" : 0,
+			"sustain" : 10,
+			"release" : 0.5,
 		}
 	});
 	
-	synthAttack = synth.get;
-	console.log(synthAttack)
-	
-	// testing some git stuff here
-	
+	delay.wet.value = 0.5;
+	distortion.wet.value = 0.5;
+	reverb.wet.value = 0.5;
+		
 	
 	function effectChanger(effectName, val){
 		formattingName = '#' + effectName;
 	document.querySelector(formattingName).value = val;
 	if (effectName == 'distortion'){
 	distortion.wet.value = val * 0.01;
-	console.log (distortion.wet.value)
 	} else if (effectName =='reverb'){
 		reverb.wet.value = val * 0.01;
-		}
+	} else if (effectName=='time'){
+			delay.delayTime.value = val * 0.01;
+	} else if (effectName=='feedback'){
+		delay.feedback.value = val * 0.01;
+	} else if (effectName=='delay'){
+		delay.wet.value = val * 0.01;
+	}
 	}
 	
 	
@@ -256,16 +268,30 @@ function arrayEdit(xClick,yClick){ // Draws the grid and changes the colour of a
 	if (effectName == 'harmonicity'){
 		synth.set(effectName, val* 0.03)
 		document.querySelector(formattingName).value = val * 0.03;
+	} else if (effectName=='modulationIndex'){
+		synth.set(effectName, val);
+		document.querySelector(formattingName).value = val;
 	} else if (effectName=='attack'){
 		synth.set({"envelope" : {
-			"attack" : (val * 0.03)
-	}
-})
-		document.querySelector(formattingName).value = val * 0.03;
-	} else {
-	synth.set(effectName, val);
-	document.querySelector(formattingName).value = val;
-}
+			"attack" : val * 0.01
+	}})
+	document.querySelector(formattingName).value = val * 0.01;
+	} else if (effectName=='decay'){
+		synth.set({"envelope" : {
+			"decay" : val * 0.01
+	}})
+	document.querySelector(formattingName).value = val * 0.01;
+	} else if (effectName=='sustain'){
+		synth.set({"envelope" : {
+			"sustain" : val * 0.01
+	}})
+	document.querySelector(formattingName).value = val * 0.01;
+	} else if (effectName=='release'){
+		synth.set({"envelope" : {
+			"release" : val * 0.01
+	}})
+	document.querySelector(formattingName).value = val * 0.01;
+		}
 	}
 	
 	
