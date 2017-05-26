@@ -89,7 +89,7 @@
 <hr>
 <p> Delay <p>
 
-<label for="fader">Wet/Dry</label>
+<label for="fader">Dry/Wet</label>
 <input type="range" min="0" max="100" value="50" id="fader" 
 	step="1" oninput="effectChanger('delay', value)">
 <output for="fader" id="delay">100</output>	
@@ -112,9 +112,9 @@
 <script>
 	/* TO DO
 	Scaling - make sure the input is responsive or figure something out there! Mobile needs to work!
-	Tone.js - work on some of the audio bits there, make them sound better
 	Array input & output system (save file etc?)
-	break the draw function into better pieces!
+	Turn each sequencer into an object! Ahh!
+	... or just copy/paste everything. Let's give the object thing a go first!
 	
 	
 	*/
@@ -123,6 +123,7 @@
 	// Create canvas context
 	var c = document.getElementById("sequencerOne");
 	var ctx=c.getContext("2d");
+	
 	
 	
 	// Declare important variables
@@ -175,6 +176,7 @@
 				sequencerArray[x][y] = 0;
 			}
 		}
+		clearCanvas();
 		drawGrid();
 	}
 	
