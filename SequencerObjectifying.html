@@ -30,13 +30,15 @@
 	Canvas isn't supported in your browser!
 </canvas>
 <hr>
+<canvas id="sequencerThree" width="350" height="150">
+	Canvas isn't supported in your browser!
+</canvas>
+<hr>
 <canvas id="sequencerTwo" width="350" height="100">
 	Canvas isn't supported in your browser!
 </canvas>
 <hr>
-<canvas id="sequencerThree" width="350" height="350">
-	Canvas isn't supported in your browser!
-</canvas>
+
 
 <p> Control </p>
 
@@ -48,10 +50,11 @@
 	
 <button onclick='start();'>start</button>
 <button onclick='stop();'>stop</button>
-<button onclick='clearGrid(ctx, sequencerOne);clearGrid(ctxTwo,sequencerTwo)'>clear</button>
+<button onclick='clearGrid(ctx, sequencerOne);clearGrid(ctxTwo,sequencerTwo);clearGrid(ctxThree,sequencerThree);'>clear</button>
 
 <button onclick='sequencerOne.randomizeSequencerArray(ctx);'>random one</button>
 <button onclick='sequencerTwo.randomizeSequencerArray(ctxTwo);'>random two</button>
+<button onclick='sequencerThree.randomizeSequencerArray(ctxThree);'>random three</button>
 
 <hr>
 
@@ -146,6 +149,7 @@
 
 </body>
 <script>
+	
 	/* TO DO
 	Scaling - make sure the input is responsive or figure something out there! Mobile needs to work!
 	Array input & output system (save file etc?)
@@ -162,6 +166,9 @@
 	
 	var cTwo = document.getElementById("sequencerTwo");
 	var ctxTwo=cTwo.getContext("2d");
+	
+	var cThree = document.getElementById("sequencerThree");
+	var ctxThree=cThree.getContext("2d");
 	
 	function sequencerObject(buttonsX, buttonsY, squareSize, gapSize){ // Constructor for the sequencer object
 		// Declare important variables (well we're in an object, properties)
@@ -205,7 +212,7 @@
 	// Create the sequencers as needed
 	var sequencerOne = new sequencerObject(16,16);
 	var sequencerTwo = new sequencerObject(16,4);
-	var sequencerThree = new sequencerObject(16,16);
+	var sequencerThree = new sequencerObject(16,6);
 	
 	
 	function clearCanvas(canvas){
@@ -245,6 +252,7 @@ function drawGrid(canvas, sequencer, colourOff, colourOn){ // Draws the grid and
 
 drawGrid(ctx, sequencerOne);
 drawGrid(ctxTwo, sequencerTwo);
+drawGrid(ctxThree, sequencerThree);
 
 
 c.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
@@ -255,6 +263,14 @@ cTwo.addEventListener("click", function(e){ // when the canvas is clicked, call 
 	arrayEdit(e.layerX,e.layerY,ctxTwo,sequencerTwo);
 });
 
+cThree.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
+	arrayEdit(e.layerX,e.layerY,ctxThree,sequencerThree);
+});
+
+function sendArrayChanges(x,y,seq){
+	
+	// To Do!
+}
 
 function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and changes the colour of any buttons that are currently 'on'
 	for (var x=0; x<sequencer.buttonsX; x++){
@@ -264,6 +280,7 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 			// Yeah I'm pretty sure there's a better way of doing this bit above but oh well.
 			
 			if (xClick > loopX && xClick < (loopX + sequencer.squareSize) && yClick > loopY && yClick < (loopY + sequencer.squareSize)){
+				sendArrayChanges(x,y,sequencer);
 					if (sequencer.sequencerArray[x][y] == 0){
 						sequencer.sequencerArray[x][y] = 1;
 					} else {
@@ -272,6 +289,7 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 			}
 		}
 	}
+	
 	drawGrid(canvas, sequencer);
 }	
 	
@@ -323,8 +341,15 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 	
 	
 	//the notes
-	var noteNames = ["A3", "C4", "D4", "E4", "G4", "A4", "C5", "D5", "E5", "G5", "A5", "C6", "D6", "E6", "G6", "A6"];
+	function notes (startNote, scale, offset){
+		// to do!
+		// Make it so passing in a number gives you a musical note value, and allow for scales!
+	}
 	
+	var noteNames = ["A3", "C4", "D4", "E4", "G4", "A4", "C5", "D5", "E5", "G5", "A5", "C6", "D6", "E6", "G6", "A6"];
+	// c c# d d# e f f# g g# a a# b 
+	var ratios = [1, 1.122, 1.259,1.498,1.681, 2];
+	var realRatios = [1, 1.059, 1.122, 1.189, 1.259, 1.334, 1.414, 1.498, 1.587, 1.681, 1.781, 1.888, 2];
 	/* Sequencer - anonymous function is callback. What is a callback? It's simple! It's just a function within a function's () that gets called when the main function is done with the previous task (say, loading). Or something! I don't know!
 	*/
 	
@@ -340,11 +365,29 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 		// fillRect ( Coordinate X, Coor Y, Height, Width)
 		var column = s.sequencerArray[col];
 		for (var i = 0; i < s.buttonsX; i++){
-			if (column[reverseRange(i, -1, s.buttonsX)]){
+			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
 				synth.triggerAttackRelease(noteNames[i], "4n");
 			}
 		}
 	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
+	
+	var fmLoop = new Tone.Sequence(function(time, col){
+		
+		var s = sequencerThree;
+		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
+		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
+		clearCanvas(ctxThree);
+		drawGrid(ctxThree, s);
+		ctxThree.fillStyle="rgba(0,100,0,0.3)";
+		ctxThree.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
+		var column = s.sequencerArray[col];
+		for (var i = 0; i < s.buttonsX; i++){
+			if (column[reverseRange(i, -1, s.buttonsY)] == 1){
+				synth.set('harmonicity', ratios[i]);
+				console.log(ratios[i])
+			}
+		}
+	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "8n");
 	
 	
 	
@@ -463,9 +506,12 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 	function start(){
 		melodyLoop.start(); 
 		percLoop.start();
+		fmLoop.start();
 	}
 	
+	
 	function stop(){
+		fmLoop.stop();
 		melodyLoop.stop();
 		percLoop.stop();
 	}
