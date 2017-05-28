@@ -64,17 +64,17 @@
 <label for="fader">Sequencer 1</label>
 <input type="range" min="-60" max="0" value="-6" id="fader" 
 	step="1" oninput="volumeChanger(0, value)">
-<output for="fader" id="sequencerOne">100</output>
+<output for="fader" id="sequencerOne">-6</output>
 
 <label for="fader">Sequencer 2</label>
 <input type="range" min="-30" max="0" value="-6" id="fader" 
 	step="1" oninput="volumeChanger(1, value)">
-<output for="fader" id="sequencerTwo">100</output>	
+<output for="fader" id="sequencerTwo">-6</output>	
 
 <label for="fader">Sequencer 3</label>
 <input type="range" min="-30" max="0" value="-6" id="fader" 
 	step="1" oninput="volumeChanger(2, value)">
-<output for="fader" id="sequencerThree">100</output>
+<output for="fader" id="sequencerThree">-6</output>
 
 <hr>
 
@@ -149,14 +149,39 @@
 
 </body>
 <script>
-	
+
 	/* TO DO
 	Scaling - make sure the input is responsive or figure something out there! Mobile needs to work!
 	Array input & output system (save file etc?)
 	Node Socket integration
 	Make all the sequencers!
 	front end stuff, make it look good!
-	Fully realise the larger plan
+	
+	
+	The larger plan:
+	End goal - a multi-sequencer workstation utilising websockets (and node.js) for many connections to the same workspace.
+	
+	Client-side sequencer stuff:
+	EASY BITS: 
+		Make the sequencers change through the css display:hide element and buttons. 
+		Make the sequencers look nice and stuff with colours.
+		Title, footer, links... all the standard making a website bullshit.
+		Make the sliders look nicer and open when you press an 'advanced' button
+	Slightly harder:
+		Is it possible to allow the end user to change the note-size of the sequencers? That'd be a nifty feature! (It would, however, make the phrase-sequencer much harder to use)
+		Slider 'go' button for fake automation - slider moves over the course of one sequence like throught the line~ object in max.
+		Multiple sequencer states! This is where shit gets real!
+			- the sequencer's arrays need to be numbered so we can change between them.
+			- the numbered arrays will then, at the end of each sequence, change accordingly (or not at all)
+			- For each instrument there will be a master array switching out each sequencerArray (for purposes here we shall call these 'phrases'.)
+			- Decision: should we have the ability to edit individual phrases and listen to them alone? Or would it be better to make it so a phrase can only be edited whilst it is being played?
+			- 
+		
+	
+	Client-side audio stuff:
+		- Sampled percussion feels like the right way to go, seeing as the synthesised stuff in tone.js isn't so great.
+		- 
+	
 	
 	*/
 	
@@ -267,10 +292,6 @@ cThree.addEventListener("click", function(e){ // when the canvas is clicked, cal
 	arrayEdit(e.layerX,e.layerY,ctxThree,sequencerThree);
 });
 
-function sendArrayChanges(x,y,seq){
-	
-	// To Do!
-}
 
 function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and changes the colour of any buttons that are currently 'on'
 	for (var x=0; x<sequencer.buttonsX; x++){
@@ -280,7 +301,7 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 			// Yeah I'm pretty sure there's a better way of doing this bit above but oh well.
 			
 			if (xClick > loopX && xClick < (loopX + sequencer.squareSize) && yClick > loopY && yClick < (loopY + sequencer.squareSize)){
-				sendArrayChanges(x,y,sequencer);
+				sequencerChanges(x,y,sequencer);
 					if (sequencer.sequencerArray[x][y] == 0){
 						sequencer.sequencerArray[x][y] = 1;
 					} else {
@@ -362,7 +383,6 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 		drawGrid(ctx, s);
 		ctx.fillStyle="rgba(0,100,0,0.3)";
 		ctx.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
-		// fillRect ( Coordinate X, Coor Y, Height, Width)
 		var column = s.sequencerArray[col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
@@ -400,7 +420,6 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 		drawGrid(ctxTwo, s);
 		ctxTwo.fillStyle="rgba(0,100,0,0.3)";
 		ctxTwo.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
-		// fillRect ( Coordinate X, Coor Y, Height, Width)
 		var column = s.sequencerArray[col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[i] == 1){
@@ -501,6 +520,14 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 			Tone.Transport.bpm.value = val;
 			document.querySelector('#tempo').value = val;
 		}
+	}
+	
+	function sequencerChanger(x,y, sequencer){
+		if (sequencer.sequencerArray[x][y] == 0){
+			sequencer.sequencerArray[x][y] = 1;
+		} else {
+			sequencer.sequencerArray[x][y] = 0;
+		}		
 	}
 
 	function start(){
