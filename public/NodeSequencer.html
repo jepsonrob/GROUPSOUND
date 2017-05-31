@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Canvas Stuffs">
+    <meta name="author" content="Rob Jepson">
+
+    <title>Canvas Test</title>
+
+
+	<script src="Tone.js" type="text/javascript"></script> 
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<h1></h1>
+
+
+
+	
+<canvas id="sequencerOne" width="350" height="350">
+	Canvas isn't supported in your browser!
+</canvas>
+<hr>
+<canvas id="sequencerThree" width="350" height="150">
+	Canvas isn't supported in your browser!
+</canvas>
+<hr>
+<canvas id="sequencerTwo" width="350" height="100">
+	Canvas isn't supported in your browser!
+</canvas>
+<hr>
+
+
+<p> Control </p>
+
+<label for="fader">Tempo</label>
+<input type="range" min="60" max="240" value="120" id="fader" 
+	step="1" oninput="controlChanger(0, value)">
+<output for="fader" id="tempo">120</output>
+
+	
+<button onclick='start();'>start</button>
+<button onclick='stop();'>stop</button>
+<button onclick='clearGrid(ctx, sequencerOne);clearGrid(ctxTwo,sequencerTwo);clearGrid(ctxThree,sequencerThree);'>clear</button>
+
+<button onclick='sequencerOne.randomizeSequencerArray(ctx);'>random one</button>
+<button onclick='sequencerTwo.randomizeSequencerArray(ctxTwo);'>random two</button>
+<button onclick='sequencerThree.randomizeSequencerArray(ctxThree);'>random three</button>
+
+<hr>
+
+
+<p> Volume </p>
+
+<label for="fader">Sequencer 1</label>
+<input type="range" min="-60" max="0" value="-6" id="fader" 
+	step="1" oninput="volumeChanger(0, value)">
+<output for="fader" id="sequencerOne">-6</output>
+
+<label for="fader">Sequencer 2</label>
+<input type="range" min="-30" max="0" value="-6" id="fader" 
+	step="1" oninput="volumeChanger(1, value)">
+<output for="fader" id="sequencerTwo">-6</output>	
+
+<label for="fader">Sequencer 3</label>
+<input type="range" min="-30" max="0" value="-6" id="fader" 
+	step="1" oninput="volumeChanger(2, value)">
+<output for="fader" id="sequencerThree">-6</output>
+
+<hr>
+
+<label for="fader">Harmonicity</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('harmonicity', value)">
+<output for="fader" id="harmonicity">1</output>
+
+<label for="fader">Modulation Index</label>
+<input type="range" min="0" max="50" value="10" id="fader" 
+	step="1" oninput="synthChanger('modulationIndex', value)">
+<output for="fader" id="modulationIndex">10</output>
+
+<hr>
+
+<p> Envelope </p>
+
+<label for="fader">Attack</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('attack', value)">
+<output for="fader" id="attack">50</output>
+
+<label for="fader">Decay</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('decay', value)">
+<output for="fader" id="decay">50</output>
+
+<label for="fader">Sustain</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('sustain', value)">
+<output for="fader" id="sustain">50</output>
+
+<label for="fader">Release</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="synthChanger('release', value)">
+<output for="fader" id="release">50</output>
+
+<hr>
+
+<label for="fader">Distortion</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="effectChanger('distortion', value)">
+<output for="fader" id="distortion">100</output>
+
+
+<label for="fader">Reverb</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="effectChanger('reverb', value)">
+<output for="fader" id="reverb">100</output>
+
+<hr>
+<p> Delay <p>
+
+<label for="fader">Dry/Wet</label>
+<input type="range" min="0" max="100" value="50" id="fader" 
+	step="1" oninput="effectChanger('delay', value)">
+<output for="fader" id="delay">100</output>	
+
+<label for="fader">Feedback</label>
+<input type="range" min="0" max="100" value="100" id="fader" 
+	step="1" oninput="effectChanger('feedback', value)">
+<output for="fader" id="feedback">100</output>
+
+<label for="fader">Time</label>
+<input type="range" min="0" max="100" value="100" id="fader" 
+	step="1" oninput="effectChanger('time', value)">
+<output for="fader" id="time">100</output>
+
+
+
+
+
+</body>
+<script src="/socket.io/socket.io.js" type="text/javascript"> </script>
+<script src="Tone.js" type="text/javascript"></script> 
+
+<script src="pagescript.js" type="text/javascript"> </script>
+
+
+</html>
