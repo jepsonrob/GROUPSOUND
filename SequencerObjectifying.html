@@ -301,7 +301,7 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 			// Yeah I'm pretty sure there's a better way of doing this bit above but oh well.
 			
 			if (xClick > loopX && xClick < (loopX + sequencer.squareSize) && yClick > loopY && yClick < (loopY + sequencer.squareSize)){
-				sequencerChanges(x,y,sequencer);
+				//sequencerChanges(x,y,sequencer);
 					if (sequencer.sequencerArray[x][y] == 0){
 						sequencer.sequencerArray[x][y] = 1;
 					} else {

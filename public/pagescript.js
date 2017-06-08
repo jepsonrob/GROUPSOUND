@@ -1,7 +1,9 @@
 
-//	Client side!
 
-var socket = io("http://localhost:3000");
+
+//	Node socket stuff
+
+var socket = io.connect();
 
 socket.on("disconnect", function() {
 	setTitle("Disconnected");
@@ -14,38 +16,69 @@ socket.on("connect", function() {
 
 socket.on("loopStart", function() {
 	// start loop playing!
-	startLoop(1);
+	startLoop();
 	// I feel like I don't need these bits here...
 	//setTimeout(10);
 	//startLoop(0);
 });
 
-socket.on("seqChanged", function(array){
-	seqChanged(array)
+socket.on("seqChanged", function(array){ // When the seqChanged event is listened to/heard, change the selectedsequencer accordingly.
+
+	var x = array[0];
+	var y = array[1];
+	var phrase = array[2];
+	var seq = array[3];
+	if (seq == 1){
+	sequencerOne.changeSequencer(x,y,phrase,seq);
+	} else if (seq == 4){
+		sequencerFour.changeSequencer(x,y,phrase,seq);
+	}
 });
 
-function startLoop(num){
-	if (num == 1){
-		start();
+
+socket.on("sequencerOne", function(message) {// initial loading of the sequencer state
+	sequencerOne.sequencerArray = message;
+});
+
+socket.on("sequencerOnePhrase", function(message) {// initial loading of the sequencer state
+	sequencerFour.sequencerArray = message;
+});
+
+var firstPlay = 0; // set up a variable for the firstPlay of the loop, turned on by the server.
+
+function startLoop(){ // starts the loop only on the first go round.
+	
+	if (firstPlay == 0){
+		firstPlay = 1;
+		melodyLoop.start(); 
+		percLoop.start();
+		fmLoop.start();
+		sequencerOnePhraseSequencer.start();
 	}
 };
 
-function sequencerChanges(x,y,sequencer){
-	array = [x,y,sequencer]
-	socket.emit("seqChange", array);
+function sequencerChanges(x,y,phrase,sequencer){
+	var array = [x,y,phrase,sequencer];
+	socket.emit("seqChangeToServer", array);
 }
 
 function seqChanged(array){
 	var x = array[0];
 	var y = array[1];
 	var seq = array[2];
-	sequencerOne.changeSequencer(x,y);
+	sequencerOne.changeSequencer(x,y,phrase,seq);
 	
 }
 
 
-function loadSequence(message){
+/*
+function loadSequence(message){ // initial loading of the sequencer - needs work!
 	sequencerOne.sequencerArray = message;
+}
+*/
+
+function setTitle(title) {
+    document.querySelector("h1").innerHTML = title;
 }
 
 
@@ -60,9 +93,7 @@ document.forms[0].onsubmit = function () {
 
 */
 
-function setTitle(title) {
-    document.querySelector("h1").innerHTML = title;
-}
+
 
 
 /*function printMessage(message) {
@@ -92,13 +123,12 @@ function setTitle(title) {
 		Title, footer, links... all the standard making a website bullshit.
 		Make the sliders look nicer and open when you press an 'advanced' button
 	Slightly harder:
-		Is it possible to allow the end user to change the note-size of the sequencers? That'd be a nifty feature! (It would, however, make the phrase-sequencer much harder to use)
 		Slider 'go' button for fake automation - slider moves over the course of one sequence like throught the line~ object in max.
 		Multiple sequencer states! This is where shit gets real!
 			- the sequencer's arrays need to be numbered so we can change between them.
 			- the numbered arrays will then, at the end of each sequence, change accordingly (or not at all)
 			- For each instrument there will be a master array switching out each sequencerArray (for purposes here we shall call these 'phrases'.)
-			- Decision: should we have the ability to edit individual phrases and listen to them alone? Or would it be better to make it so a phrase can only be edited whilst it is being played?
+			- Decision: should we have the ability to edit individualphrases and listen to them alone? Or would it be better to make it so aphrase can only be edited whilst it is being played?
 			- 
 		
 	
@@ -106,6 +136,15 @@ function setTitle(title) {
 		- Sampled percussion feels like the right way to go, seeing as the synthesised stuff in tone.js isn't so great.
 		- 
 	
+	
+	Phrase Sequencer:
+	- Each of the 4/5 sequencers has a phrase sequencer
+	- the sequencer shown on screen is just the 'current view', which can be either a live view or a phrase view.
+	- The live view follows the current playing part of the sequence
+	- The phrase view shows (and allows editing) of the selected phrase.
+	- When the phrase in view becomes live, the play head appears but only for that one phrase.
+	- The phrase sequencer will be slightly different functionally to the regular sequencer: it will only have one bean allowed on at a time on a column. 
+	- 
 	
 	*/
 	
@@ -119,61 +158,59 @@ function setTitle(title) {
 	var cThree = document.getElementById("sequencerThree");
 	var ctxThree=cThree.getContext("2d");
 	
-	function sequencerObject(buttonsX, buttonsY, squareSize, gapSize){ // Constructor for the sequencer object
+	var cFour = document.getElementById("sequencerFour");
+	var ctxFour=cFour.getContext("2d");
+	
+	function sequencerObject(sequencerNumber, buttonsX, buttonsY, squareSize, gapSize){ // Constructor for the sequencer object
 		// Declare important variables (well we're in an object, properties)
 		this.squareSize = squareSize || 20;
 		this.gapSize = gapSize || 1;
 		this.buttonsX = buttonsX;
 		this.buttonsY = buttonsY;
+		this.totalPatterns = 10;
 		this.sequencerArray = [];
+		this.currentPhrase = 0;
 		
 		this.makeSequencerArray = function(){ // Makes the 2d array of 0's to represent the sequencer
-				for (x=0;x< this.buttonsX;x++){
-					this.sequencerArray.push([]);
-					for (y=0;y<this.buttonsY;y++){
-						this.sequencerArray[x].push(0)
-					}
-				}
-			} // end function ...
-			
-		this.makeSequencerArray(); // ... and immediately call it!
-			
-		this.randomizeSequencerArray = function(canvas){ // randomizes Sequencer on/offs when called
-			this.sequencerArray = [];
-			for (x=0;x< this.buttonsX;x++){
+			for (var p=0;p<this.totalPatterns;p++){
 				this.sequencerArray.push([]);
-				for (y=0;y<this.buttonsY;y++){
-					var randomizer = Math.floor(Math.random() * 10);
-						if (randomizer == 1){
-							this.sequencerArray[x].push(1);
-						} else {
-							this.sequencerArray[x].push(0);
-						}	
+					for (var x=0;x< this.buttonsX;x++){
+						this.sequencerArray[p].push([]);
+						for (var y=0;y<this.buttonsY;y++){
+						this.sequencerArray[p][x].push(0)
+					}	
 				}
 			}
-			clearCanvas(canvas);
-			drawGrid(canvas, this);
-		} // end function
+		} // end function ...
+			
+		this.makeSequencerArray(); // ... and immediately call it!
 		
-		this.serverSequencer = function(newArray){
+		// NOTE: sequencerArray[p][x][y] works as follows: sequencerArray[phrase][x][y]
+
+		
+		this.serverSequencer = function(newArray){ // recieve server side array... needs work!
 			sequencerArray = newArray;
 		}
 		
 		this.changeSequencer = function(x,y){
-			if (this.sequencerArray[x][y] == 1){
-				this.sequencerArray[x][y] = 0;
+			if (this.sequencerArray[0][x][y] == 1){
+				this.sequencerArray[0][x][y] = 0;
 			} else {
-				this.sequencerArray[x][y] = 1;
+				this.sequencerArray[0][x][y] = 1;
 			}
 		}
+		
+		this.sequencerNumber = sequencerNumber;
 		
 	} // end object constructor
 	
 	
 	// Create the sequencers as needed
-	var sequencerOne = new sequencerObject(16,16);
-	var sequencerTwo = new sequencerObject(16,4);
-	var sequencerThree = new sequencerObject(16,6);
+	var sequencerOne = new sequencerObject(1,16,16);
+	var sequencerTwo = new sequencerObject(2,16,4);
+	var sequencerThree = new sequencerObject(3,16,6);
+	var sequencerFour = new sequencerObject(4,16,10,18,2);
+
 	
 	
 	function clearCanvas(canvas){
@@ -182,27 +219,28 @@ function setTitle(title) {
 		canvas.fillRect(0,0,500,500); 
 	}
 	
-	function clearGrid(canvas, sequencer){
+	function clearGrid(canvas, sequencer, phrase){
 		for (var x=0; x<sequencer.buttonsX; x++){
 			for (var y=0; y<sequencer.buttonsY;y++){
-				sequencer.sequencerArray[x][y] = 0;
+				sequencer.sequencerArray[phrase][x][y] = 0;
 			}
 		}
 		clearCanvas(canvas);
-		drawGrid(canvas, sequencer);
+		drawGrid(canvas, sequencer, phrase);
 	}
 	
 
-function drawGrid(canvas, sequencer, colourOff, colourOn){ // Draws the grid and changes the colour of any buttons that are currently 'on'
+function drawGrid(canvas, sequencer, phrase, colourOff, colourOn){ // Draws the grid and changes the colour of any buttons that are currently 'on'
 	for (var x=0; x<sequencer.buttonsX; x++){
 		for (var y=0; y<sequencer.buttonsY;y++){
 			var loopX = ((sequencer.gapSize * 2) + sequencer.squareSize) * x;
 			var loopY = ((sequencer.gapSize * 2) + sequencer.squareSize) * y;
 			
-				if (sequencer.sequencerArray[x][y] == 1){
+				if (sequencer.sequencerArray[phrase][x][y] == 1){
 					// fill with 'on' colour
 					canvas.fillStyle= colourOn || "rgb(255,60,60)"; 
 					canvas.fillRect(loopX,loopY,sequencer.squareSize,sequencer.squareSize);
+					
 				} else {
 				// Fill with regular colour
 					canvas.fillStyle = colourOff || "rgb(60,60,60)";
@@ -212,25 +250,30 @@ function drawGrid(canvas, sequencer, colourOff, colourOn){ // Draws the grid and
 	}
 }
 
-drawGrid(ctx, sequencerOne);
-drawGrid(ctxTwo, sequencerTwo);
-drawGrid(ctxThree, sequencerThree);
+drawGrid(ctx, sequencerOne, 0);
+drawGrid(ctxTwo, sequencerTwo, 0);
+drawGrid(ctxThree, sequencerThree, 0);
+drawGrid(ctxFour, sequencerFour, 0);
 
 
 c.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
-	arrayEdit(e.layerX,e.layerY,ctx,sequencerOne);
+	arrayEdit(e.layerX,e.layerY,ctx,sequencerOne,sequencerOne.currentPhrase);
 });
 
 cTwo.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
-	arrayEdit(e.layerX,e.layerY,ctxTwo,sequencerTwo);
+	arrayEdit(e.layerX,e.layerY,ctxTwo,sequencerTwo,0);
 });
 
 cThree.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
-	arrayEdit(e.layerX,e.layerY,ctxThree,sequencerThree);
+	arrayEdit(e.layerX,e.layerY,ctxThree,sequencerThree,0);
+});
+
+cFour.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
+	arrayEdit(e.layerX,e.layerY,ctxFour,sequencerFour,0);
 });
 
 
-function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and changes the colour of any buttons that are currently 'on'
+function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid and changes the colour of any buttons that are currently 'on'
 	for (var x=0; x<sequencer.buttonsX; x++){
 		for (var y=0; y<sequencer.buttonsY;y++){
 			var loopX = ((sequencer.gapSize * 2) + sequencer.squareSize) * x;
@@ -238,17 +281,17 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 			// Yeah I'm pretty sure there's a better way of doing this bit above but oh well.
 			
 			if (xClick > loopX && xClick < (loopX + sequencer.squareSize) && yClick > loopY && yClick < (loopY + sequencer.squareSize)){
-				sequencerChanges(x,y,sequencer);
-					if (sequencer.sequencerArray[x][y] == 0){
-						sequencer.sequencerArray[x][y] = 1;
+				sequencerChanges(x,y,phrase, sequencer.sequencerNumber); // sends changes direct to server to broadcast
+					if (sequencer.sequencerArray[phrase][x][y] == 0){
+						sequencer.sequencerArray[phrase][x][y] = 1;
 					} else {
-						sequencer.sequencerArray[x][y] = 0;
+						sequencer.sequencerArray[phrase][x][y] = 0;
 					}		
 			}
 		}
 	}
 	
-	drawGrid(canvas, sequencer);
+	drawGrid(canvas, sequencer, phrase);
 }	
 	
 	
@@ -311,16 +354,35 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 	/* Sequencer - anonymous function is callback. What is a callback? It's simple! It's just a function within a function's () that gets called when the main function is done with the previous task (say, loading). Or something! I don't know!
 	*/
 	
+	var sequencerOnePhraseSequencer = new Tone.Sequence(function(time, col){ // Phrase sequencer (sequencerOne)
+		
+		var s = sequencerFour;
+		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
+		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
+		clearCanvas(ctxFour);
+		drawGrid(ctxFour,s,0);
+		ctxFour.fillStyle="rgba(0,100,0,0.3)";
+		ctxFour.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
+		var column = s.sequencerArray[0][col];
+		for (var i = 0; i < s.buttonsX; i++){
+			if (column[i] == 1){
+				sequencerOne.currentPhrase = i;
+			}
+		}
+	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "1n");
+	
+	
+	
 	var melodyLoop = new Tone.Sequence(function(time, col){
 		
 		var s = sequencerOne;
 		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
 		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
 		clearCanvas(ctx);
-		drawGrid(ctx, s);
+		drawGrid(ctx, s,sequencerOne.currentPhrase);
 		ctx.fillStyle="rgba(0,100,0,0.3)";
 		ctx.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
-		var column = s.sequencerArray[col];
+		var column = s.sequencerArray[sequencerOne.currentPhrase][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
 				synth.triggerAttackRelease(noteNames[i], "4n");
@@ -334,10 +396,10 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
 		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
 		clearCanvas(ctxThree);
-		drawGrid(ctxThree, s);
+		drawGrid(ctxThree, s, 0);
 		ctxThree.fillStyle="rgba(0,100,0,0.3)";
 		ctxThree.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
-		var column = s.sequencerArray[col];
+		var column = s.sequencerArray[sequencerOne.currentPhrase][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsY)] == 1){
 				synth.set('harmonicity', ratios[i]);
@@ -354,10 +416,10 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
 		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
 		clearCanvas(ctxTwo);
-		drawGrid(ctxTwo, s);
+		drawGrid(ctxTwo, s, 0);
 		ctxTwo.fillStyle="rgba(0,100,0,0.3)";
 		ctxTwo.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
-		var column = s.sequencerArray[col];
+		var column = s.sequencerArray[0][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[i] == 1){
 				console.log("something is certainly happening, at least. Also, 'i' is ", i)
@@ -380,6 +442,7 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 	
 	Tone.Transport.bpm.value = 120;
 	Tone.Transport.start();
+	
 	
 	
 	
@@ -459,31 +522,30 @@ function arrayEdit(xClick,yClick, canvas, sequencer){ // Draws the grid and chan
 		}
 	}
 	
-	function sequencerChanger(x,y, sequencer){
-		if (sequencer.sequencerArray[x][y] == 0){
-			sequencer.sequencerArray[x][y] = 1;
+	function sequencerChanger(x,y, phrase, sequencer){ // changes the sequencerArray of the given sequencer
+		if (sequencer.sequencerArray[phrase][x][y] == 0){
+			sequencer.sequencerArray[phrase][x][y] = 1;
 		} else {
-			sequencer.sequencerArray[x][y] = 0;
+			sequencer.sequencerArray[phrase][x][y] = 0;
 		}		
 	}
 
 	function start(){
-		melodyLoop.start(); 
-		percLoop.start();
-		fmLoop.start();
+		socket.on("loopStart", function() {
+			melodyLoop.start(); 
+			percLoop.start();
+			fmLoop.start();
+			sequencerOnePhraseSequencer.start();
+		});
 	}
-	
-	// When recieving a message, print it on the screen with the function printMessage
-	socket.on("sequencer", function(message) {
-		loadSequence(message);
-	});
-
 	
 	
 	function stop(){
 		fmLoop.stop();
 		melodyLoop.stop();
 		percLoop.stop();
+		sequencerOnePhraseSequencer.stop();
 	}
 	
 	// End of audio stuff
+	
