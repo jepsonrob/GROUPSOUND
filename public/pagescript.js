@@ -236,26 +236,28 @@ function drawGrid(canvas, sequencer, beat, phrase, colourOff, colourOn){ // Draw
 	
 	clearCanvas(canvas); // Delete previous canvas for redraw!
 	
-	var visualTempo = beat * ((sequencer.gapSize * 2) + sequencer.squareSize);
+	var visualTempo = beat * ((sequencer.gapSize * 2) + sequencer.squareSize); // size of the playhead
 	
-	for (var x=0; x<sequencer.buttonsX; x++){
+	for (var x=0; x<sequencer.buttonsX; x++){ // draws the grid with 2 loops
 		for (var y=0; y<sequencer.buttonsY;y++){
 			var loopX = ((sequencer.gapSize * 2) + sequencer.squareSize) * x;
 			var loopY = ((sequencer.gapSize * 2) + sequencer.squareSize) * y;
 			
-				if (sequencer.sequencerArray[phrase][x][y] == 1){
-					// fill with 'on' colour
+			
+				if (sequencer.sequencerArray[phrase][x][y] == 1 && beat!=x){ // fill with 'on' colour
 					canvas.fillStyle= colourOn || "rgb(255,60,60)"; 
 					canvas.fillRect(loopX,loopY,sequencer.squareSize,sequencer.squareSize);
-					
-				} else {
-				// Fill with regular colour
-					canvas.fillStyle = colourOff || "rgb(60,60,60)";
+				} else if (sequencer.sequencerArray[phrase][x][y] == 1 && beat==x){
+					canvas.fillStyle= "rgb(0,0,0)"; 
 					canvas.fillRect(loopX,loopY,sequencer.squareSize,sequencer.squareSize);
-			}
+				} else {
+					canvas.fillStyle = colourOff || "rgb(60,60,60)"; // Fill with regular colour
+					canvas.fillRect(loopX,loopY,sequencer.squareSize,sequencer.squareSize);
+				} 
 		}
 	}
-	canvas.fillStyle="rgba(0,100,0,0.3)";
+
+	canvas.fillStyle="rgba(102,255,51,0.5)";
 	canvas.fillRect(visualTempo, 0, (sequencer.gapSize + sequencer.squareSize),500);
 }
 
@@ -328,6 +330,8 @@ function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid a
 		}
 	});
 	
+	synth.volume.value = -30;
+	
 	delay.wet.value = 0.5;
 	distortion.wet.value = 0.5;
 	reverb.wet.value = 0.5;
@@ -356,7 +360,7 @@ function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid a
 		// Make it so passing in a number gives you a musical note value, and allow for scales!
 	}
 	
-	var noteNames = ["A3", "C4", "D4", "E4", "G4", "A4", "C5", "D5", "E5", "G5", "A5", "C6", "D6", "E6", "G6", "A6"];
+	var noteNames = ["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5"];
 	// c c# d d# e f f# g g# a a# b 
 	var ratios = [1, 1.122, 1.259,1.498,1.681, 2];
 	var realRatios = [1, 1.059, 1.122, 1.189, 1.259, 1.334, 1.414, 1.498, 1.587, 1.681, 1.781, 1.888, 2];
