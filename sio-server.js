@@ -132,6 +132,13 @@ io.on("connection", function(socket) {
 	
 });
 
+setInterval(function(){
+
+	io.sockets.emit("loopStart", 1);
+	console.log('timer')
+	
+}, 2000);
+
 console.log("Starting Socket App - http://localhost:8080");
 
 

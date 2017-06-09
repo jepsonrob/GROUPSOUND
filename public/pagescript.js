@@ -170,6 +170,7 @@ document.forms[0].onsubmit = function () {
 		this.totalPatterns = 10;
 		this.sequencerArray = [];
 		this.currentPhrase = 0;
+		this.currentBeat = 0;
 		
 		this.makeSequencerArray = function(){ // Makes the 2d array of 0's to represent the sequencer
 			for (var p=0;p<this.totalPatterns;p++){
@@ -201,6 +202,7 @@ document.forms[0].onsubmit = function () {
 		}
 		
 		this.sequencerNumber = sequencerNumber;
+	
 		
 	} // end object constructor
 	
@@ -230,7 +232,12 @@ document.forms[0].onsubmit = function () {
 	}
 	
 
-function drawGrid(canvas, sequencer, phrase, colourOff, colourOn){ // Draws the grid and changes the colour of any buttons that are currently 'on'
+function drawGrid(canvas, sequencer, beat, phrase, colourOff, colourOn){ // Draws the grid and changes the colour of any buttons that are currently 'on'
+	
+	clearCanvas(canvas); // Delete previous canvas for redraw!
+	
+	var visualTempo = beat * ((sequencer.gapSize * 2) + sequencer.squareSize);
+	
 	for (var x=0; x<sequencer.buttonsX; x++){
 		for (var y=0; y<sequencer.buttonsY;y++){
 			var loopX = ((sequencer.gapSize * 2) + sequencer.squareSize) * x;
@@ -248,12 +255,14 @@ function drawGrid(canvas, sequencer, phrase, colourOff, colourOn){ // Draws the 
 			}
 		}
 	}
+	canvas.fillStyle="rgba(0,100,0,0.3)";
+	canvas.fillRect(visualTempo, 0, (sequencer.gapSize + sequencer.squareSize),500);
 }
 
-drawGrid(ctx, sequencerOne, 0);
-drawGrid(ctxTwo, sequencerTwo, 0);
-drawGrid(ctxThree, sequencerThree, 0);
-drawGrid(ctxFour, sequencerFour, 0);
+drawGrid(ctx, sequencerOne, 0, 0);
+drawGrid(ctxTwo, sequencerTwo, 0, 0);
+drawGrid(ctxThree, sequencerThree, 0, 0);
+drawGrid(ctxFour, sequencerFour, 0, 0);
 
 
 c.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
@@ -291,7 +300,7 @@ function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid a
 		}
 	}
 	
-	drawGrid(canvas, sequencer, phrase);
+	drawGrid(canvas, sequencer, sequencer.currentBeat, phrase);
 }	
 	
 	
@@ -357,12 +366,8 @@ function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid a
 	var sequencerOnePhraseSequencer = new Tone.Sequence(function(time, col){ // Phrase sequencer (sequencerOne)
 		
 		var s = sequencerFour;
-		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
-		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
-		clearCanvas(ctxFour);
-		drawGrid(ctxFour,s,0);
-		ctxFour.fillStyle="rgba(0,100,0,0.3)";
-		ctxFour.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
+		sequencerFour.currentBeat = col;
+		drawGrid(ctxFour, s, col, 0);
 		var column = s.sequencerArray[0][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[i] == 1){
@@ -376,12 +381,8 @@ function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid a
 	var melodyLoop = new Tone.Sequence(function(time, col){
 		
 		var s = sequencerOne;
-		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
-		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
-		clearCanvas(ctx);
-		drawGrid(ctx, s,sequencerOne.currentPhrase);
-		ctx.fillStyle="rgba(0,100,0,0.3)";
-		ctx.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
+		sequencerOne.currentBeat = col;
+		drawGrid(ctx, s, col, sequencerOne.currentPhrase);
 		var column = s.sequencerArray[sequencerOne.currentPhrase][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
@@ -393,12 +394,8 @@ function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid a
 	var fmLoop = new Tone.Sequence(function(time, col){
 		
 		var s = sequencerThree;
-		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
-		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
-		clearCanvas(ctxThree);
-		drawGrid(ctxThree, s, 0);
-		ctxThree.fillStyle="rgba(0,100,0,0.3)";
-		ctxThree.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
+		sequencerTwo.currentBeat = col;
+		drawGrid(ctxTwo, s, col, 0);
 		var column = s.sequencerArray[sequencerOne.currentPhrase][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsY)] == 1){
@@ -413,12 +410,8 @@ function arrayEdit(xClick,yClick, canvas, sequencer,phrase){ // Draws the grid a
 	var percLoop = new Tone.Sequence(function(time, col){
 		
 		var s = sequencerTwo;
-		var visualTempo = col * ((s.gapSize * 2) + s.squareSize);
-		var visualTempoBehind = (col - 1) * ((s.gapSize * 2) + s.squareSize)
-		clearCanvas(ctxTwo);
-		drawGrid(ctxTwo, s, 0);
-		ctxTwo.fillStyle="rgba(0,100,0,0.3)";
-		ctxTwo.fillRect(visualTempo , 0, ((s.gapSize * 2) + s.squareSize),500);
+		sequencerThree.currentBeat = col;
+		drawGrid(ctxThree, s, col, 0);
 		var column = s.sequencerArray[0][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[i] == 1){
