@@ -28,6 +28,7 @@ function sequencerObject(sequencerNumber, buttonsX, buttonsY){ // Constructor fo
 	this.totalPatterns = 10;
 	this.sequencerArray = [];
 	this.currentPhrase = 0; // current phrase of the sequencer.
+	this.mode = 'poly'
 	
 	this.makeSequencerArray = function(){ // Makes the 2d array of 0's to represent the sequencer
 		for (var p=0;p<this.totalPatterns;p++){
@@ -117,15 +118,23 @@ io.on("connection", function(socket) {
 			sequencerOne.sequencerArray[phrase][x][y] = 1;
 			console.log("Sequencer One Change:",x,y,"= 1");
 		}
-		} else if (sequencer==4){ // 4 is the phrase sequencer on the client-side, confusingly.
-			if (sequencerOnePhrase.sequencerArray[phrase][x][y] == 1){
-				sequencerOnePhrase.sequencerArray[phrase][x][y] = 0;
-				console.log("Phrase Change:",x,y,"= 0");
-			} else {
-				sequencerOnePhrase.sequencerArray[phrase][x][y] = 1;
-				console.log("Phrase Change:", x,y,"= 1");
-		}
-	}
+		} else if (sequencer==4){
+			console.log("Phrase Change:" , x, y)
+					for (var f=0;f<sequencerOnePhrase.buttonsY; f++){ // loop through array to see what is on! Turn EVERYTHING (other than the clicked button) off.
+						
+						if (sequencerOnePhrase.sequencerArray[phrase][x][f] == 1){ // turn everything on the row to 0, then...
+							sequencerOnePhrase.sequencerArray[phrase][x][f] = 0;
+						} 
+					
+						if (sequencerOnePhrase.sequencerArray[phrase][x][y] == 0){ // turn ON the selected one!
+							sequencerOnePhrase.sequencerArray[phrase][x][y] = 1;
+						} 
+					} // end of 'f' loop
+				}
+			
+			
+			
+		
     });
 
 	
