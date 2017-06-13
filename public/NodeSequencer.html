@@ -12,82 +12,72 @@
     <title>Canvas Test</title>
 
 
-	<script src="Tone.js" type="text/javascript"></script> 
+	<script src="Tone.js" type="text/javascript"></script>
+	
+    <!-- Bootstrap -->
+      <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+      <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+		  
+		  <style>
+			  
+			  body {
+				  margin:5%;
+				  text-align:center;
+				  
+			  }
+			  
+			  .status {
+				  font-size:10px;
+				  text-align:left;
+			  }
+			  
+			  canvas {
+				  margin:20px;
+			  }
+			  </style>
+		
 
 </head>
 
-<h1></h1>
+<h1 class='status'></h1>
 
+<h1> Let's Sequencer Together! </h1>
 
+<button onclick='start();'>start</button>
+<button onclick='stop();'>stop</button>
 
-	
-<canvas id="sequencerOne" width="350" height="350">
-	Canvas isn't supported in your browser!
-</canvas>
-<hr>
-<canvas id="sequencerFour" width="350" height="300">
-	Canvas isn't supported in your browser!
-</canvas>
-<hr>
-<canvas id="sequencerThree" width="350" height="150">
-	Canvas isn't supported in your browser!
-</canvas>
-<hr>
-<canvas id="sequencerTwo" width="350" height="100">
-	Canvas isn't supported in your browser!
-</canvas>
 <hr>
 
-
+<h2> Sequencer One </h2>
 <button onclick='viewChanger(sequencerOne,"live");'>live view</button>
 <button onclick='viewChanger(sequencerOne,"phrase",0);'>phrase 1</button>
 <button onclick='viewChanger(sequencerOne,"phrase",1);'>phrase 2</button>
 <button onclick='viewChanger(sequencerOne,"phrase",2);'>phrase 3</button>
-
-
-
-<p> Control </p>
-
-<label for="fader">Tempo</label>
-<input type="range" min="60" max="240" value="120" id="fader" 
-	step="1" oninput="controlChanger(0, value)">
-<output for="fader" id="tempo">120</output>
-
-	
-<button onclick='start();'>start</button>
-<button onclick='stop();'>stop</button>
-<button onclick='clearGrid(ctx, sequencerOne);clearGrid(ctxTwo,sequencerTwo);clearGrid(ctxThree,sequencerThree);'>clear</button>
-
-<button onclick='sequencerOne.randomizeSequencerArray(ctx);'>random one</button>
-<button onclick='sequencerTwo.randomizeSequencerArray(ctxTwo);'>random two</button>
-<button onclick='sequencerThree.randomizeSequencerArray(ctxThree);'>random three</button>
-
+<button onclick='viewChanger(sequencerOne,"phrase",3);'>phrase 4</button>
+<button onclick='viewChanger(sequencerOne,"phrase",4);'>phrase 5</button>
+<button onclick='viewChanger(sequencerOne,"phrase",5);'>phrase 6</button>
+<button onclick='viewChanger(sequencerOne,"phrase",6);'>phrase 7</button>
+<button onclick='viewChanger(sequencerOne,"phrase",7);'>phrase 8</button>
+<button onclick='viewChanger(sequencerOne,"phrase",8);'>phrase 9</button>
+<button onclick='viewChanger(sequencerOne,"phrase",9);'>phrase 10</button>
+<hr>	
+<canvas id="sequencerOne" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+<canvas id="sequencerOnePhrase" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
 <hr>
-
-
 <p> Volume </p>
-
-<label for="fader">Sequencer 1</label>
 <input type="range" min="-60" max="0" value="-6" id="fader" 
 	step="1" oninput="volumeChanger(0, value)">
 <output for="fader" id="sequencerOne">-6</output>
-
-<label for="fader">Sequencer 2</label>
-<input type="range" min="-30" max="0" value="-6" id="fader" 
-	step="1" oninput="volumeChanger(1, value)">
-<output for="fader" id="sequencerTwo">-6</output>	
-
-<label for="fader">Sequencer 3</label>
-<input type="range" min="-30" max="0" value="-6" id="fader" 
-	step="1" oninput="volumeChanger(2, value)">
-<output for="fader" id="sequencerThree">-6</output>
 
 <hr>
 
@@ -156,6 +146,98 @@
 	step="1" oninput="effectChanger('time', value)">
 <output for="fader" id="time">100</output>
 
+<h2> Sequencer Two </h2>
+<button onclick='viewChanger(sequencerTwo,"live");'>live view</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",0);'>phrase 1</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",1);'>phrase 2</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",2);'>phrase 3</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",3);'>phrase 4</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",4);'>phrase 5</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",5);'>phrase 6</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",6);'>phrase 7</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",7);'>phrase 8</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",8);'>phrase 9</button>
+<button onclick='viewChanger(sequencerTwo,"phrase",9);'>phrase 10</button>
+<hr>	
+<canvas id="sequencerTwo" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+<canvas id="sequencerTwoPhrase" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+<hr>
+
+<h2> Sequencer Three </h2>
+<button onclick='viewChanger(sequencerThree,"live");'>live view</button>
+<button onclick='viewChanger(sequencerThree,"phrase",0);'>phrase 1</button>
+<button onclick='viewChanger(sequencerThree,"phrase",1);'>phrase 2</button>
+<button onclick='viewChanger(sequencerThree,"phrase",2);'>phrase 3</button>
+<button onclick='viewChanger(sequencerThree,"phrase",3);'>phrase 4</button>
+<button onclick='viewChanger(sequencerThree,"phrase",4);'>phrase 5</button>
+<button onclick='viewChanger(sequencerThree,"phrase",5);'>phrase 6</button>
+<button onclick='viewChanger(sequencerThree,"phrase",6);'>phrase 7</button>
+<button onclick='viewChanger(sequencerThree,"phrase",7);'>phrase 8</button>
+<button onclick='viewChanger(sequencerThree,"phrase",8);'>phrase 9</button>
+<button onclick='viewChanger(sequencerThree,"phrase",9);'>phrase 10</button>
+<hr>	
+
+<canvas id="sequencerThree" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+<canvas id="sequencerThreePhrase" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+<hr>
+<h2> Sequencer Four </h2>
+<button onclick='viewChanger(sequencerFour,"live");'>live view</button>
+<button onclick='viewChanger(sequencerFour,"phrase",0);'>phrase 1</button>
+<button onclick='viewChanger(sequencerFour,"phrase",1);'>phrase 2</button>
+<button onclick='viewChanger(sequencerFour,"phrase",2);'>phrase 3</button>
+<button onclick='viewChanger(sequencerFour,"phrase",3);'>phrase 4</button>
+<button onclick='viewChanger(sequencerFour,"phrase",4);'>phrase 5</button>
+<button onclick='viewChanger(sequencerFour,"phrase",5);'>phrase 6</button>
+<button onclick='viewChanger(sequencerFour,"phrase",6);'>phrase 7</button>
+<button onclick='viewChanger(sequencerFour,"phrase",7);'>phrase 8</button>
+<button onclick='viewChanger(sequencerFour,"phrase",8);'>phrase 9</button>
+<button onclick='viewChanger(sequencerFour,"phrase",9);'>phrase 10</button>
+<hr>	
+<canvas id="sequencerFour" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+<canvas id="sequencerFourPhrase" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+<hr>
+
+
+
+
+
+
+
+<p> Control </p>
+
+<label for="fader">Tempo</label>
+<input type="range" min="60" max="240" value="120" id="fader" 
+	step="1" oninput="controlChanger(0, value)">
+<output for="fader" id="tempo">120</output>
+
+<hr>
+
+
+<p> Volume </p>
+
+<label for="fader">Sequencer 2</label>
+<input type="range" min="-30" max="0" value="-6" id="fader" 
+	step="1" oninput="volumeChanger(1, value)">
+<output for="fader" id="sequencerTwo">-6</output>	
+
+<label for="fader">Sequencer 3</label>
+<input type="range" min="-30" max="0" value="-6" id="fader" 
+	step="1" oninput="volumeChanger(2, value)">
+<output for="fader" id="sequencerThree">-6</output>
+
+
 
 
 
@@ -165,6 +247,11 @@
 <script src="Tone.js" type="text/javascript"></script> 
 
 <script src="pagescript.js" type="text/javascript"> </script>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
 
 
 </html>
