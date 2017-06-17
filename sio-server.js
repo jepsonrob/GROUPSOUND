@@ -102,6 +102,7 @@ app.use(express.static("./public"));
 
 
 io.on("connection", function(socket) {
+
 	socket.emit("sequencerOne", sequencerOne.sequencerArray);
 	socket.emit("sequencerOnePhrase", sequencerOnePhrase.sequencerArray);
 	
@@ -182,11 +183,19 @@ io.on("connection", function(socket) {
 
 });
 
-setInterval(function(){
+/*setInterval(function(){
 
-	io.sockets.emit("loopStart", 1);
+	io.sockets.emit("loopStart",1);
 	console.log('timer')
 	
+}, 2000); */
+var currentTimer = 0;
+
+setInterval(() => { // Woo! I'm using arrow functions!
+    io.emit('loopStart', 1);
+	
+	currentTimer++;
+	console.log(currentTimer);
 }, 2000);
 
 console.log("Starting Socket App - http://localhost:8080");

@@ -1,4 +1,11 @@
+
+
 // Socket.io stuff
+
+StartAudioContext(Tone.context, "#playButton", function(){
+	console.log('context online!');
+})
+
 
 var socket = io.connect();
 var firstPlay = 0; // set up a variable for the firstPlay of the loop, turned on by the server.
@@ -34,7 +41,8 @@ socket.on("connect", function() {
 
 socket.on("loopStart", function() {
 	// start loop playing! ... hopefully at the correct time!
-	startLoop();
+	//start();
+		
 });
 
 
@@ -46,28 +54,28 @@ socket.on("seqServerEdit", function(array){ // When the server broadcasts an arr
 	var seq = array[3];
 	switch (seq){ // takes the sequencer's number into the switch and sends the info to the right sequencer.
 	case 1:
-		sequencerOne.changeSequencer(x,y,phrase,seq); 
+		sequencerOne.changeSequencer(x,y,phrase); 
 		break;
 	case 2: 
-		sequencerOnePhrase.changeSequencer(x,y,phrase,seq);
+		sequencerOnePhrase.changeSequencer(x,y,phrase,'phrase');
 		break;
 	case 3:
-		sequencerTwo.changeSequencer(x,y,phrase,seq); 
+		sequencerTwo.changeSequencer(x,y,phrase); 
 		break;
 	case 4: 
-		sequencerTwoPhrase.changeSequencer(x,y,phrase,seq);
+		sequencerTwoPhrase.changeSequencer(x,y,phrase,'phrase');
 		break;
 	case 5:
-		sequencerThree.changeSequencer(x,y,phrase,seq); 
+		sequencerThree.changeSequencer(x,y,phrase); 
 		break;
 	case 6: 
-		sequencerThreePhrase.changeSequencer(x,y,phrase,seq);
+		sequencerThreePhrase.changeSequencer(x,y,phrase,'phrase');
 		break;
 	case 7:
-		sequencerFour.changeSequencer(x,y,phrase,seq); 
+		sequencerFour.changeSequencer(x,y,phrase); 
 		break;
 	case 8: 
-		sequencerFourPhrase.changeSequencer(x,y,phrase,seq);
+		sequencerFourPhrase.changeSequencer(x,y,phrase,'phrase');
 		break;
 	}
 });
@@ -153,12 +161,14 @@ document.forms[0].onsubmit = function () {
 		- Make the sliders look nicer and open when you press an 'advanced' button
 
 	Client Code:
-		- Encapsulate this script so there are no global variables, and make sure all buttons are pressed with event listeners/jQuery selectors.
-
+		- The wonderful notes function doesn't work... fix it!
 		- Slider 'go' button for fake automation - slider moves over the course of one sequence like throught the line~ object in max.
+		- Encapsulate this script so there are no global variables, and make sure all buttons are pressed with event listeners/jQuery selectors.
+		- Switch out sequencers within the canvas! ... Through it may be easier to CSS 'show' and 'hide'.
 
 	Server Code:
 		- Save and load sequencer JSON files on server on/off
+		- How to make them start at the same time!?
 		- Get the synth settings changes input and then broadcast!
 			(Number recieved will be the number to go to, client side then automates current number to move towards it at the rate of 1 bar.)
 		- Make the chat room.
@@ -166,11 +176,18 @@ document.forms[0].onsubmit = function () {
 	
 	Client audio plan:
 
-		FOUR SEQUENCERS:
-			- Percusson / Bass / Harmony / Melody
+		Sequencer design: ALLOW FOR DYNAMICS! :D 
+			- Four dynamic ranges (1,2,3,4), amount of presses on a sequencer button adds to velocity until it turns off. This also changes the colour of the button and makes it darker.
+
+		FOUR SEQUENCERS (with 4 phrase sequencers):
+			- Percusson / Bass / Samples / Synthesizer
 	
 		Percussion: sampled
+		Kicks / Snare / Hats / Other
 		Bass / Harmony / Melody: Synthesized.
+
+		Harmony: Sampled (w/ bank switching)
+		Piano / Violin (switch out note length, when at lowest become pizzicato) / Harp / E. Piano(?) / 
 
 	Effects for each: Distortion, Reverb, Delay, Bitcrush, Chorus, Tremolo.
 
@@ -185,9 +202,7 @@ document.forms[0].onsubmit = function () {
 		
 		
 
-	Things to decide on:
-		- What areas of synthesis/sampling the end user can interact with? Model these on DAW synthesisers.
-		- 
+
 	
 	
 	*/
@@ -247,11 +262,23 @@ document.forms[0].onsubmit = function () {
 		this.makeSequencerArray(); // ... and immediately call it!
 
 		
-		this.changeSequencer = function(x,y,phr){
-			if (this.sequencerArray[phr][x][y] == 1){
-				this.sequencerArray[phr][x][y] = 0;
+		this.changeSequencer = function(x,y,phr,mode){
+			if (mode == 'phrase'){
+				for (var f=0;f<this.buttonsY; f++){ 
+					
+					if (this.sequencerArray[phr][x][f] == 1){ // turn everything on the row to 0, then...
+						this.sequencerArray[phr][x][f] = 0;
+					} 
+					if (this.sequencerArray[phr][x][y] == 0){ // turn ON the selected one!
+						this.sequencerArray[phr][x][y] = 1;
+					} 
+				} // end of 'f' loop
 			} else {
-				this.sequencerArray[phr][x][y] = 1;
+				if (this.sequencerArray[phr][x][y] == 1){
+					this.sequencerArray[phr][x][y] = 0;
+				} else {
+					this.sequencerArray[phr][x][y] = 1;
+			}
 			}
 		} // LIKELY BUG! When the sequencer is in phrase mode and only has one on a colum at a time, this will fuck it up! Watch out!
 		
@@ -344,6 +371,7 @@ function drawGrid(canvas, sequencer, beat, phrase, colourOff, colourOn){ // Draw
 		var visualTempo = beat * ((sequencer.gapSize * 2) + sequencer.squareSize); // size of the playhead
 		canvas.fillStyle="rgba(102,255,51,0.5)";
 		canvas.fillRect(visualTempo, 0, (sequencer.gapSize + sequencer.squareSize),(sequencer.squareSize + (sequencer.gapSize * 2)) * sequencer.buttonsY);
+	
 	}
 }
 
@@ -362,26 +390,42 @@ drawGrid(ctxEight, sequencerFourPhrase, 0, 0);
 
 
 c.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
-	arrayEdit(e.layerX,e.layerY,ctx,sequencerOne,sequencerOne.currentView);
+	clickEdit(e.layerX,e.layerY,ctx,sequencerOne,sequencerOne.currentView);
 });
 
 cTwo.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
-	arrayEdit(e.layerX,e.layerY,ctxTwo,sequencerOnePhrase,0);
+	clickEdit(e.layerX,e.layerY,ctxTwo,sequencerOnePhrase,0);
 });
 
 
 cThree.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
-	arrayEdit(e.layerX,e.layerY,ctxThree,sequencerTwo,sequencerTwo.currentView);
+	clickEdit(e.layerX,e.layerY,ctxThree,sequencerTwo,sequencerTwo.currentView);
 });
 
 cFour.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
-	arrayEdit(e.layerX,e.layerY,ctxFour,sequencerTwoPhrase,0);
+	clickEdit(e.layerX,e.layerY,ctxFour,sequencerTwoPhrase,0);
+});
+
+cFive.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
+	clickEdit(e.layerX,e.layerY,ctxFive,sequencerThree,sequencerThree.currentView);
+});
+
+cSix.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
+	clickEdit(e.layerX,e.layerY,ctxSix,sequencerThreePhrase,0);
+});
+
+cSeven.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
+	clickEdit(e.layerX,e.layerY,ctxSeven,sequencerFour,sequencerFour.currentView);
+});
+
+cEight.addEventListener("click", function(e){ // when the canvas is clicked, call the draw function and give it the coordinates.
+	clickEdit(e.layerX,e.layerY,ctxEight,sequencerFourPhrase,0);
 });
 
 
 
-function arrayEdit(xClick,yClick, canvas, sequencer, phrase){ // Draws the grid and changes the colour of any buttons that are currently 'on'
-		// Change to clickInput()
+function clickEdit(xClick,yClick, canvas, sequencer, phrase){ // Draws the grid and changes the colour of any buttons that are currently 'on'
+		// Changed from arrayEdit() to clickInput() for modular-ity
 	for (var x=0; x<sequencer.buttonsX; x++){
 		for (var y=0; y<sequencer.buttonsY;y++){
 				var loopX = ((sequencer.gapSize * 2) + sequencer.squareSize) * x;
@@ -389,35 +433,39 @@ function arrayEdit(xClick,yClick, canvas, sequencer, phrase){ // Draws the grid 
 				// Yeah I'm pretty sure there's a better way of doing this bit above but oh well.
 				
 			if (xClick > loopX && xClick < (loopX + sequencer.squareSize) && yClick > loopY && yClick < (loopY + sequencer.squareSize)){
-				// arrayEdit(sequencer, x, y, phrase)
-				if (sequencer.mode == 'poly'){
-				sequencerChanges(x,y,phrase, sequencer.sequencerNumber); // sends changes direct to server to broadcast
-					if (sequencer.sequencerArray[phrase][x][y] == 0){
-						sequencer.sequencerArray[phrase][x][y] = 1;
-					} else {
-						sequencer.sequencerArray[phrase][x][y] = 0;
-					}		
-				} else if (sequencer.mode == 'phrase') {
-					sequencerChanges(x,y,phrase, sequencer.sequencerNumber); // sends changes direct to server to broadcast
-					
-					for (var f=0;f<sequencer.buttonsY; f++){ // loop through array to see what is on! Turn EVERYTHING (other than the clicked button) off.
-						
-						if (sequencer.sequencerArray[phrase][x][f] == 1){ // turn everything on the row to 0, then...
-							sequencer.sequencerArray[phrase][x][f] = 0;
-						} 
-					
-						if (sequencer.sequencerArray[phrase][x][y] == 0){ // turn ON the selected one!
-							sequencer.sequencerArray[phrase][x][y] = 1;
-						} 
-					} // end of 'f' loop
-				} // end of else if
-			} // end of click detector conditional
+				arrayEdit(canvas, sequencer,x,y,phrase)
+			}
 		} // end of y loop
 	} // end of x loop
+} // end of function
+	
 
+function arrayEdit(canvas, sequencer, x, y, phrase){
+
+	if (sequencer.mode == 'poly'){
+		sequencerChanges(x,y,phrase, sequencer.sequencerNumber); // sends changes direct to server to broadcast
+			if (sequencer.sequencerArray[phrase][x][y] == 0){
+			sequencer.sequencerArray[phrase][x][y] = 1;
+			} else {
+				sequencer.sequencerArray[phrase][x][y] = 0;
+			}		
+		} else if (sequencer.mode == 'phrase') {
+			sequencerChanges(x,y,phrase, sequencer.sequencerNumber); // sends changes direct to server to broadcast
+			
+			for (var f=0;f<sequencer.buttonsY; f++){ // loop through array to see what is on! Turn EVERYTHING (other than the clicked button) off.
+					
+				if (sequencer.sequencerArray[phrase][x][f] == 1){ // turn everything on the row to 0, then...
+					sequencer.sequencerArray[phrase][x][f] = 0;
+				} 
+				if (sequencer.sequencerArray[phrase][x][y] == 0){ // turn ON the selected one!
+					sequencer.sequencerArray[phrase][x][y] = 1;
+				} 
+			} // end of 'f' loop
+		} // end of else if
 	
 	drawGrid(canvas, sequencer, sequencer.currentBeat, phrase);
-}	
+	
+}	// end of function
 
 function viewChanger(sequencer,viewType,viewPhrase){ // used to change the current sequencer view.
 	sequencer.viewType = viewType;
@@ -434,21 +482,73 @@ function viewChanger(sequencer,viewType,viewPhrase){ // used to change the curre
 		return (max + min) - num;
 	}
 	
-	//setup effects
-	var reverb = new Tone.Freeverb();
-	var distortion = new Tone.Distortion();
-	var delay = new Tone.PingPongDelay();
-	// set effect values
-	delay.wet.value = 0.5;
-	distortion.wet.value = 0.5;
-	reverb.wet.value = 0.5;
 	
+	//setup effects
+	// Synth One Effects
+	var reverbOne = new Tone.Freeverb();
+	var distOne = new Tone.Distortion();
+	var delayOne = new Tone.PingPongDelay();
+	// Synth Two Effects
+	var reverbTwo = new Tone.Freeverb();
+	var distTwo = new Tone.Distortion();
+	var delayTwo = new Tone.PingPongDelay();
+	// Synth Three Effects
+	var reverbThree = new Tone.Freeverb();
+	var distThree = new Tone.Distortion();
+	var delayThree = new Tone.PingPongDelay();
+	// Percussion Effects
+		// Perc
+	var reverbPerc = new Tone.Freeverb();
+	var distPerc = new Tone.Distortion();
+	var delayPerc = new Tone.PingPongDelay();
+		// Hat
+	var reverbHat = new Tone.Freeverb();
+	var distHat = new Tone.Distortion();
+	var delayHat = new Tone.PingPongDelay();
+		// Snare
+	var reverbSnare = new Tone.Freeverb();
+	var distSnare = new Tone.Distortion();
+	var delaySnare = new Tone.PingPongDelay();
+		// Kick
+	var reverbKick = new Tone.Freeverb();
+	var distKick = new Tone.Distortion();
+	var delayKick = new Tone.PingPongDelay();
+	
+	
+	
+	// set effect values
+	delayOne.wet.value = 0.2;
+	distOne.wet.value = 0.4;
+	reverbOne.wet.value = 0.2;
+	
+	delayTwo.wet.value = 0.4;
+	distTwo.wet.value = 0.4;
+	reverbTwo.wet.value = 0.3;
+	
+	delayThree.wet.value = 0;
+	distThree.wet.value = 0;
+	reverbThree.wet.value = 0;
+	
+	delayPerc.wet.value = 0;
+	distPerc.wet.value = 0;
+	reverbPerc.wet.value = 0;
+	
+	delayHat.wet.value = 0;
+	distHat.wet.value = 0;
+	reverbHat.wet.value = 0;
+	
+	delaySnare.wet.value = 0;
+	distSnare.wet.value = 0;
+	reverbSnare.wet.value = 0;
+	
+	delayKick.wet.value = 0;
+	distKick.wet.value = 0;
+	reverbKick.wet.value = 0;
+
 	
 	//setup a synth
-	var reverb = new Tone.Freeverb();
-	var distortion = new Tone.Distortion();
-	var delay = new Tone.PingPongDelay()
-	var synth = new Tone.PolySynth(12, Tone.FMSynth).chain(distortion, reverb, delay, Tone.Master);
+	
+	var synth = new Tone.PolySynth(4, Tone.FMSynth).toMaster();
 	
 	synth.set({
 		"envelope" : {
@@ -463,7 +563,7 @@ function viewChanger(sequencer,viewType,viewPhrase){ // used to change the curre
 
 	
 	//synth two
-	var synthTwo = new Tone.PolySynth(4, Tone.DuoSynth).chain(distortion, reverb, delay, Tone.Master);
+	var synthTwo = new Tone.PolySynth(4, Tone.DuoSynth).toMaster();
 	
 	synthTwo.set({
 		"envelope" : {
@@ -474,36 +574,93 @@ function viewChanger(sequencer,viewType,viewPhrase){ // used to change the curre
 		}
 	});
 	
-	synthTwo.volume.value = -10;
+	synthTwo.volume.value = -1000;
+	
+	var synthThree = new Tone.PolySynth(4, Tone.FMSynth).toMaster();
+	
+	synthThree.set({
+		"envelope" : {
+			"attack" : 0.05,
+			"decay" : 0.3,
+			"sustain" : 10,
+			"release" : 0.5,
+		}
+	});
+	
+	synth.volume.value = -30;
+	
+	
 
-	// setup percussion
-	var kick = new Tone.MembraneSynth().toMaster(); //Kick Drum
-	var hat = new Tone.NoiseSynth().toMaster(); // Noise-r
-	var metal = new Tone.MetalSynth().toMaster(); // I have no idea
-	var snare = new Tone.NoiseSynth().chain(distortion,Tone.Master); // Noise-r
-	
-	snare.set({"envelope" : {
-			"attack" : 0.01,
-			"decay" : 0.1
-	}})
-	
-	hat.set({"envelope" : {
-			"decay" : 0.05
-	}})
-	
+		//setup perc (toms)
+	var perc = new Tone.MultiPlayer(
+		{
+				"percOne" : "audio/tomOne.wav",
+				"percTwo" : "audio/tomTwo.wav",
+				"percThree" : "audio/tomThree.wav",
+				"percFour" : "audio/tomFour.wav",
+			}, function(){
+	// call function when samples are loaded
+	}).toMaster();
+		// hats
+	var hat = new Tone.MultiPlayer(
+		{
+				"hatOne" : "audio/hatOne.wav",
+				"hatTwo" : "audio/hatTwo.wav",
+				"hatThree" : "audio/hatThree.wav",
+				"hatFour" : "audio/hatFour.wav",
+			}, function(){
+	// call function when samples are loaded
+	}).toMaster();
+		//snare
+	var snare = new Tone.MultiPlayer(
+		{
+				"snareOne" : "audio/snareOne.wav",
+				"snareTwo" : "audio/snareTwo.wav",
+				"snareThree" : "audio/snareThree.wav",
+				"snareFour" : "audio/snareFour.wav",
+			}, function(){
+	// call function when samples are loaded
+	}).toMaster();
+		//kick
+	var kick = new Tone.MultiPlayer(
+		{
+				"kickOne" : "audio/kickOne.wav",
+				"kickTwo" : "audio/kickTwo.wav",
+				"kickThree" : "audio/kickThree.wav",
+				"kickFour" : "audio/kickFour.wav",
+			}, function(){
+	// call function when samples are loaded
+	}).toMaster();
+		
+		
+		
+		
 	
 	// all interval ratios for notes. Maybe won't be used, but it's interesting and useful nonetheless!
 	var realRatios = [1, 1.059, 1.122, 1.189, 1.259, 1.334, 1.414, 1.498, 1.587, 1.681, 1.781, 1.888, 2]; 
 	
 // real handy function to turn note numbers into scales, give them names & octaves... it's really perfect and I love it.
-function notes (startNote,scale,offset){
+function notes (rootNote, scale, scaleNote, offset){
+	// rootNote is the MIDI root of the scale
+	// scale is the scale type
+	// scaleNote is the difference from the root note
+	// offset makes the scaleNote higher or lower.
+	
+	
+// the scales
 	var majorScale = [0,2,4,5,7,9,11];
 	var minPentScale = [0,3,5,7,10];
 	var majPentScale = [0,4,5,7,11];
 	var minorScale = [0,2,3,5,7,8,10];
 	var chromaticScale = [0,1,2,3,4,5,6,7,8,9,10,11];
-	var noteLetters = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B",];	
+// the note letters to make the scale 
+	var noteLetters = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B",];
+// empty array to build the current scale	
 	var currentScale = [];
+// current root note with modulo
+	var realRoot = rootNote % noteLetters.length;
+	
+	// this means that noteLetters[rootNote % noteLetters.length] gives us the correct starting note to build the scale.
 		
 	if (scale == 'major'){
 		var tempScale = majorScale;
@@ -516,19 +673,22 @@ function notes (startNote,scale,offset){
 	} else {
 		tempScale = chromaticScale;
 	}
+	// tempScale holds the correct values for the current scale
 		
-	for (var x=0;x<tempScale.length;x++){
-		currentScale[x] = noteLetters[tempScale[x]];
+	for (var x=0;x<tempScale.length;x++){// loop through the tempScale
+		currentScale[x] = noteLetters[(tempScale[x] + realRoot) % noteLetters.length];// puts the note letters in the currentScale array using the tempScale pattern.		
 	}
 		
-	var offsetNote = startNote + offset;
-	var noteNum = offsetNote % currentScale.length;
-	var octaveNum = Math.floor(offsetNote / currentScale.length);
-	var noteString = currentScale[noteNum] + octaveNum;
+// adds scale note to the offset given
+	var offsetNote = (scaleNote + offset) % currentScale.length; 
+	var octaveNum = Math.floor((scaleNote + offset - realRoot) / currentScale.length);
+	var noteString = currentScale[offsetNote] + octaveNum;
 	return noteString;
 }
-	
 
+
+	
+	// melody sequencer
 	var melodyLoop = new Tone.Sequence(function(time, col){
 		
 		var s = sequencerOne;
@@ -537,14 +697,14 @@ function notes (startNote,scale,offset){
 		var column = s.sequencerArray[sequencerOne.currentPhrase][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
-				console.log(notes(i,'major', 11))
-				synth.triggerAttackRelease(notes(i,'major',23), "4n");
+				console.log('Sequencer One: ',notes(9, 'minor',i,28));
+				synth.triggerAttackRelease(notes(9, 'minor',i,28), "4n");
 			}
 		}
 	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
 	
 	
-	
+	// melody phrase sequencer
 	var sequencerOnePhraseSequencer = new Tone.Sequence(function(time, col){ // Phrase sequencer (sequencerOne)
 		
 		var s = sequencerOnePhrase;
@@ -562,7 +722,7 @@ function notes (startNote,scale,offset){
 	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "1n");
 	
 	
-	
+	// harmony sequencer
 	var harmonyLoop = new Tone.Sequence(function(time, col){
 		
 		var s = sequencerTwo;
@@ -571,13 +731,15 @@ function notes (startNote,scale,offset){
 		var column = s.sequencerArray[s.currentPhrase][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
-				synthTwo.triggerAttackRelease(notes(i,'major',23), "4n");
+				console.log('Sequencer Two: ',notes(9, 'minor',i,28));
+				
+				synthTwo.triggerAttackRelease(notes(9, 'minor',i,28), "4n", '+0.05');
 			}
 		}
 	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
 	
 	
-	
+		// harmony phrase sequencer
 	var sequencerTwoPhraseSequencer = new Tone.Sequence(function(time, col){ // Phrase sequencer (sequencerOne)
 		
 		var s = sequencerTwoPhrase;
@@ -594,56 +756,129 @@ function notes (startNote,scale,offset){
 		}
 	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "1n");
 	
-	Tone.Transport.bpm.value = 120;
-	Tone.Transport.start();
-	
-	var harmonyLoop = new Tone.Sequence(function(time, col){
+	// bass sequencer
+	var bassLoop = new Tone.Sequence(function(time, col){
 		
-		var s = sequencerTwo;
+		var s = sequencerThree;
 		s.currentBeat = col;
-		drawGrid(ctxThree, s, col, s.currentPhrase);
+		drawGrid(ctxFive, s, col, s.currentPhrase);
 		var column = s.sequencerArray[s.currentPhrase][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
-				synthTwo.triggerAttackRelease(notes(i,'major',23), "4n");
+				synthThree.triggerAttackRelease(notes(9, 'minor',i,28), "4n");
 			}
 		}
 	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
 	
 	
-	
-	var sequencerTwoPhraseSequencer = new Tone.Sequence(function(time, col){ // Phrase sequencer (sequencerOne)
+	// bass phrase sequencer
+	var sequencerThreePhraseSequencer = new Tone.Sequence(function(time, col){ // Phrase sequencer (sequencerOne)
 		
-		var s = sequencerTwoPhrase;
+		var s = sequencerThreePhrase;
 		s.currentBeat = col;
-		drawGrid(ctxFour, s, col, 0);
+		drawGrid(ctxSix, s, col, 0);
 		var column = s.sequencerArray[0][col];
 		for (var i = 0; i < s.buttonsX; i++){
 			if (column[i] == 1){
-				sequencerTwo.currentPhrase = i;
-				if (sequencerTwo.viewType == 'live'){
-					sequencerTwo.currentView = i;
+				sequencerThree.currentPhrase = i;
+				if (sequencerThree.viewType == 'live'){
+					sequencerThree.currentView = i;
 				}
 			}
 		}
 	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "1n");
 	
 	
-	function startLoop(){ // starts the loop only on the first go round.
 	
-		if (firstPlay == 0){
-			firstPlay = 1;
-			melodyLoop.start(); 
-			harmonyLoop.start();
-			sequencerOnePhraseSequencer.start();
-			sequencerTwoPhraseSequencer.start();
-			
+	// percussion sequencer
+	var percLoop = new Tone.Sequence(function(time, col){
+		
+		var s = sequencerFour;
+		s.currentBeat = col;
+		drawGrid(ctxSeven, s, col, s.currentPhrase);
+		var column = s.sequencerArray[s.currentPhrase][col];
+		for (var i = 0; i < s.buttonsX; i++){
+			if (column[reverseRange(i, -1, s.buttonsX)] == 1){
+				// trigger note - select note is 'i'
+				
+				switch(i){
+				case 0:
+					kick.start("kickOne");
+					break;
+				case 1:
+					kick.start("kickTwo");
+					break;
+				case 2:
+					kick.start("kickThree");
+					break;
+				case 3:
+					kick.start("kickFour");
+					break;
+				case 4:
+					snare.start("snareOne");
+					break;
+				case 5:
+					snare.start("snareTwo");
+					break;
+				case 6:
+					snare.start("snareThree");
+					break;
+				case 7:
+					snare.start("snareFour");
+					break;
+				case 8:
+					hat.start("hatOne");
+					break;
+				case 9:
+					hat.start("hatTwo");
+					break;
+				case 10:
+					hat.start("hatThree");
+					break;
+				case 11:
+					hat.start("hatFour");
+					break;
+				case 12:
+					perc.start("percOne");
+					break;
+				case 13:
+					perc.start("percOne");
+					break;
+				case 14:
+					perc.start("percOne");
+					break;
+				case 15:
+					perc.start("percOne");
+					break;
+				}
+			}
 		}
-	}
+	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
+	
+	
+	// percussion phrase sequencer
+	var sequencerFourPhraseSequencer = new Tone.Sequence(function(time, col){ // Phrase sequencer (sequencerOne)
+		
+		var s = sequencerFourPhrase;
+		s.currentBeat = col;
+		drawGrid(ctxEight, s, col, 0);
+		var column = s.sequencerArray[0][col];
+		for (var i = 0; i < s.buttonsX; i++){
+			if (column[i] == 1){
+				sequencerFour.currentPhrase = i;
+				if (sequencerFour.viewType == 'live'){
+					sequencerFour.currentView = i;
+				}
+			}
+		}
+	}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "1n");
+
 	
 	
 	Tone.Transport.bpm.value = 120;
 	Tone.Transport.start();
+	Tone.context.latencyHint = 'interactive';
+	
 	
 	
 	
@@ -731,21 +966,35 @@ function notes (startNote,scale,offset){
 			sequencer.sequencerArray[phrase][x][y] = 0;
 		}		
 	}
-
+	
 	function start(){
-		firstPlay = 0;
-		socket.on("loopStart", function() {
-		// start loop playing! ... hopefully at the correct time!
-		startLoop();
-	});
+			
+		
+	if (firstPlay == 0){
+		melodyLoop.start(); 
+		harmonyLoop.start();
+		bassLoop.start();
+		percLoop.start();
+		sequencerOnePhraseSequencer.start();
+		sequencerTwoPhraseSequencer.start();
+		sequencerThreePhraseSequencer.start();
+		sequencerFourPhraseSequencer.start();
+		
+		firstPlay = 1;
+	}	
 }
 	
-	
 	function stop(){
+		
 		harmonyLoop.stop();
 		melodyLoop.stop();
-		sequencerTwoPhraseSequencer.stop();
+		bassLoop.stop();
+		percLoop.stop();
 		sequencerOnePhraseSequencer.stop();
+		sequencerTwoPhraseSequencer.stop();
+		sequencerThreePhraseSequencer.stop();
+		sequencerFourPhraseSequencer.stop();
+		firstPlay = 2;
 	}
 	
 	// End of audio stuff
