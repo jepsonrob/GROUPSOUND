@@ -23,6 +23,20 @@
 		  
 		  <style>
 			  
+		  	body, html { 
+		  		overflow-x:hidden; 
+		  	}
+
+		      canvas{
+		         -webkit-touch-callout: none;
+		         -webkit-user-select: none;
+		         -khtml-user-select: none;
+		         -moz-user-select: none;
+		         -ms-user-select: none;
+		         -o-user-select: none;
+		         user-select: none;
+		      }
+			  
 			  body {
 				  margin:5%;
 				  text-align:center;
@@ -45,6 +59,7 @@
 				  font-decoration: bold;
 			  }
 			  </style>
+			 
 		
 
 </head>
@@ -54,7 +69,7 @@
 <h1> Let's Sequencer Together! </h1>
 <h4> <i>"Build: I'm so very unstable!" </i> </h4>
 
-<button onclick='start();' id='playButton'>start</button>
+<button id='playButton'>start</button>
 <button onclick='stop();'>stop</button>
 
 <hr>
@@ -79,10 +94,15 @@
 	Canvas isn't supported in your browser!
 </canvas>
 <hr>
+
+
+<div class='slider'>
 <p> Volume </p>
-<input type="range" min="-60" max="0" value="-6" id="fader" 
-	step="1" oninput="volumeChanger(0, value)">
-<output for="fader" id="sequencerOne">-6</output>
+<canvas id='volumeOne' width='200' height='30'></canvas>
+<input type='number'></input>
+<button id='volumeChangerPlz'> Go! </button>
+</div>
+
 
 <hr>
 
@@ -137,9 +157,11 @@
 <p> Delay <p>
 
 <label for="fader">Dry/Wet</label>
-<input type="range" min="0" max="100" value="50" id="fader" 
-	step="1" oninput="effectChanger('delay', value)">
-<output for="fader" id="delay">100</output>	
+<input type="range" min="0" max="100" value="50" id="delaySlider" 
+	step="1">
+<output for="fader">100</output>	
+<button id='delayOneGo'>Go!</button>
+
 
 <label for="fader">Feedback</label>
 <input type="range" min="0" max="100" value="100" id="fader" 

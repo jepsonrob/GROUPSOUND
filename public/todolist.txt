@@ -1,0 +1,85 @@
+TO DO
+
+	
+	The larger plan:
+	End goal - a multi-sequencer workstation utilising websockets (and node.js) for many connections to the same workspace.
+
+
+	Front end:
+		- make it look good!
+		- make it responsive & working on mobile!
+		- Make the sequencers change through the css display:hide element and buttons. 
+		- Make the sequencers look nice and stuff with colours.
+		- Title, footer, links... all the standard making a website bullshit.
+		- Make the sliders look nicer and open when you press an 'advanced' button
+
+	Client Code:
+		
+		- Encapsulate this script so there are no global variables, and make sure all buttons are pressed with event listeners/jQuery selectors.
+		
+
+	Server Code:
+		- Save and load sequencer JSON files on server on/off
+		- How to make them start at the same time!? (should be - needs testing!)
+		- Get the synth settings changes input and then broadcast!
+			(Number recieved will be the number to go to, client side then automates current number to move towards it at the rate of 1 bar.)
+		- Make the chat room.
+
+	
+	Client audio plan:
+
+		FOUR SEQUENCERS (with 4 phrase sequencers):
+			- Percusson / Bass / Samples / Synthesizer
+	
+		Percussion: sampled
+		Kicks / Snare / Hats / Other
+		Bass / Harmony / Melody: Synthesized.
+
+		Harmony: Sampled (w/ bank switching)
+		Piano / Violin (switch out note length, when at lowest become pizzicato) / Harp / E. Piano(?) / 
+
+	Effects for each: Distortion, Reverb, Delay, Bitcrush, Chorus, Tremolo.
+
+	Synthesizers:
+		2 Oscillators	[Sine/Square/Sawtooth/Noise]
+		1 FM Oscillator [Sine/Square/Sawtooth/Noise]
+		Oscillator level/gain
+		Pitch change - Octave, Semitone, Detune
+		Pitch Envelope
+
+		2 Filters [ "lowpass", "highpass", "bandpass", "notch"]
+		
+		
+	// NOTE! PHRASE SEQUENCERS ARE FUCKED WITH COLOUR
+
+
+Random little things to-do list:
+
+	- make sure the sequencer gets re-drawn even when stopped! (try changing phrase whilst sequencer is stopped. See?!)
+	- Continue testing other devices and crying at how bad it runs
+	- need to test and make sure the clients are properly syncronized!
+	
+	DONE TODAY:
+		- fixed notes function
+		- sync the server's phrase
+		(- server needs to send the current phraseBeat, so it can syncronize clients)
+		- Sort Out play button & sync it!
+		- created canvas element with evenet listeners for sliders.
+		- Did some testing on iOS and SHIT IS BAAAD!
+		
+	Done Day after!
+		- effect automation sorted with canvas! Seems like a small thing but really it's quite big and great and I'm happy!
+
+	
+
+CURRENTLY WORKING ON:
+	
+	
+NEXT TO DO:
+	- server send/recieve effect changes
+	- Final sequencer plan - Figure out exactly what sliders and buttons are needed! How to make it work on shitty devices? etc.
+	- fully implement final design
+	- Work on the front end and make it all look good & shit
+	- Figure out audio system for extra 2(?) samplers!
+	
+	

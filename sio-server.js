@@ -28,6 +28,7 @@ function sequencerObject(sequencerNumber, buttonsX, buttonsY){ // Constructor fo
 	this.totalPatterns = 10;
 	this.sequencerArray = [];
 	this.currentPhrase = 0; // current phrase of the sequencer.
+	this.currentBeat = 0 // current beat (only used with phrase sequencer)
 	this.mode = 'poly'
 	
 	this.makeSequencerArray = function(){ // Makes the 2d array of 0's to represent the sequencer
@@ -72,32 +73,13 @@ var sequencerThreePhrase = new sequencerObject(6,16,10);
 var sequencerFour = new sequencerObject(7,16,16);
 var sequencerFourPhrase = new sequencerObject(8,16,10);
 
-/*
-// Working version of the sequencer array builder... but only works for the global variable seqArray!
-randomizeSequencerArray = function(){ // randomizes Sequencer on/offs when called
-	seqArray = [];
-	for (var p=0;p<10;p++){ // 10 phrases
-		seqArray.push([]);
-	for (var x=0;x< 16;x++){ // 16 columns
-		seqArray[p].push([]);
-			for (var y=0;y<16;y++){ // 16 rows
-				var randomizer = Math.floor(Math.random() * 10);
-					if (randomizer == 1){
-						seqArray[p][x].push(0); // change this 1 to 0 to make it generate blank sequences!
-					} else {
-						seqArray[p][x].push(0);
-					}	
-				}
-			}
-		}
-	}
 
-randomizeSequencerArray();
-*/
 
 
 
 app.use(express.static("./public"));
+
+
 
 
 
@@ -115,6 +97,8 @@ io.on("connection", function(socket) {
 	socket.emit("sequencerFour", sequencerFour.sequencerArray);
 	socket.emit("sequencerFourPhrase", sequencerFourPhrase.sequencerArray);
 	
+	socket.emit("phraseStarter", currentPhraseTime);
+	
 	console.log('Socket Connected!');
 
     socket.on("seqChangeToServer", function(array) { //when recieving the seqChangeToServer, broadcast the message to everyone!
@@ -124,7 +108,7 @@ io.on("connection", function(socket) {
 		var y = array[1];
 		var phrase = array[2];
 		var sequencer = array[3];
-		console.log(sequencer);
+		
 		
 		switch(sequencer){
 		case 1:
@@ -154,14 +138,14 @@ io.on("connection", function(socket) {
 		}
 		
 		if (sequencer==1 || sequencer==3 || sequencer==5 || sequencer==7){ // select note sequencers
-		if (workingSequencer.sequencerArray[phrase][x][y] == 1){
-			workingSequencer.sequencerArray[phrase][x][y] = 0;
-			console.log("Sequencer ", sequencer, " Change:",x,y,"= 0");
-		} else {
-			workingSequencer.sequencerArray[phrase][x][y] = 1;
-			console.log("Sequencer ", sequencer, " Change:",x,y,"= 1");
 			
-		}
+			if (workingSequencer.sequencerArray[phrase][x][y] == 0 || workingSequencer.sequencerArray[phrase][x][y] < 4){
+		workingSequencer.sequencerArray[phrase][x][y] = workingSequencer.sequencerArray[phrase][x][y] + 1;
+				} else {
+		workingSequencer.sequencerArray[phrase][x][y] = 0;
+			}		
+			console.log("Sequencer ", sequencer, " Change:",x,y,"= ", workingSequencer.sequencerArray[phrase][x][y]);
+					
 		} else if (sequencer==2 || sequencer==4 || sequencer==6 || sequencer==8){// select phrase sequencers
 			console.log(sequencer, " Phrase Change:" , x, y);
 					for (var f=0;f<workingSequencer.buttonsY; f++){ // loop through array to see what is on! Turn EVERYTHING (other than the clicked button) off.
@@ -189,13 +173,12 @@ io.on("connection", function(socket) {
 	console.log('timer')
 	
 }, 2000); */
-var currentTimer = 0;
+var currentPhraseTime = 0;
 
 setInterval(() => { // Woo! I'm using arrow functions!
     io.emit('loopStart', 1);
-	
-	currentTimer++;
-	console.log(currentTimer);
+	currentPhraseTime = (currentPhraseTime + 1) % 16;
+	console.log(currentPhraseTime);
 }, 2000);
 
 console.log("Starting Socket App - http://localhost:8080");
