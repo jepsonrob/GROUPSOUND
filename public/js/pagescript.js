@@ -3,6 +3,8 @@ StartAudioContext(Tone.context, "#playButton", function() {
     console.log('context online!');
 })
 
+
+
 						// Socket.io stuff
 
 
@@ -91,6 +93,7 @@ socket.on("sequencerFourPhrase", function(message) {
     sequencerFourPhrase.sequencerArray = message;
     drawGrid(ctxEight, sequencerFourPhrase, 0, 0);
 });
+
 
 socket.on("phraseStarter", function(message) { // gives the current phrase!
     phraseOffset = message;
@@ -255,8 +258,8 @@ sequencerTwoPhrase.mode = 'phrase';
 sequencerThreePhrase.mode = 'phrase';
 sequencerFourPhrase.mode = 'phrase';
 
-
-
+// the sequencer in view at the moment. Quite an important value that'll likely come up a fair bit.
+var currentSequencer = 0; 
 
 
 
@@ -437,10 +440,17 @@ cSeven.addEventListener("click", function(e) { // when the canvas is clicked, ca
 });
 
 cEight.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctxEight, sequencerFourPhrase, 0);
+	clickPosition = getMousePos(cEight, e);
+    clickEdit(clickPosition.x, clickPosition, ctxEight, sequencerFourPhrase, 0); 
 });
 
-
+function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
 
 function clickEdit(xClick, yClick, canvas, sequencer, phrase) { // Draws the grid and changes the colour of any buttons that are currently 'on'
     // Changed from arrayEdit() to clickInput() for modular-ity
@@ -492,6 +502,10 @@ function viewChanger(sequencer, viewType, viewPhrase) { // used to change the cu
     console.log(sequencer.currentView);
 }
 
+function changeSequencer(num){ // get rid of this later, but for now it's to test switching out sequencers etc.
+	currentSequencer = num;
+	document.getElementById('currentSeq').innerHTML = "Current Sequencer: " + num;
+}
 
 
 
@@ -503,7 +517,7 @@ function viewChanger(sequencer, viewType, viewPhrase) { // used to change the cu
 
 
 Tone.Transport.bpm.value = 120;
-Tone.context.latencyHint = 'interactive';
+Tone.context.latencyHint = 'fastest';
 
 
 function reverseRange(num, min, max) { // Useful little reverse range function.
@@ -574,57 +588,17 @@ var distThree = new Tone.Distortion();
 var delayThree = new Tone.PingPongDelay();
 // Percussion Effects
 // Perc
-var reverbPerc = new Tone.Freeverb();
-var distPerc = new Tone.Distortion();
-var delayPerc = new Tone.PingPongDelay();
-// Hat
-var reverbHat = new Tone.Freeverb();
-var distHat = new Tone.Distortion();
-var delayHat = new Tone.PingPongDelay();
-// Snare
-var reverbSnare = new Tone.Freeverb();
-var distSnare = new Tone.Distortion();
-var delaySnare = new Tone.PingPongDelay();
-// Kick
-var reverbKick = new Tone.Freeverb();
-var distKick = new Tone.Distortion();
-var delayKick = new Tone.PingPongDelay();
+var reverbFour = new Tone.Freeverb();
+var distFour = new Tone.Distortion();
+var delayFour = new Tone.PingPongDelay();
 
 
 
-// set effect values
-delayOne.wet.value = 0.5;
-distOne.wet.value = 0;
-reverbOne.wet.value = 0;
-
-delayTwo.wet.value = 0.4;
-distTwo.wet.value = 0.4;
-reverbTwo.wet.value = 0.3;
-
-delayThree.wet.value = 0;
-distThree.wet.value = 0;
-reverbThree.wet.value = 0;
-
-delayPerc.wet.value = 0;
-distPerc.wet.value = 0;
-reverbPerc.wet.value = 0;
-
-delayHat.wet.value = 0;
-distHat.wet.value = 0;
-reverbHat.wet.value = 0;
-
-delaySnare.wet.value = 0;
-distSnare.wet.value = 0;
-reverbSnare.wet.value = 0;
-
-delayKick.wet.value = 0;
-distKick.wet.value = 0;
-reverbKick.wet.value = 0;
 
 
 //setup a synth
 
-var synth = new Tone.PolySynth(8, Tone.FMSynth).chain(reverbOne, Tone.Master);
+var synth = new Tone.PolySynth(8, Tone.FMSynth).chain(delayOne, Tone.Master);
 
 synth.set({
     "envelope": {
@@ -635,11 +609,10 @@ synth.set({
     }
 });
 
-synth.volume.value = -30;
 
 
 //synth two
-var synthTwo = new Tone.PolySynth(2, Tone.DuoSynth).toMaster();
+var synthTwo = new Tone.PolySynth(2, Tone.DuoSynth).chain(delayTwo, Tone.Master);
 
 synthTwo.set({
     "envelope": {
@@ -650,22 +623,35 @@ synthTwo.set({
     }
 });
 
-synthTwo.volume.value = -10;
 
-var synthThree = new Tone.MultiPlayer({
+var synthThree = new Tone.PolySynth(4, Tone.MonoSynth).chain(delayTwo, Tone.Master);
+
+
+
+//setup perc (toms)
+var synthFour = new Tone.MultiPlayer({
     "percOne": "audio/tomOne.wav",
     "percTwo": "audio/tomTwo.wav",
     "percThree": "audio/tomThree.wav",
     "percFour": "audio/tomFour.wav",
+    "hatOne": "audio/hatOne.wav",
+    "hatTwo": "audio/hatTwo.wav",
+    "hatThree": "audio/hatThree.wav",
+    "hatFour": "audio/hatFour.wav",
+    "snareOne": "audio/snareOne.wav",
+    "snareTwo": "audio/snareTwo.wav",
+    "snareThree": "audio/snareThree.wav",
+    "snareFour": "audio/snareFour.wav",
+    "kickOne": "audio/kickOne.wav",
+    "kickTwo": "audio/kickTwo.wav",
+    "kickThree": "audio/kickThree.wav",
+    "kickFour": "audio/kickFour.wav",
 }, function() {
     // call function when samples are loaded
-}).toMaster();
+}).chain(delayTwo, Tone.Master);
 
 
-synthThree.volume.value = -30;
-
-
-
+/*
 //setup perc (toms)
 var perc = new Tone.MultiPlayer({
     "percOne": "audio/tomOne.wav",
@@ -702,7 +688,7 @@ var kick = new Tone.MultiPlayer({
 }, function() {
     // call function when samples are loaded
 }).toMaster();
-
+*/
 
 
 
@@ -836,52 +822,52 @@ var percLoop = new Tone.Sequence(function(time, col) {
 
             switch (i) {
                 case 0:
-                    kick.start("kickOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickOne", 0, 0, 1000, 0, vel);
                     break;
                 case 1:
-                    kick.start("kickTwo", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickTwo", 0, 0, 1000, 0, vel);
                     break;
                 case 2:
-                    kick.start("kickThree", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickThree", 0, 0, 1000, 0, vel);
                     break;
                 case 3:
-                    kick.start("kickFour", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickFour", 0, 0, 1000, 0, vel);
                     break;
                 case 4:
-                    snare.start("snareOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareOne", 0, 0, 1000, 0, vel);
                     break;
                 case 5:
-                    snare.start("snareTwo", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareTwo", 0, 0, 1000, 0, vel);
                     break;
                 case 6:
-                    snare.start("snareThree", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareThree", 0, 0, 1000, 0, vel);
                     break;
                 case 7:
-                    snare.start("snareFour", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareFour", 0, 0, 1000, 0, vel);
                     break;
                 case 8:
-                    hat.start("hatOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatOne", 0, 0, 1000, 0, vel);
                     break;
                 case 9:
-                    hat.start("hatTwo", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatTwo", 0, 0, 1000, 0, vel);
                     break;
                 case 10:
-                    hat.start("hatThree", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatThree", 0, 0, 1000, 0, vel);
                     break;
                 case 11:
-                    hat.start("hatFour", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatFour", 0, 0, 1000, 0, vel);
                     break;
                 case 12:
-                    perc.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
                     break;
                 case 13:
-                    perc.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
                     break;
                 case 14:
-                    perc.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
                     break;
                 case 15:
-                    perc.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
                     break;
             }
         }
@@ -914,9 +900,34 @@ var sequencerFourPhraseSequencer = new Tone.Sequence(function(time, col) { // Ph
 
 // Slider Stuff!
 
+// setting up a slider: a messy spaghetti piece of shit.
+
+// .... now this has changed. So ignore instructions below and when change is stable it needs to be deleted / edited.
+
+// ZERO: (yes I'm starting from zero because I forgot this rule, fuck you.) Create canvas in HTML for slider, set up the contexts here (just below!)
+// ZERO POINT FIVE: (shut up) add a button to the HTML and label it effectName + 'Button'.
+// ONE: Set up it's slider object as: sliderObject(effect to change, canvas, canvas element, first value(defunct due to server), minimum, maximum, effect name)
+// TWO: Put the object into effectArray to make my life a fair bit easier.
+// THREE: Go into sio-server.js and follow those instructions!
+
 // slider canvases
+/*
 var volOneElement = document.getElementById("volumeOne");
 var volOne = volOneElement.getContext("2d");
+
+var volTwoElement = document.getElementById("volumeTwo");
+var volTwo = volTwoElement.getContext("2d");
+*/
+
+var volElement = document.getElementById("volumeAll");
+var volCanvas = volElement.getContext("2d");
+
+var delayElement = document.getElementById("delay");
+var delayCanvas = delayElement.getContext("2d");
+
+
+//var volAllElement = document.getElementById("volumeAll");
+//var volAll = volAllElement.getContext("2d");
 
 
 // making a UI slider in Canvas.
@@ -944,9 +955,23 @@ function drawSlider(slider){
 	drawHead(slider.canvas,slider.floatingHeadPosition);
 }
 
-function sliderObject (effect, canvas, canvasElement, value, min, max){
-	
-	this.effect = effect
+function logSlider(position, minp, maxp, minv, maxv) { // this is not my function, because I cannot maths this well
+
+  // The result should be between 100 an 10000000
+  var minz = Math.log(minv);
+  var maxz = Math.log(maxv);
+
+  // calculate adjustment factor
+  var scale = (maxz-minz) / (maxp-minp);
+
+  return Math.exp(minz + scale*(position-minp));
+}
+
+function sliderObject (effect, canvas, canvasElement, value, min, max, effectName, seq){
+	this.sequencerNumber = seq;
+	this.effectName = effectName;
+	this.buttonName = this.effectName + "Button";
+	this.effect = effect;
 	// automation stuffs
 	this.goTriggered = 0;
 	this.goTrigger = function(){
@@ -955,108 +980,191 @@ function sliderObject (effect, canvas, canvasElement, value, min, max){
 		}
 	}
 	this.valueAtTrigger = 0;
+	this.positionAtTrigger = 0;
 	this.ghostValue = value;
 	this.floatingHeadValue = value; // server sends initial value 
 	
-	this.maxValue = max || 100;
-	this.minValue = min || 0;
-	this.floatingHeadPosition = (194 / Math.floor(this.maxValue - this.minValue) * value) || 194; // set positions up according to value given
-	this.ghostPosition = (194 / Math.floor(this.maxValue - this.minValue) * value) || 194;
+	this.maxValue = max;
+	this.minValue = min;
+	this.valueRange = this.maxValue - this.minValue
 	
-	this.floatHeadPixelToValue = function(pixel){
+	this.floatingHeadPixelToValue = function(pixel){
 		this.floatingHeadPosition = pixel;
-		var value = Math.floor(((this.maxValue - this.minValue) / 194) * pixel);
+		var value = ((this.valueRange / 194) * pixel) + this.minValue;
+		// var value = logSlider()
 		this.floatingHeadValue = value;
 		return value;
 	}
+	
 	
 	this.ghostPixelToValue = function(pixel){ // FIX ME! I'M BREAKING STUFF!
-		this.ghostPosition = pixel;
-		var value = Math.floor(((this.maxValue - this.minValue) / 194) * pixel);
+		this.ghostPosition = pixel;		
+		var value = ((this.valueRange / 194) * pixel) + this.minValue;
 		this.ghostValue = value;
-		console.log('ghostValue is ', value)
 		return value;
 	}
 	
-	this.floatHeadValueToPixel = function(value){
-		this.floatingHeadValue = value;
-		var pixel =  (194 / (this.maxValue - this.minValue)) * value;
+	
+	this.floatingHeadValueToPixel = function(values){
+		this.floatingHeadValue = values;
+		var pixel =  ((194 / this.valueRange) * values) - ((194 / this.valueRange) * this.minValue);
 		this.floatingHeadPosition = pixel;	
 		return pixel;
 	}
 	
-	this.ghostValueToPixel = function(value){
-		this.ghostValue = value;
-		var pixel =  (194 / (this.maxValue - this.minValue)) * value;
+	this.floatingHeadValueToPixel(value);
+	
+	this.ghostValueToPixel = function(values){
+		this.ghostValue = values;
+		var pixel =  ((194 / this.valueRange) * values) - ((194 / this.valueRange) * this.minValue);
 		this.ghostPosition = pixel;	
-		console.log('ghostPixel is ', pixel)
+//		console.log(this.ghostValue, ': ghostValue in valuetopixel function')
 		return pixel;
 	}
+	
+	this.ghostValueToPixel(value);
+	
 	
 	this.canvas = canvas;
 	this.canvasElement = canvasElement;
 	this.isClicked = 0;
+	
+	this.buttonName;
 }
 
+// volume sliders
+var volSliderOne = new sliderObject(synth.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 0);
+var volSliderTwo = new sliderObject(synthTwo.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 1);
+var volSliderThree = new sliderObject(synthThree.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 2);
+var volSliderFour = new sliderObject(synthFour.volume, volCanvas,volElement,-80,-70,10, 'volumeAll', 3);
 
-var volSliderOne = new sliderObject(synth.volume, volOne,volOneElement,50,0,100);
+var delaySliderOne = new sliderObject(delayOne.wet, delayCanvas,delayElement,0,0,1,'delay',0);
+var delaySliderTwo = new sliderObject(delayTwo.wet, delayCanvas,delayElement,0,0,1,'delay',1)
+var delaySliderThree = new sliderObject(delayThree.wet, delayCanvas,delayElement,0,0,1,'delay',2)
+var delaySliderFour = new sliderObject(delayFour.wet, delayCanvas,delayElement,0,0,1,'delay',3)
 
-var effectArray = [volSliderOne];
 
+
+var effectArray = [volSliderOne, volSliderTwo, volSliderThree, volSliderFour, delaySliderOne, delaySliderTwo, delaySliderThree, delaySliderFour]; // an array of all the slider objects (makes for easy looping, though may be a massive issues in the future!)
+
+function addNumbersToSliderObjects(){ // does what it says on the tin! Adds a number value to each slider.
+	for(var x = 0; x<effectArray.length; x++){
+		effectArray[x].number = x;
+	}
+}
+addNumbersToSliderObjects(); // this is a really hacky way of doing things, I think. 
+
+socket.on("effectStatus", function(serverArray) {
+	// here we set all the values for the effects and stuff... Yeah, this is not pretty. Seems I like arrays.
+	for (var x = 0; x<effectArray.length; x++){
+		effectArray[x].effect.value = serverArray[x];
+		effectArray[x].ghostValueToPixel(serverArray[x]);
+		effectArray[x].floatingHeadValueToPixel(serverArray[x]);
+		
+	}
+});
 
 var sliderLoop = setInterval(function(){ // draws the sliders every 100ms
-	for (var x = 0;x<effectArray.length;x++){ // loops through all effect sliders
+
+	for (var x = currentSequencer;x<effectArray.length;x=x+4){ // loops through all effect sliders
 		drawSlider(effectArray[x]); // draws all effect sliders
 	}
-}, 100);
+}, 100); 
+
+// currentSeq = 0 ; x < 8 ; x + 4
+// 1 - x = 0
+// 2 - x = 4
+// 3 - x = 8
+
 
 
 function sliderClicks(slider){ // sorts out all the event listeners for the canvases
 	
 	slider.canvasElement.addEventListener("click", function(e) {
-		if (e.layerX<195){
-			slider.floatHeadPixelToValue(e.layerX);
-		} if (e.layerX>195){
-			slider.floatHeadPixelToValue(194);
+		if(slider.sequencerNumber == currentSequencer){
+			var clickPosition = getMousePos(slider.canvasElement, e);
+			if (clickPosition.x<195){
+				slider.floatingHeadPixelToValue(clickPosition.x);
+			} if (clickPosition.x>195){
+				slider.floatingHeadPixelToValue(194);
+			}
 		}
 	});
 	
 	slider.canvasElement.addEventListener("mousedown", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
+		if(slider.sequencerNumber == currentSequencer){
+		
     		slider.isClicked = 1;
-	
 			slider.canvasElement.addEventListener("mousemove", function(move) {
-				if (slider.isClicked == 1 && move.layerX<194){
-					slider.floatHeadPixelToValue(move.layerX);
+				var clickPosition = getMousePos(slider.canvasElement, move);
+				
+				
+				if (slider.isClicked == 1 && clickPosition.x<194){
+					slider.floatingHeadPixelToValue(clickPosition.x);
 				}
-				if (slider.isClicked == 1 && move.layerX>195){
-							slider.floatHeadPixelToValue(194);
+				if (slider.isClicked == 1 && clickPosition.x>195){
+							slider.floatingHeadPixelToValue(194);
 						}
 			})
+		}
 		});
 	slider.canvasElement.addEventListener("touchstart", function(e) {
+		if(slider.sequencerNumber == currentSequencer){
 		slider.isClicked = 1;
+	}
 	});
 	
 	slider.canvasElement.addEventListener("touchmove", function(e) {
-		if (isClicked == 1 && e.layerX<194){
-			slider.floatHeadPixelToValue(move.layerX);
+		if(slider.sequencerNumber == currentSequencer){
+		
+		var clickPosition = getMousePos(slider.canvasElement, move);
+		
+		
+		if (isClicked == 1 && clickPosition.x<194){
+			slider.floatingHeadPixelToValue(clickPosition.x);
 		}
+	}
 	});
 	slider.canvasElement.addEventListener("mouseup", function(e) {
+		if(slider.sequencerNumber == currentSequencer){
 		slider.isClicked = 0;
+	}
 	});
 	slider.canvasElement.addEventListener("mouseleave", function(e){
+		if(slider.sequencerNumber == currentSequencer){
 		slider.isClicked = 0;
+	}
+	});
+
+	// var serverEffectSendArray = [effectNumber, effectValue]
+
+	document.getElementById(slider.buttonName).addEventListener("click", function(e) { // when the button is clicked, change the bool to 'on'
+	  if(slider.sequencerNumber == currentSequencer){
+		if (slider.goTriggered != 1 && slider.goTriggered != 2 && slider.goTriggered != 3){
+	   	 	slider.goTriggered = 1;
+			slider.valueAtTrigger = slider.floatingHeadValue;
+			var arrayToServer = [slider.number,	slider.floatingHeadValue]
+			socket.emit("effectChangeToServer", arrayToServer);
+		}
+	}
 	});
 
 }
 
+socket.on("effectServerEdit", function(arrayFromServer){
+		
+	effectArray[arrayFromServer[0]].goTriggered = 2; // the correct slider object selected! Changes the state of the Go! button to server input.
+	effectArray[arrayFromServer[0]].valueAtTrigger = arrayFromServer[1]; // change selected slider's value at trigger to server-recieved number.
+	console.log(arrayFromServer[1]);
+});
 
-sliderClicks(volSliderOne);
+function sliderClickStarter(){ // start reading input for all sliders in the effectArray.
+	for (var x = 0;x<effectArray.length;x++){ // loops through all effect sliders
+		sliderClicks(effectArray[x]); // starts reading input on all sliders
+	}
+}
 
-
-
-
+sliderClickStarter();
 
 /*
 Automation procedure:
@@ -1068,46 +1176,60 @@ when client revieves a 'go!' event, set a bool to 1 and on the next loop change 
 Same applies when user presses 'go' button - bool is set to 1 and effect changes to value at time of press.
 */
 
+
+
+
 function effectAutomation(slider){ // to be called whenever selected effect is to be automated.
+		
 	
-	slider.goTriggered = 0;
-	var totalChange = slider.valueAtTrigger - slider.ghostValue; // get the amount of change between 
-	console.log('totalChange = ',totalChange);
-	var changeChunk = totalChange / 20 //amount of change needed every 100ms (as 1 bar = 2000ms, this means totalChange / 20)
-	console.log('changeChunk = ',changeChunk);
+	slider.goTriggered = 3; // when goTriggered is 3, it is in 'in progress' mode and this function cannot be called until it is not 3.
+	var totalChange = slider.valueAtTrigger - slider.ghostValue; // get the amount of change between current value (ghostValue) and value when triggered
+	var changeChunk = totalChange / 80 //amount of change needed every 100ms (as 1 bar = 2000ms & we're using 4 bars, this means totalChange / 80)
+		
 	var automationInterval = setInterval(function() { 
-		slider.ghostValue = slider.ghostValue + changeChunk;
-		console.log(slider.ghostValue);
-		slider.ghostValueToPixel(slider.ghostValue);
-		slider.effect.value = slider.ghostValue - 90;
-		}, 100);
+		slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+		slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+		slider.effect.value = slider.ghostValue; // change the effect value
+		console.log('slider name: ', slider.effectName, slider.sequencerNumber, ', slider red value: ', slider.ghostValue, ', effect value: ',slider.effect.value);
+	}, 100);
 		
 		
 	setTimeout(function() {
 		clearInterval(automationInterval);
-	}, 2000)
+		slider.goTriggered = 0;
+	}, 8000)
+	
 
 }
 
-
-document.getElementById('volumeChangerPlz').addEventListener("click", function(e) { // when the button is clicked, change the bool to 'on'
+/*
+document.getElementById('volumeChangerOne').addEventListener("click", function(e) { // when the button is clicked, change the bool to 'on'
+	var s = volSliderOne;
+	if (s.goTriggered != 1 && s.goTriggered != 2 && s.goTriggered != 3){
     volSliderOne.goTriggered = 1;
+	}
 });
 
+document.getElementById('volumeChangerTwo').addEventListener("click", function(e) { // when the button is clicked, change the bool to 'on'
+	var s = volSliderTwo;
+	if (s.goTriggered != 1 && s.goTriggered != 2 && s.goTriggered != 3){
+    volSliderOne.goTriggered = 1;
+	}
+});
+*/
 
 var effectLoop = new Tone.Loop(function(time) {
 	
 	for (var x = 0;x<effectArray.length;x++){ // loops through all effect sliders to see if any have been called
-		if (effectArray[x].goTriggered == 1){ // 1 is for user pressing the button (takes the value from the current floating head!)
-			effectArray[x].valueAtTrigger = effectArray[x].floatingHeadValue;
+		if (effectArray[x].goTriggered == 1){ // 1 is for user pressing the button (takes the value from the current floating head!);
+		
 			effectAutomation(effectArray[x]); // if goTriggered is true, call the effectAutomation function for this object.
 		} else if (effectArray[x].goTriggered == 2){
-			effectArray[x].valueAtTrigger = effectArray[x].FROMSERVER; // TO DO! This should take the data from the server!
 			effectAutomation(effectArray[x]); // if goTriggered is true, call the effectAutomation function for this object.
 		}
 	}
 
-}, "1n").start(0);
+}, "1m").start(0);
 
 
 
@@ -1116,7 +1238,7 @@ var effectLoop = new Tone.Loop(function(time) {
 
 
 // Effects and stuff that will certainly need changing!
-/*	
+
 	function effectChanger(effectName, val){
 		formattingName = '#' + effectName;
 	document.querySelector(formattingName).value = val;
@@ -1132,7 +1254,6 @@ var effectLoop = new Tone.Loop(function(time) {
 		delay.wet.value = val * 0.01;
 	}
 	}
-	*/
 
 function synthChanger(effectName, val) {
     formattingName = '#' + effectName;
@@ -1170,41 +1291,6 @@ function synthChanger(effectName, val) {
             }
         })
         document.querySelector(formattingName).value = val * 0.01;
-    }
-}
-
-function volumeChanger(sequencer, val) {
-
-    switch (sequencer) {
-        case 0:
-            synth.volume.value = val;
-            document.querySelector('#sequencerOne').value = val;
-            break;
-        case 1:
-            hat.volume.value = val;
-            snare.volume.value = val;
-            kick.volume.value = val;
-            document.querySelector('#sequencerTwo').value = val;
-            break;
-        case 2:
-            synthTwo.volume.value = val;
-            document.querySelector('#sequencerThree').value = val;
-    }
-}
-
-function controlChanger(selected, val) {
-    switch (selected) {
-        case 0:
-            Tone.Transport.bpm.value = val;
-            document.querySelector('#tempo').value = val;
-    }
-}
-
-function sequencerChanger(x, y, phrase, sequencer) { // changes the sequencerArray of the given sequencer
-    if (sequencer.sequencerArray[phrase][x][y] == 0) {
-        sequencer.sequencerArray[phrase][x][y] = 1;
-    } else {
-        sequencer.sequencerArray[phrase][x][y] = 0;
     }
 }
 

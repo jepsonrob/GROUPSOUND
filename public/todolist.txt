@@ -51,33 +51,172 @@ TO DO
 		
 		
 	// NOTE! PHRASE SEQUENCERS ARE FUCKED WITH COLOUR
+	
+Sliders and such:
+
+volumeOne
+volumeTwo
+volumeThree
+volumeFour
+---
+volume range: -80 - 0	
+--- 
+delayOne
+delayTwo
+delayThree
+delayFour
+---
+delay range (wet): 0 - 100
+---
+delayTimeOne
+delayTimeTwo
+delayTimeThree
+delayTimeFour
+---
+delay time range: 0.01 - 400 (ms)
+---
+delayFeedbackOne
+delayFeedbackTwo
+delayFeedbackThree
+delayFeedbackFour
+---
+delay feedback range: 0 - 100
+---
+distOne
+distTwo
+distThree
+distFour
+---
+distortion range (wet): 0 - 100
+---
+crushOne
+crushTwo
+crushThree
+crushFour
+---
+bitCrush range: 0 - 100
+--- // filters can be made using the Tone.EQ3 component: .lowFrequency and .highFrequency are useful here, and have the gain set low!
+hiPassOne
+hiPassTwo
+hiPassThree
+hiPassFour
+---
+lowPassOne
+lowPassTwo
+lowPassThree
+lowPassFour
+---
+filter range: 20 - 20,000 (logarithmic)
+---
+
+--- Synth One - FM
+
+--- amplitude envelope
+envAttackOne (0.005 - 0.5)
+envDecayOne (0.005 - 0.5)
+envSustainOne (0.005 - 0.5)
+envReleaseOne (0.005 - 1)
+--- mod osc envelope
+envAttackOneMod
+envDecayOneMod
+envSustainOneMod
+envReleaseOneMod
+--- harmonicity & mod index
+harmonicityOne: 1 - 10
+modIndexOne: 1-100
+--- Oscillator types [Sine/Square/Sawtooth/Noise]
+oscTypeOne
+oscTypeOneMod
+
+
+--- Synth Two (FM - same as 1.)
+
+--- amplitude envelope
+envAttackTwo
+envDecayTwo
+envSustainTwo
+envReleaseTwo
+--- mod osc envelope
+envAttackTwoMod
+envDecayTwoMod
+envSustainTwoMod
+envReleaseTwoMod
+--- harmonicity & mod index
+harmonicityTwo
+modIndexTwo
+--- Oscillator types
+oscTypeTwo
+oscTypeTwoMod
+
+
+--- Just synth three & four
+envAttackThree
+envDecayThree
+envSustainThree
+envReleaseThree
+---
+envAttackFour
+envDecayFour
+envSustainFour
+envReleaseFour
+--- 
+bankOne // synth 3 sample bank
+bankTwo // seq 4 sample banks
+bankThree
+bankFour
+bankFive
+
+--- 
+
+Synth 1 & 2:
+FM Synth
+
+
+Synth 3:
+Sampler, different sample 'packs' available: e-piano, harp, violin, piano
+
+Synth 4:
+Percussion - able to swap out sample 'packs' for perc,hat,snare & kick. 4 packs each.
+
 
 
 Random little things to-do list:
 
+	- Fixing the issue with git to fix the current version and stuff.
 	- make sure the sequencer gets re-drawn even when stopped! (try changing phrase whilst sequencer is stopped. See?!)
 	- Continue testing other devices and crying at how bad it runs
 	- need to test and make sure the clients are properly syncronized!
+	- fix up the sequencer inputs (ctxEight's click event listener is currently working!)
+	- contain all sequencers in their own setInterval draw loop
+	- allow for canvas hotswapping of sequencers and phrasesequencers... also, whilst we're here, sliders.
+	- Actually, sliders are pretty much the most important ones.
 	
-	DONE TODAY:
-		- fixed notes function
-		- sync the server's phrase
-		(- server needs to send the current phraseBeat, so it can syncronize clients)
-		- Sort Out play button & sync it!
-		- created canvas element with evenet listeners for sliders.
-		- Did some testing on iOS and SHIT IS BAAAD!
-		
-	Done Day after!
-		- effect automation sorted with canvas! Seems like a small thing but really it's quite big and great and I'm happy!
+DONE SINCE LAST COMMIT:
 
+	- fixed lots of awful bugs with the sliders, oh god
+	- got the sliders working a little better
+	- fixed the bug in the slider values in that it didn't account for minValue offset
+	- Final sequencer plan - Figure out exactly what sliders( and buttons are needed! )
+	- server send/recieve effect changes (not massively stable, but working! WOO!)
+	- Fixed 'Values can be changed after 'go!' has been pressed. ' bug
+	- sliders have a basic hotswap function that can be expanded on! Woohoo!
+	- Figure out the intricacies of the e.layerX variable, and the 'click' event. There were issues with the Chromebook. (solved! Uses a specific function for it now)
+	
+	
 	
 
 CURRENTLY WORKING ON:
-	
+
+	- git commit & fixing git
 	
 NEXT TO DO:
-	- server send/recieve effect changes
-	- Final sequencer plan - Figure out exactly what sliders and buttons are needed! How to make it work on shitty devices? etc.
+	- completely implement and test the sliders:
+		- create every effect according to plan
+		- create sliders for every effect
+		- TEST EVERYTHING ALL THE TIME
+	- Make the sequencer canvases (& phrase sequencers) hot-swap!
+	- How to make it work on shitty devices? etc. (user input x/y, why is it shitty on the iPhone?! Is it shitty on android? Different OS's and processors. Raspi?)
+	- Final sequencer plan - Figure out exactly what buttons & things are needed! Draw a big ol' plan!
 	- fully implement final design
 	- Work on the front end and make it all look good & shit
 	- Figure out audio system for extra 2(?) samplers!

@@ -79,11 +79,141 @@ var sequencerFourPhrase = new sequencerObject(8,16,10);
 
 app.use(express.static("./public"));
 
+// we'll probably have to keep the current effect values in an array or object.
+// Haha! Hear that guy?! Nope, we'll do it with a really awkward array. That'll do it!
 
+
+/*
+Sliders and such:
+
+volumeOne
+volumeTwo
+volumeThree
+volumeFour
+---
+volume range: -80 - 0	
+--- 
+delayOne
+delayTwo
+delayThree
+delayFour
+---
+delay range (wet): 0 - 100
+---
+delayTimeOne
+delayTimeTwo
+delayTimeThree
+delayTimeFour
+---
+delay time range: 0.01 - 400 (ms)
+---
+delayFeedbackOne
+delayFeedbackTwo
+delayFeedbackThree
+delayFeedbackFour
+---
+delay feedback range: 0 - 100
+---
+distOne
+distTwo
+distThree
+distFour
+---
+distortion range (wet): 0 - 100
+---
+crushOne
+crushTwo
+crushThree
+crushFour
+---
+bitCrush range: 0 - 100
+--- // filters can be made using the Tone.EQ3 component: .lowFrequency and .highFrequency are useful here, and have the gain set low!
+hiPassOne
+hiPassTwo
+hiPassThree
+hiPassFour
+---
+lowPassOne
+lowPassTwo
+lowPassThree
+lowPassFour
+---
+filter range: 20 - 20,000 (logarithmic)
+---
+
+--- Synth One - FM
+
+--- amplitude envelope
+envAttackOne (0.005 - 0.5)
+envDecayOne (0.005 - 0.5)
+envSustainOne (0.005 - 0.5)
+envReleaseOne (0.005 - 1)
+--- mod osc envelope
+envAttackOneMod
+envDecayOneMod
+envSustainOneMod
+envReleaseOneMod
+--- harmonicity & mod index
+harmonicityOne: 1 - 10
+modIndexOne: 1-100
+--- Oscillator types [Sine/Square/Sawtooth/Noise]
+oscTypeOne
+oscTypeOneMod
+
+
+--- Synth Two (FM - same as 1.)
+
+--- amplitude envelope
+envAttackTwo
+envDecayTwo
+envSustainTwo
+envReleaseTwo
+--- mod osc envelope
+envAttackTwoMod
+envDecayTwoMod
+envSustainTwoMod
+envReleaseTwoMod
+--- harmonicity & mod index
+harmonicityTwo
+modIndexTwo
+--- Oscillator types
+oscTypeTwo
+oscTypeTwoMod
+
+
+--- Just synth three & four
+envAttackThree
+envDecayThree
+envSustainThree
+envReleaseThree
+---
+envAttackFour
+envDecayFour
+envSustainFour
+envReleaseFour
+--- 
+bankOne // synth 3 sample bank
+bankTwo // seq 4 sample banks
+bankThree
+bankFour
+bankFive
+
+--- 
+*/
+
+var effectObject = {
+	volumeOne: -20,
+	volumeTwo: -25,
+	
+}
+
+var effectArray = [effectObject.volume, effectObject.volumeTwo,effectObject.volumeThree,effectObject.volumeFour,effectObject.delayOne,effectObject.delayTwo,effectObject.delayThree,effectObject.delayFour];
 
 
 
 io.on("connection", function(socket) {
+	
+
 
 	socket.emit("sequencerOne", sequencerOne.sequencerArray);
 	socket.emit("sequencerOnePhrase", sequencerOnePhrase.sequencerArray);
@@ -97,10 +227,25 @@ io.on("connection", function(socket) {
 	socket.emit("sequencerFour", sequencerFour.sequencerArray);
 	socket.emit("sequencerFourPhrase", sequencerFourPhrase.sequencerArray);
 	
+	socket.emit("effectStatus", effectArray);
+	
 	socket.emit("phraseStarter", currentPhraseTime);
 	
 	console.log('Socket Connected!');
+	
+	
 
+	// NOTE: everything coming into the server (effects) needs to have already been formatted according to the effect, the client can't/shouldn't have to do it on the other end.
+	// for effects, we'll need a similar function to the 'seqChangeToServer' below. 
+	socket.on("effectChangeToServer", function(array){
+		
+		socket.broadcast.emit("effectServerEdit", array); // broadcast the effect changes to everyone.
+		var effectChanged = array[0] // first item of array is specific effect number changed
+		var changedEffectValue = array[1]; // select changed effect from second array using first array as the selector!
+		effectArray[effectChanged] = changedEffectValue; // changes the server's effect array to hold the change.
+		// then change the internal array
+	})
+	
     socket.on("seqChangeToServer", function(array) { //when recieving the seqChangeToServer, broadcast the message to everyone!
     	socket.broadcast.emit("seqServerEdit", array); // send the array of changes to everyone!
 		// this code below changes the current server-side sequencer.

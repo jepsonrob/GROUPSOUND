@@ -67,7 +67,7 @@
 <h1 class='status'></h1>
 
 <h1> Let's Sequencer Together! </h1>
-<h4> <i>"Build: I'm so very unstable!" </i> </h4>
+<h4> <i>"Build: Slightly (very, very slightly) less unstable." </i> </h4>
 
 <button id='playButton'>start</button>
 <button onclick='stop();'>stop</button>
@@ -95,14 +95,39 @@
 </canvas>
 <hr>
 
+<button onclick='changeSequencer(0)'> Seq 1 </button>
+<button onclick='changeSequencer(1)'> Seq 2 </button>
+<button onclick='changeSequencer(2)'> Seq 3 </button>
+<button onclick='changeSequencer(3)'> Seq 4 </button>
 
+<p id='currentSeq'></p>
+
+
+<div class='slider'>
+<p> Volume </p>
+<canvas id='volumeAll' width='200' height='30'></canvas>
+<button id='volumeAllButton'> Go! </button>
+</div>
+<div class='slider'>
+<p> Delay Wet/Dry </p>
+<canvas id='delay' width='200' height='30'></canvas>
+<button id='delayButton'> Go! </button>
+</div>
+<!--
 <div class='slider'>
 <p> Volume </p>
 <canvas id='volumeOne' width='200' height='30'></canvas>
 <input type='number'></input>
-<button id='volumeChangerPlz'> Go! </button>
+<button id='volumeOneButton'> Go! </button>
 </div>
 
+<div class='slider'>
+<p> Volume </p>
+<canvas id='volumeTwo' width='200' height='30'></canvas>
+<input type='number'></input>
+<button id='volumeTwoButton'> Go! </button>
+</div>
+-->
 
 <hr>
 
