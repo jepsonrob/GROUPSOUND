@@ -1,7 +1,5 @@
-// for iOS
-StartAudioContext(Tone.context, "#playButton", function() {
-    console.log('context online!');
-})
+
+
 
 
 
@@ -139,8 +137,8 @@ function setTitle(title) {
     document.querySelector("h1").innerHTML = title;
 }
 
-function sequencerChanges(x, y, phrase, sequencer) {
-    var array = [x, y, phrase, sequencer];
+function sequencerChanges(x, y, velocity, phrase, sequencer) {
+    var array = [x, y, velocity, phrase, sequencer,];
     socket.emit("seqChangeToServer", array);
 }
 
@@ -227,12 +225,12 @@ function sequencerObject(sequencerNumber, buttonsX, buttonsY, squareSize, gapSiz
                     this.sequencerArray[phr][x][y] = 1;
                 }
             } // end of 'f' loop
-        } else {
-            if (this.sequencerArray[phr][x][y] == 1) {
-                this.sequencerArray[phr][x][y] = 0;
-            } else {
-                this.sequencerArray[phr][x][y] = 1;
-            }
+        } else {	
+			if (this.sequencerArray[phr][x][y] == 0 || this.sequencerArray[phr][x][y] < 4){
+		this.sequencerArray[phr][x][y] = this.sequencerArray[phr][x][y] + 1;
+				} else {
+		this.sequencerArray[phr][x][y] = 0;
+			}	
         }
     } // LIKELY BUG! When the sequencer is in phrase mode and only has one on a colum at a time, this will fuck it up! Watch out!
 
@@ -411,32 +409,44 @@ drawGrid(ctxEight, sequencerFourPhrase, 0, 0);
 // Canvas user-input event listeners (on click!)
 
 c.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctx, sequencerOne, sequencerOne.currentView);
+	clickPosition = getMousePos(cOne, e);
+	
+    clickEdit(clickPosition.x, e.layerY, ctx, sequencerOne, sequencerOne.currentView);
 });
 
 cTwo.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctxTwo, sequencerOnePhrase, 0);
+	clickPosition = getMousePos(cTwo, e);
+	
+    clickEdit(clickPosition.x, e.layerY, ctxTwo, sequencerOnePhrase, 0);
 });
 
 
 cThree.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctxThree, sequencerTwo, sequencerTwo.currentView);
+	clickPosition = getMousePos(cThree, e);
+	
+    clickEdit(clickPosition.x, e.layerY, ctxThree, sequencerTwo, sequencerTwo.currentView);
 });
 
 cFour.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctxFour, sequencerTwoPhrase, 0);
+	clickPosition = getMousePos(cFour, e);
+	
+    clickEdit(clickPosition.x, e.layerY, ctxFour, sequencerTwoPhrase, 0);
 });
 
 cFive.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctxFive, sequencerThree, sequencerThree.currentView);
+	clickPosition = getMousePos(cFive, e);
+	
+    clickEdit(clickPosition.x, e.layerY, ctxFive, sequencerThree, sequencerThree.currentView);
 });
 
 cSix.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctxSix, sequencerThreePhrase, 0);
+	clickPosition = getMousePos(cSix, e);	
+    clickEdit(clickPosition.x, e.layerY, ctxSix, sequencerThreePhrase, 0);
 });
 
 cSeven.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-    clickEdit(e.layerX, e.layerY, ctxSeven, sequencerFour, sequencerFour.currentView);
+	clickPosition = getMousePos(cSeven, e);
+    clickEdit(clickPosition.x, e.layerY, ctxSeven, sequencerFour, sequencerFour.currentView);
 });
 
 cEight.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
@@ -502,12 +512,19 @@ function viewChanger(sequencer, viewType, viewPhrase) { // used to change the cu
     console.log(sequencer.currentView);
 }
 
+
+
+
+// PLEASE REMOVE THE BIT BELOW AT SOME POINT
+
 function changeSequencer(num){ // get rid of this later, but for now it's to test switching out sequencers etc.
 	currentSequencer = num;
-	document.getElementById('currentSeq').innerHTML = "Current Sequencer: " + num;
+	document.getElementById('currentSeq').innerHTML = "Current Sequencer: " + (num + 1);
 }
 
+changeSequencer(0);
 
+// PLEASE REMOVE THE BIT ABOVE AT SOME POINT
 
 
 
@@ -598,7 +615,7 @@ var delayFour = new Tone.PingPongDelay();
 
 //setup a synth
 
-var synth = new Tone.PolySynth(8, Tone.FMSynth).chain(delayOne, Tone.Master);
+var synth = new Tone.PolySynth(3, Tone.FMSynth).chain(delayOne, Tone.Master);
 
 synth.set({
     "envelope": {
@@ -624,7 +641,7 @@ synthTwo.set({
 });
 
 
-var synthThree = new Tone.PolySynth(4, Tone.MonoSynth).chain(delayTwo, Tone.Master);
+var synthThree = new Tone.PolySynth(1, Tone.MonoSynth).chain(delayTwo, Tone.Master);
 
 
 
@@ -648,7 +665,7 @@ var synthFour = new Tone.MultiPlayer({
     "kickFour": "audio/kickFour.wav",
 }, function() {
     // call function when samples are loaded
-}).chain(delayTwo, Tone.Master);
+}).chain(delayFour, Tone.Master);
 
 
 /*
@@ -818,56 +835,58 @@ var percLoop = new Tone.Sequence(function(time, col) {
         var currentBean = column[reverseRange(i, -1, s.buttonsX)];
         if (currentBean >= 1) {
             var vel = (currentBean * 0.25) + (Math.random() * 0.25);
+			console.log(sequencerFour.Gain)
+			sequencerFour.Gain = vel
             // trigger note - select note is 'i'
 
             switch (i) {
                 case 0:
-                    synthFour.start("kickOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickOne", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 1:
-                    synthFour.start("kickTwo", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickTwo", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 2:
-                    synthFour.start("kickThree", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickThree", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 3:
-                    synthFour.start("kickFour", 0, 0, 1000, 0, vel);
+                    synthFour.start("kickFour", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 4:
-                    synthFour.start("snareOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareOne", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 5:
-                    synthFour.start("snareTwo", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareTwo", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 6:
-                    synthFour.start("snareThree", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareThree", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 7:
-                    synthFour.start("snareFour", 0, 0, 1000, 0, vel);
+                    synthFour.start("snareFour", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 8:
-                    synthFour.start("hatOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatOne", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 9:
-                    synthFour.start("hatTwo", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatTwo", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 10:
-                    synthFour.start("hatThree", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatThree", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 11:
-                    synthFour.start("hatFour", 0, 0, 1000, 0, vel);
+                    synthFour.start("hatFour", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 12:
-                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 13:
-                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 14:
-                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
                     break;
                 case 15:
-                    synthFour.start("percOne", 0, 0, 1000, 0, vel);
+                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
                     break;
             }
         }
@@ -925,6 +944,24 @@ var volCanvas = volElement.getContext("2d");
 var delayElement = document.getElementById("delay");
 var delayCanvas = delayElement.getContext("2d");
 
+var delayFeedbackElement = document.getElementById("delayFeedback");
+var delayFeedbackCanvas = delayFeedbackElement.getContext("2d");
+
+var delayTimeElement = document.getElementById("delayTime");
+var delayTimeCanvas = delayTimeElement.getContext("2d");
+
+var attackElement = document.getElementById("attack");
+var attackCanvas = attackElement.getContext("2d");
+
+var decayElement = document.getElementById("decay");
+var decayCanvas = decayElement.getContext("2d");
+
+var sustainElement = document.getElementById("sustain");
+var sustainCanvas = sustainElement.getContext("2d");
+
+var releaseElement = document.getElementById("release");
+var releaseCanvas = releaseElement.getContext("2d");
+
 
 //var volAllElement = document.getElementById("volumeAll");
 //var volAll = volAllElement.getContext("2d");
@@ -967,7 +1004,9 @@ function logSlider(position, minp, maxp, minv, maxv) { // this is not my functio
   return Math.exp(minz + scale*(position-minp));
 }
 
-function sliderObject (effect, canvas, canvasElement, value, min, max, effectName, seq){
+function sliderObject (effect, canvas, canvasElement, value, min, max, effectName, seq, mode){
+	this.mode = mode;
+	this.logarithmic = 0;
 	this.sequencerNumber = seq;
 	this.effectName = effectName;
 	this.buttonName = this.effectName + "Button";
@@ -997,7 +1036,7 @@ function sliderObject (effect, canvas, canvasElement, value, min, max, effectNam
 	}
 	
 	
-	this.ghostPixelToValue = function(pixel){ // FIX ME! I'M BREAKING STUFF!
+	this.ghostPixelToValue = function(pixel){ 
 		this.ghostPosition = pixel;		
 		var value = ((this.valueRange / 194) * pixel) + this.minValue;
 		this.ghostValue = value;
@@ -1033,19 +1072,47 @@ function sliderObject (effect, canvas, canvasElement, value, min, max, effectNam
 }
 
 // volume sliders
-var volSliderOne = new sliderObject(synth.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 0);
-var volSliderTwo = new sliderObject(synthTwo.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 1);
-var volSliderThree = new sliderObject(synthThree.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 2);
-var volSliderFour = new sliderObject(synthFour.volume, volCanvas,volElement,-80,-70,10, 'volumeAll', 3);
+var volSliderOne = new sliderObject(synth.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 0,'value');
+var volSliderTwo = new sliderObject(synthTwo.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 1,'value');
+var volSliderThree = new sliderObject(synthThree.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 2,'value');
+var volSliderFour = new sliderObject(synthFour.volume, volCanvas,volElement,-80,-70,10, 'volumeAll', 3,'value');
+// delay (wet/dry)
+var delaySliderOne = new sliderObject(delayOne.wet, delayCanvas,delayElement,0,0,1,'delay',0,'value');
+var delaySliderTwo = new sliderObject(delayTwo.wet, delayCanvas,delayElement,0,0,1,'delay',1,'value')
+var delaySliderThree = new sliderObject(delayThree.wet, delayCanvas,delayElement,0,0,1,'delay',2,'value')
+var delaySliderFour = new sliderObject(delayFour.wet, delayCanvas,delayElement,0,0,1,'delay',3,'value')
+// delay feedback
+var delayFeedbackOne = new sliderObject(delayOne.feedback, delayFeedbackCanvas,delayFeedbackElement,0,0,0.8,'delayFeedback',0,'value');
+var delayFeedbackTwo = new sliderObject(delayTwo.feedback, delayFeedbackCanvas,delayFeedbackElement,0,0,0.8,'delayFeedback',1,'value');
+var delayFeedbackThree = new sliderObject(delayThree.feedback, delayFeedbackCanvas,delayFeedbackElement,0,0,0.8,'delayFeedback',2,'value');
+var delayFeedbackFour = new sliderObject(delayFour.feedback, delayFeedbackCanvas,delayFeedbackElement,0,0,0.8,'delayFeedback',3,'value');
+// delay time
+var delayTimeOne = new sliderObject(delayOne.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',0,'value');
+var delayTimeTwo = new sliderObject(delayTwo.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',1,'value');
+var delayTimeThree = new sliderObject(delayThree.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',2,'value');
+var delayTimeFour = new sliderObject(delayFour.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',3,'value');
+// attack
+var attackOne = new sliderObject(synth, attackCanvas,attackElement,0,0,1,'attack',0,'envelope');
+var attackTwo = new sliderObject(synthTwo, attackCanvas,attackElement,0,0,1,'attack',1,'envelope');
+var attackThree = new sliderObject(synthThree, attackCanvas,attackElement,0,0,1,'attack',2,'envelope');
+var attackFour = new sliderObject(synthFour, attackCanvas,attackElement,0,0,1,'attack',3,'envelope');
+// decay
+var decayOne = new sliderObject(synth, decayCanvas,decayElement,0,0,1,'decay',0,'envelope');
+var decayTwo = new sliderObject(synthTwo, decayCanvas,decayElement,0,0,1,'decay',1,'envelope');
+var decayThree = new sliderObject(synthThree, decayCanvas,decayElement,0,0,1,'decay',2,'envelope');
+var decayFour = new sliderObject(synthFour, decayCanvas,decayElement,0,0,1,'decay',3,'envelope');
+// sustain
+var sustainOne = new sliderObject(synth, sustainCanvas,sustainElement,0,0,1,'sustain',0,'envelope');
+var sustainTwo = new sliderObject(synthTwo, sustainCanvas,sustainElement,0,0,1,'sustain',1,'envelope');
+var sustainThree = new sliderObject(synthThree, sustainCanvas,sustainElement,0,0,1,'sustain',2,'envelope');
+var sustainFour = new sliderObject(synthFour, sustainCanvas,sustainElement,0,0,1,'sustain',3,'envelope');
+// release
+var releaseOne = new sliderObject(synth, releaseCanvas,releaseElement,0,0,1,'release',0,'envelope');
+var releaseTwo = new sliderObject(synthTwo, releaseCanvas,releaseElement,0,0,1,'release',1,'envelope');
+var releaseThree = new sliderObject(synthThree, releaseCanvas,releaseElement,0,0,1,'release',2,'envelope');
+var releaseFour = new sliderObject(synthFour, releaseCanvas,releaseElement,0,0,1,'release',3,'envelope');
 
-var delaySliderOne = new sliderObject(delayOne.wet, delayCanvas,delayElement,0,0,1,'delay',0);
-var delaySliderTwo = new sliderObject(delayTwo.wet, delayCanvas,delayElement,0,0,1,'delay',1)
-var delaySliderThree = new sliderObject(delayThree.wet, delayCanvas,delayElement,0,0,1,'delay',2)
-var delaySliderFour = new sliderObject(delayFour.wet, delayCanvas,delayElement,0,0,1,'delay',3)
-
-
-
-var effectArray = [volSliderOne, volSliderTwo, volSliderThree, volSliderFour, delaySliderOne, delaySliderTwo, delaySliderThree, delaySliderFour]; // an array of all the slider objects (makes for easy looping, though may be a massive issues in the future!)
+var effectArray = [volSliderOne, volSliderTwo, volSliderThree, volSliderFour, delaySliderOne, delaySliderTwo, delaySliderThree, delaySliderFour, delayFeedbackOne, delayFeedbackTwo,delayFeedbackThree,delayFeedbackFour,delayTimeOne,delayTimeTwo,delayTimeThree,delayTimeFour,attackOne,attackTwo,attackThree,attackFour,decayOne,decayTwo,decayThree,decayFour,sustainOne,sustainTwo,sustainThree,sustainFour,releaseOne,releaseTwo,releaseThree,releaseFour]; // an array of all the slider objects (makes for easy looping, though may be a massive issues in the future!)
 
 function addNumbersToSliderObjects(){ // does what it says on the tin! Adds a number value to each slider.
 	for(var x = 0; x<effectArray.length; x++){
@@ -1057,9 +1124,47 @@ addNumbersToSliderObjects(); // this is a really hacky way of doing things, I th
 socket.on("effectStatus", function(serverArray) {
 	// here we set all the values for the effects and stuff... Yeah, this is not pretty. Seems I like arrays.
 	for (var x = 0; x<effectArray.length; x++){
+		console.log(effectArray[x]);
+		if (effectArray[x].mode == 'envelope'){
+			if (effectArray[x].effectName == "attack"){
+				var envelopeToUse = effectArray[x].effectName;
+				effectArray[x].effect.set({
+					"envelope": {
+						"attack": serverArray[x]
+					}
+				});
+			} else if (effectArray[x].effectName == "decay"){
+				var envelopeToUse = effectArray[x].effectName;
+				effectArray[x].effect.set({
+					"envelope": {
+						"decay": serverArray[x]
+					}
+				});
+			} else if (effectArray[x].effectName == "sustain"){
+				var envelopeToUse = effectArray[x].effectName;
+				effectArray[x].effect.set({
+					"envelope": {
+						"sustain": serverArray[x]
+					}
+				});
+			} else if (effectArray[x].effectName == "release"){
+				var envelopeToUse = effectArray[x].effectName;
+				effectArray[x].effect.set({
+					"envelope": {
+						"release": serverArray[x]
+					}
+				});
+			}
+			effectArray[x].ghostValueToPixel(serverArray[x]);
+			effectArray[x].floatingHeadValueToPixel(serverArray[x]);
+			
+		
+			
+		} else if (effectArray[x].mode == 'value'){
 		effectArray[x].effect.value = serverArray[x];
 		effectArray[x].ghostValueToPixel(serverArray[x]);
 		effectArray[x].floatingHeadValueToPixel(serverArray[x]);
+	}
 		
 	}
 });
@@ -1071,10 +1176,7 @@ var sliderLoop = setInterval(function(){ // draws the sliders every 100ms
 	}
 }, 100); 
 
-// currentSeq = 0 ; x < 8 ; x + 4
-// 1 - x = 0
-// 2 - x = 4
-// 3 - x = 8
+
 
 
 
@@ -1186,13 +1288,75 @@ function effectAutomation(slider){ // to be called whenever selected effect is t
 	var totalChange = slider.valueAtTrigger - slider.ghostValue; // get the amount of change between current value (ghostValue) and value when triggered
 	var changeChunk = totalChange / 80 //amount of change needed every 100ms (as 1 bar = 2000ms & we're using 4 bars, this means totalChange / 80)
 		
+	// for a logarithmic slider. Not yet implemented.
+	if(slider.mode == 'envelope'){ // if mode is 'envelope' (because envelopes are annoying and need to be right, so we've got to repeat ourselves a bit)
+		var attackValue = slider.effect.get("envelope".attack);
+		var decayValue =slider.effect.get("envelope".decay);
+		
+		if (slider.effectName == 'attack'){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "envelope": {
+		                "attack": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'decay'){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "envelope": {
+		                "decay": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'sustain'){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "envelope": {
+		                "sustain": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'release'){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "envelope": {
+		                "decay": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} 
+	
+		
+	} else if (slider.mode =='value') { // if the synth is set to 'value': changing effects or volume
+		
+	if(slider.logarithmic == 1){
+	var automationInterval = setInterval(function() { 
+		slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+		slider.ghostValueToPixelLog(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+		slider.effect.value = slider.ghostValue; // change the effect value
+		console.log('slider name: ', slider.effectName, slider.sequencerNumber, ', slider red value: ', slider.ghostValue, ', effect value: ',slider.effect.value);
+	}, 100);
+	
+	} else {	
 	var automationInterval = setInterval(function() { 
 		slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
 		slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
 		slider.effect.value = slider.ghostValue; // change the effect value
 		console.log('slider name: ', slider.effectName, slider.sequencerNumber, ', slider red value: ', slider.ghostValue, ', effect value: ',slider.effect.value);
 	}, 100);
-		
+	}
+} else {
+	console.log('ERROR!')
+}
 		
 	setTimeout(function() {
 		clearInterval(automationInterval);
@@ -1321,3 +1485,9 @@ function stop() {
 }
 
 // End of audio stuff
+
+// for iOS
+StartAudioContext(Tone.context, "#playButton", function() {
+	Tone.startMobile()
+    console.log('context online!');
+})

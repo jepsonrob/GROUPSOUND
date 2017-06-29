@@ -66,7 +66,7 @@ delayTwo
 delayThree
 delayFour
 ---
-delay range (wet): 0 - 100
+delay range (wet): 0 - 1
 ---
 delayTimeOne
 delayTimeTwo
@@ -111,62 +111,109 @@ filter range: 20 - 20,000 (logarithmic)
 
 --- Synth One - FM
 
---- amplitude envelope
-envAttackOne (0.005 - 0.5)
-envDecayOne (0.005 - 0.5)
-envSustainOne (0.005 - 0.5)
-envReleaseOne (0.005 - 1)
---- mod osc envelope
-envAttackOneMod
-envDecayOneMod
-envSustainOneMod
-envReleaseOneMod
---- harmonicity & mod index
-harmonicityOne: 1 - 10
-modIndexOne: 1-100
---- Oscillator types [Sine/Square/Sawtooth/Noise]
-oscTypeOne
-oscTypeOneMod
+Volume (log slider)
+
+Main osciallator (Dropdown)
+Mod Oscillator (Dropdown)
+
+Mod Value (slider)
+Harmonicity (slider)
+
+Attack (slider)
+Decay (slider)
+Sustain (slider)
+Release (slider)
+
+Mod Attack (slider)
+Mod Decay (slider)
+Mod Sustain (slider)
+Mod Release (slider)
+
+Effects:
+
+Delay wet/dry (slider)
+Delay Feedback (slider)
+Delay Time (slider)
+
+Low-pass filter (freq) (log slider)
+High-pass filter (freq) (log slider)
+
+Distortion wet/dry (slider)
+
+Bitcrush wet/dry (slider)
 
 
---- Synth Two (FM - same as 1.)
+--- Synth Two (MonoSynth)
 
---- amplitude envelope
-envAttackTwo
-envDecayTwo
-envSustainTwo
-envReleaseTwo
---- mod osc envelope
-envAttackTwoMod
-envDecayTwoMod
-envSustainTwoMod
-envReleaseTwoMod
---- harmonicity & mod index
-harmonicityTwo
-modIndexTwo
---- Oscillator types
-oscTypeTwo
-oscTypeTwoMod
+Volume (log slider)
 
+Main osciallator (Dropdown)
+Filter Type (Dropdown)
 
---- Just synth three & four
-envAttackThree
-envDecayThree
-envSustainThree
-envReleaseThree
----
-envAttackFour
-envDecayFour
-envSustainFour
-envReleaseFour
---- 
-bankOne // synth 3 sample bank
-bankTwo // seq 4 sample banks
-bankThree
-bankFour
-bankFive
+Filter Frequency (log slider)
+Filter Q (Slider)
 
---- 
+Attack (slider)
+Decay (slider)
+Sustain (slider)
+Release (slider)
+
+Filter Attack (slider)
+Filter Decay (slider)
+Filter Sustain (slider)
+Filter Release (slider)
+
+Effects:
+
+Delay wet/dry (slider)
+Delay Feedback (slider)
+Delay Time (slider)
+
+Low-pass filter (freq) (log slider)
+High-pass filter (freq) (log slider)
+
+Distortion wet/dry (slider)
+
+Bitcrush wet/dry (slider)
+
+--- Synth 3 (Sampler) --- different instruments (harp, piano, violin, violin (pizz.), e. piano)
+
+Volume (log slider)
+
+Sample Bank (dropdown)
+
+Effects:
+
+Delay wet/dry (slider)
+Delay Feedback (slider)
+Delay Time (slider)
+
+Low-pass filter (freq) (log slider)
+High-pass filter (freq) (log slider)
+
+Distortion wet/dry (slider)
+
+Bitcrush wet/dry (slider)
+
+--- Synth 4 (Sampler)
+
+Volume (log slider)
+
+Sample Bank (dropdown) --- Different Percussion kits!
+
+Effects:
+
+Delay wet/dry (slider)
+Delay Feedback (slider)
+Delay Time (slider)
+
+Low-pass filter (freq) (log slider)
+High-pass filter (freq) (log slider)
+
+Distortion wet/dry (slider)
+
+Bitcrush wet/dry (slider)
+
 
 Synth 1 & 2:
 FM Synth
@@ -182,43 +229,42 @@ Percussion - able to swap out sample 'packs' for perc,hat,snare & kick. 4 packs 
 
 Random little things to-do list:
 
-	- Fixing the issue with git to fix the current version and stuff.
+	- git push after each git commit
 	- make sure the sequencer gets re-drawn even when stopped! (try changing phrase whilst sequencer is stopped. See?!)
 	- Continue testing other devices and crying at how bad it runs
 	- need to test and make sure the clients are properly syncronized!
-	- fix up the sequencer inputs (ctxEight's click event listener is currently working!)
 	- contain all sequencers in their own setInterval draw loop
-	- allow for canvas hotswapping of sequencers and phrasesequencers... also, whilst we're here, sliders.
-	- Actually, sliders are pretty much the most important ones.
+	- allow for canvas hotswapping of sequencers and phrasesequencers.
+	- Allowing for logarithmic slider values (for decibels and such)
+	
+	
+	
 	
 DONE SINCE LAST COMMIT:
+	- figured out why the fuck notes aren't being broadcast!
+	- send the velocity values as well as all other data, because it turns out the notes are just getting turned on & off on other computers! Ahh!
+	- Make the sequencer canvases (& phrase sequencers) hot-swap (ANSWER: USE CSS!)
+	- Made it work on shitty devices! Sampling velocity was an issue (using undefined to skip parameters) and now there will be 2 samplers, 2 sequencers. Sequencers have reduced poly. Now it works on iphone! Next test - chromebook.
+	- Final sequencer plan - Figure out exactly what buttons & things are needed! Draw a big ol' plan!
+	
+	
 
-	- fixed lots of awful bugs with the sliders, oh god
-	- got the sliders working a little better
-	- fixed the bug in the slider values in that it didn't account for minValue offset
-	- Final sequencer plan - Figure out exactly what sliders( and buttons are needed! )
-	- server send/recieve effect changes (not massively stable, but working! WOO!)
-	- Fixed 'Values can be changed after 'go!' has been pressed. ' bug
-	- sliders have a basic hotswap function that can be expanded on! Woohoo!
-	- Figure out the intricacies of the e.layerX variable, and the 'click' event. There were issues with the Chromebook. (solved! Uses a specific function for it now)
+
 	
 	
 	
 
 CURRENTLY WORKING ON:
 
-	- git commit & fixing git
 	
 NEXT TO DO:
+	- Figure out how to make scaling logarithmic!
 	- completely implement and test the sliders:
-		- create every effect according to plan
-		- create sliders for every effect
+		- create every effect according to the sequencer plan
+		- create sliders for every effect (& make sure they are correctly scaled)
 		- TEST EVERYTHING ALL THE TIME
-	- Make the sequencer canvases (& phrase sequencers) hot-swap!
-	- How to make it work on shitty devices? etc. (user input x/y, why is it shitty on the iPhone?! Is it shitty on android? Different OS's and processors. Raspi?)
-	- Final sequencer plan - Figure out exactly what buttons & things are needed! Draw a big ol' plan!
+	- Put the sequencers on a canvas event loop... Maybe also make them hot-swappable? I mean it can't hurt! And seems pretty easy.
 	- fully implement final design
-	- Work on the front end and make it all look good & shit
-	- Figure out audio system for extra 2(?) samplers!
-	
+	- Design the front end - what will it look like?!
+	- Find specific samples to use with e
 	

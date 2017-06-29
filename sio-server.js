@@ -203,11 +203,40 @@ bankFive
 
 var effectObject = {
 	volumeOne: -20,
-	volumeTwo: -25,
-	
+	volumeTwo: -15,
+	volumeThree: -30,
+	volumeFour: -5,
+	delayOne:0,
+	delayTwo:0,
+	delayThree:0,
+	delayFour:0,
+	delayFeedbackOne:0,
+	delayFeedbackTwo:0,
+	delayFeedbackThree:0,
+	delayFeedbackFour:0,
+	delayTimeOne:0,
+	delayTimeTwo:0,
+	delayTimeThree:0,
+	delayTimeFour:0,
+	attackOne:0,
+	attackTwo:0,
+	attackThree:0,
+	attackFour:0,
+	decayOne:0,
+	decayTwo:0,
+	decayThree:0,
+	decayFour:0,
+	sustainOne:0,
+	sustainTwo:0,
+	sustainThree:0,
+	sustainFour:0,
+	releaseOne:0,
+	releaseTwo:0,
+	releaseThree:0,
+	releaseFour:0,
 }
 
-var effectArray = [effectObject.volume, effectObject.volumeTwo,effectObject.volumeThree,effectObject.volumeFour,effectObject.delayOne,effectObject.delayTwo,effectObject.delayThree,effectObject.delayFour];
+var effectArray = [effectObject.volume, effectObject.volumeTwo,effectObject.volumeThree,effectObject.volumeFour,effectObject.delayOne,effectObject.delayTwo,effectObject.delayThree,effectObject.delayFour,effectObject.delayFeedbackOne,effectObject.delayFeedbackTwo,effectObject.delayFeedbackThree,effectObject.delayFeedbackFour,effectObject.delayTimeOne,effectObject.delayTimeTwo,effectObject.delayTimeThree,effectObject.delayTimeFour,effectObject.attackOne,effectObject.attackTwo,effectObject.attackThree,effectObject.attackFour,effectObject.decayOne,effectObject.decayTwo,effectObject.decayThree,effectObject.decayFour,effectObject.sustainOne,effectObject.sustainTwo,effectObject.sustainThree,effectObject.sustainFour,effectObject.releaseOne,effectObject.releaseTwo,effectObject.releaseThree,effectObject.releaseFour];
 
 
 
