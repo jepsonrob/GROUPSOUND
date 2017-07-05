@@ -1,9 +1,53 @@
 
+/*
+    o__ __o      o__ __o__/_       o__ __o        o         o    o__ __o__/_   o          o        o__ __o     o__ __o__/_   o__ __o       
+   /v     v\    <|    v           /v     v\      <|>       <|>  <|    v       <|\        <|>      /v     v\   <|    v       <|     v\      
+  />       <\   < >              />       <\     / \       / \  < >           / \\o      / \     />       <\  < >           / \     <\     
+ _\o____         |             o/           \o   \o/       \o/   |            \o/ v\     \o/   o/              |            \o/     o/     
+      \_\__o__   o__/_        <|             |>   |         |    o__/_         |   <\     |   <|               o__/_         |__  _<|      
+            \    |             \\           //   < >       < >   |            / \    \o  / \   \\              |             |       \     
+  \         /   <o>              \       \o/      \         /   <o>           \o/     v\ \o/     \         /  <o>           <o>       \o   
+   o       o     |                o       |        o       o     |             |       <\ |       o       o    |             |         v\  
+   <\__ __/>    / \  _\o__/_      <\__   / \       <\__ __/>    / \  _\o__/_  / \        < \      <\__ __/>   / \  _\o__/_  / \         <\ 
+                                                                                                                                           
+                                                                                                                                           
+                                                                                                                                           
+	  									o              o   __o__  ____o__ __o____   o         o  
+	  									 <|>            <|>    |     /   \   /   \   <|>       <|> 
+	  									 / \            / \   / \         \o/        < >       < > 
+	  									 \o/            \o/   \o/          |          |         |  
+	  									  |              |     |          < >         o__/_ _\__o  
+	  									 < >            < >   < >          |          |         |  
+	  									  \o    o/\o    o/     |           o         <o>       <o> 
+	  									   v\  /v  v\  /v      o          <|          |         |  
+	  									    <\/>    <\/>     __|>_        / \        / \       / \ 
+                                                           
 
 
-
-
-						// Socket.io stuff
+	 												o          o    o__ __o__/_   
+													<|\        /|>  <|    v        
+  	 												/ \\o    o// \  < >            
+  	 												\o/ v\  /v \o/   |             
+ 	 												|    <\/>   |    o__/_         
+ 	 												/ \        / \   |            
+ 	 												\o/        \o/  <o>                 
+ 	 												|          |    |             
+ 	 												/ \        / \  / \  _\o__/_  
+                                     
+                                     												by Rob Jepson
+																							(www.robjepson.com)
+                                                                                                                                                                                                                                                                                                                       
+   /////////////////////// /////////////////////// /////////////////////// /////////////////////// /////////////////////// ///////////////////////                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                   
+  ____     ___     ____   _  __  _____   _____       ___    ___  
+ / ___|   / _ \   / ___| | |/ / | ____| |_   _|     |_ _|  / _ \ 
+ \___ \  | | | | | |     | ' /  |  _|     | |        | |  | | | |
+  ___) | | |_| | | |___  | . \  | |___    | |    _   | |  | |_| |
+ |____/   \___/   \____| |_|\_\ |_____|   |_|   (_) |___|  \___/ 
+    
+	
+	                                                             
+*/
 
 
 var socket = io.connect();
@@ -47,49 +91,42 @@ socket.on("loopStart", function() {
 // initial sequencer state loaders (also drawing the arrays!)
 socket.on("sequencerOne", function(message) {
     sequencerOne.sequencerArray = message;
-    drawGrid(ctx, sequencerOne, 0, 0);
 
 });
 
 socket.on("sequencerOnePhrase", function(message) {
     sequencerOnePhrase.sequencerArray = message;
-    drawGrid(ctxTwo, sequencerOnePhrase, 0, 0);
 
 });
 
 socket.on("sequencerTwo", function(message) {
     sequencerTwo.sequencerArray = message;
-    drawGrid(ctxThree, sequencerTwo, 0, 0);
 
 });
 
 socket.on("sequencerTwoPhrase", function(message) {
     sequencerTwoPhrase.sequencerArray = message;
-    drawGrid(ctxFour, sequencerTwoPhrase, 0, 0);
 
 });
 
 
 socket.on("sequencerThree", function(message) {
     sequencerThree.sequencerArray = message;
-    drawGrid(ctxFive, sequencerThree, 0, 0);
 
 });
 
 socket.on("sequencerThreePhrase", function(message) {
     sequencerThreePhrase.sequencerArray = message;
-    drawGrid(ctxSix, sequencerThreePhrase, 0, 0);
+ 
 
 });
 
 socket.on("sequencerFour", function(message) {
     sequencerFour.sequencerArray = message;
-    drawGrid(ctxSeven, sequencerFour, 0, 0);
 });
 
 socket.on("sequencerFourPhrase", function(message) {
     sequencerFourPhrase.sequencerArray = message;
-    drawGrid(ctxEight, sequencerFourPhrase, 0, 0);
 });
 
 
@@ -177,15 +214,38 @@ document.forms[0].onsubmit = function () {
 
 */
 
+/*
+  _____   _   _   _____     ____    _____    ___    _   _   _____   _   _    ____   _____   ____  
+ |_   _| | | | | | ____|   / ___|  | ____|  / _ \  | | | | | ____| | \ | |  / ___| | ____| |  _ \ 
+   | |   | |_| | |  _|     \___ \  |  _|   | | | | | | | | |  _|   |  \| | | |     |  _|   | |_) |
+   | |   |  _  | | |___     ___) | | |___  | |_| | | |_| | | |___  | |\  | | |___  | |___  |  _ < 
+   |_|   |_| |_| |_____|   |____/  |_____|  \__\_\  \___/  |_____| |_| \_|  \____| |_____| |_| \_\
+                                                                                                  
+
+*/
+
+var seqCanvasElement = document.getElementById("sequencerOne");
+var seqCanvasContext = seqCanvasElement.getContext("2d");
+
+var phraseCanvasElement = document.getElementById("sequencerOnePhrase");
+var phraseCanvasContext = phraseCanvasElement.getContext("2d");
 
 
 
+function invertRGB(rgb, alpha) {	// Stuff to invert RGB! ... not my own work, found it at https://gist.github.com/Xordal/9bf24bc6cbc5a39f62cd ... did manage to make it have an alpha channel though.
+    rgb = [].slice.call(arguments).join(",").replace(/rgb\(|\)|rgba\(|\)|\s/gi, '').split(',');
+    for (var i = 0; i < rgb.length; i++) rgb[i] = (i === 3 ? 1 : 255) - rgb[i];
+	var rgbaOutput = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "," + alpha + ")"
+    return rgbaOutput;
+}	//end stuff to invert RGB
 
 
 // the sequencer object
 
-function sequencerObject(sequencerNumber, buttonsX, buttonsY, squareSize, gapSize) { // Constructor for the sequencer object
+function sequencerObject(sequencerNumber, buttonsX, buttonsY, squareSize, gapSize, colourArray, canvasElement, canvasContext) { // Constructor for the sequencer object
     // Declare important variables (well we're in an object, properties)
+	this.canvasElement = canvasElement;
+	this.canvasContext = canvasContext;
     this.squareSize = squareSize || 20;
     this.gapSize = gapSize || 1;
     this.buttonsX = buttonsX;
@@ -235,20 +295,51 @@ function sequencerObject(sequencerNumber, buttonsX, buttonsY, squareSize, gapSiz
     } // LIKELY BUG! When the sequencer is in phrase mode and only has one on a colum at a time, this will fuck it up! Watch out!
 
     this.sequencerNumber = sequencerNumber; // numbers the sequencers in a hacky tech-debt way! Yay!
+	
+	
+	// colour stuff!
+	
+	this.colour = "rgb(" + colourArray[0] + "," + colourArray[1] + "," + colourArray[2] + ")";
+	
+	this.colourDarkBright = function(darkBright){
+		var bgArray = [0,0,0]
+		for(var x=0;x<colourArray.length;x++){
+			bgArray[x] = colourArray[x] + darkBright;
+			if (bgArray[x]<0){
+				bgArray[x] = 0;
+			} else if (bgArray[x]>255){
+				bgArray[x] = 255;
+			}
+		}
+		var rgbConstructor = "rgb(" + bgArray[0] + "," + bgArray[1] + "," + bgArray[2] + ")";
+		return rgbConstructor;
+	}
+	
+	// background colouring
+	this.backgroundColour = this.colourDarkBright(-230);
+	this.backgroundHighlightColour = this.colourDarkBright(-140);
+	// velocity colours
+	this.velOne = this.colourDarkBright(80);
+	this.velTwo = this.colourDarkBright(60);
+	this.velThree = this.colourDarkBright(30);
+	this.velFour = this.colourDarkBright(0);
+	this.triggeredNote = invertRGB(this.colourDarkBright(130),"0.5");
+	//playhead colour
+	this.playheadColour = "rgba(0,220,0,0.6)";
 
-
+	
 } // end object constructor
 
 
 // Create the sequencers as needed
-var sequencerOne = new sequencerObject(1, 16, 16, 15, 1);
-var sequencerOnePhrase = new sequencerObject(2, 16, 10, 15, 1);
-var sequencerTwo = new sequencerObject(3, 16, 16, 15, 1);
-var sequencerTwoPhrase = new sequencerObject(4, 16, 10, 15, 1);
-var sequencerThree = new sequencerObject(5, 16, 16, 15, 1);
-var sequencerThreePhrase = new sequencerObject(6, 16, 10, 15, 1);
-var sequencerFour = new sequencerObject(7, 16, 16, 15, 1);
-var sequencerFourPhrase = new sequencerObject(8, 16, 10, 15, 1);
+var sequencerOne = new sequencerObject(1, 16, 16, 15, 1, [255,3,3],seqCanvasElement,seqCanvasContext); // red!
+var sequencerOnePhrase = new sequencerObject(2, 16, 10, 15, 1, [255,3,3],phraseCanvasElement,phraseCanvasContext);
+var sequencerTwo = new sequencerObject(3, 16, 16, 15, 1, [150,40,255],seqCanvasElement,seqCanvasContext); // blue!
+var sequencerTwoPhrase = new sequencerObject(4, 16, 10, 15, 1, [150,40,255],phraseCanvasElement,phraseCanvasContext);
+var sequencerThree = new sequencerObject(5, 16, 16, 15, 1,[60,240,50],seqCanvasElement,seqCanvasContext); // green!
+var sequencerThreePhrase = new sequencerObject(6, 16, 10, 15, 1,[60,240,50],phraseCanvasElement,phraseCanvasContext);
+var sequencerFour = new sequencerObject(7, 16, 16, 15, 1,[255, 120, 0],seqCanvasElement,seqCanvasContext); // orange! 
+var sequencerFourPhrase = new sequencerObject(8, 16, 10, 15, 1,[255, 120, 0],phraseCanvasElement,phraseCanvasContext);
 
 // set the mode on the phrase sequencers
 sequencerOnePhrase.mode = 'phrase';
@@ -256,43 +347,43 @@ sequencerTwoPhrase.mode = 'phrase';
 sequencerThreePhrase.mode = 'phrase';
 sequencerFourPhrase.mode = 'phrase';
 
+sequencerThree.playheadColour = "rgba(255,10,0,0.4)";
+sequencerThreePhrase.playheadColour = "rgba(255,10,0,0.4)";
+
+
+// stick all the sequencers in an array to make life a little easier
+var sequencerObjectArray = [sequencerOne,sequencerOnePhrase,sequencerTwo,sequencerTwoPhrase,sequencerThree,sequencerThreePhrase,sequencerFour,sequencerFourPhrase,]
+
+
+/*
+   ____      _      _   _  __     __     _      ____  
+  / ___|    / \    | \ | | \ \   / /    / \    / ___| 
+ | |       / _ \   |  \| |  \ \ / /    / _ \   \___ \ 
+ | |___   / ___ \  | |\  |   \ V /    / ___ \   ___) |
+  \____| /_/   \_\ |_| \_|    \_/    /_/   \_\ |____/ 
+                                                      
+*/	
+
 // the sequencer in view at the moment. Quite an important value that'll likely come up a fair bit.
 var currentSequencer = 0; 
 
+/* TO MAKE A WONDERFUL CANVAS SWAPOUT SYSTEM!
 
+- Only need TWO canvases for the sequencers: seqCanvasElement + seqCanvasContext & phraseCanvasElement + phraseCanvasContext
 
-				// CANVAS STUFF	
+- Need a drawgrid loop function, something like:
 
+var gridDrawLoop = setInterval(function(){
+	currentSequencer
+}, 100)
 
-// Create canvas contexts for all 8 sequencers
-var c = document.getElementById("sequencerOne");
-var ctx = c.getContext("2d");
+*/
 
-var cTwo = document.getElementById("sequencerOnePhrase");
-var ctxTwo = cTwo.getContext("2d");
-
-var cThree = document.getElementById("sequencerTwo");
-var ctxThree = cThree.getContext("2d");
-
-var cFour = document.getElementById("sequencerTwoPhrase");
-var ctxFour = cFour.getContext("2d");
-
-var cFive = document.getElementById("sequencerThree");
-var ctxFive = cFive.getContext("2d");
-
-var cSix = document.getElementById("sequencerThreePhrase");
-var ctxSix = cSix.getContext("2d");
-
-var cSeven = document.getElementById("sequencerFour");
-var ctxSeven = cSeven.getContext("2d");
-
-var cEight = document.getElementById("sequencerFourPhrase");
-var ctxEight = cEight.getContext("2d");
 
 // Canvas & UI functions
 function clearCanvas(canvas) {
     canvas.clearRect(0, 0, 500, 500);
-    canvas.fillStyle = 'rgba(255,255,255,1)';
+    canvas.fillStyle = 'rgba(255,255,255,1)'; // fill with white
     canvas.fillRect(0, 0, 500, 500);
 }
 
@@ -307,38 +398,47 @@ function clearGrid(canvas, sequencer, phrase) {
 }
 
 
-function drawGrid(canvas, sequencer, beat, phrase, colourOff, colourOn) { // Draws the grid and changes the colour of any buttons that are currently 'on'
 
-    clearCanvas(canvas); // Delete previous canvas for redraw!
 
+function drawGrid(sequencer, canvas) { // Draws the grid and changes the colour of any buttons that are currently 'on'
+
+    clearCanvas(canvas); // Delete previous canvas for redraw! (DELETE ME!)
+
+	// changes what view (live or phrase mode) is drawn according to sequencer.viewType
     if (sequencer.viewType == 'live') { // select the view type
         var currentPhrase = sequencer.currentPhrase;
     } else if (sequencer.viewType == 'phrase') {
         currentPhrase = sequencer.currentView;
     }
+		
 
     for (var x = 0; x < sequencer.buttonsX; x++) { // draws the grid with 2 loops
         for (var y = 0; y < sequencer.buttonsY; y++) {
             var loopX = ((sequencer.gapSize * 2) + sequencer.squareSize) * x;
             var loopY = ((sequencer.gapSize * 2) + sequencer.squareSize) * y;
-
-            if (sequencer.sequencerArray[currentPhrase][x][y] >= 1) { // TRUE when the array bean is on.
-                if (currentPhrase == sequencer.currentPhrase && beat != x) { // TRUE when it is not the beat and ... you know what? I trial'd and error's this conditional. I'm a hack. I don't know how it works, but it does. Let's just let that go and get on with our lives.
+				
+			// BELOW:
+					// 
+		if (sequencer.mode=='phrase' && sequencer.sequencerArray[currentPhrase][x][y] == 1){
+           canvas.fillStyle = sequencer.velFour; 
+           canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
+		} else if (sequencer.sequencerArray[currentPhrase][x][y] >= 1) { // TRUE when the array bean is on.
+                if (currentPhrase == sequencer.currentPhrase && sequencer.currentBeat != x) { // TRUE when it is not the beat and ... you know what? I trial'd and error's this conditional. I'm a hack. I don't know how it works, but it does. Let's just let that go and get on with our lives.
                     switch (sequencer.sequencerArray[currentPhrase][x][y]) { // change opacity according to velocity
                         case 1:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 0.75)"; // fill with 'on' colour (Velocity 1)
+                            canvas.fillStyle = sequencer.velOne; // fill with 'on' colour (Velocity 1)
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                         case 2:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 0.83)"; // fill with 'on' colour (Velocity 2)
+                            canvas.fillStyle = sequencer.velTwo; // fill with 'on' colour (Velocity 2)
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                         case 3:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 0.94)"; // fill with 'on' colour (Velocity 3)
+                            canvas.fillStyle = sequencer.velThree; // fill with 'on' colour (Velocity 3)
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                         case 4:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 1)"; // fill with 'on' colour (Velocity 4)
+                            canvas.fillStyle = sequencer.velFour; // fill with 'on' colour (Velocity 4)
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                     }
@@ -346,35 +446,35 @@ function drawGrid(canvas, sequencer, beat, phrase, colourOff, colourOn) { // Dra
                 } else if (currentPhrase != sequencer.currentPhrase) {
                     switch (sequencer.sequencerArray[currentPhrase][x][y]) { // change opacity according to velocity
                         case 1:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 0.75)"; // fill with 'on' colour
+                            canvas.fillStyle = sequencer.velOne; // fill with 'on' colour
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                         case 2:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 0.83)"; // fill with 'on' colour
+                            canvas.fillStyle = sequencer.velTwo; // fill with 'on' colour
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                         case 3:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 0.94)"; // fill with 'on' colour
+                            canvas.fillStyle = sequencer.velThree; // fill with 'on' colour
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                         case 4:
-                            canvas.fillStyle = colourOn || "rgba(255,60,60, 1)"; // fill with 'on' colour
+                            canvas.fillStyle = sequencer.velFour; // fill with 'on' colour
                             canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                             break;
                     }
                 }
 
-            } else if (sequencer.sequencerArray[currentPhrase][x][y] == 1 && beat == x) {
+            } else if (sequencer.sequencerArray[currentPhrase][x][y] == 1 && sequencer.currentBeat == x) {
 
                 canvas.fillStyle = "rgb(255,255,255)"; // fill with colour on the beat
                 canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
 
             } else {
                 if (x == 0 || x == 4 || x == 8 || x == 12) {
-                    canvas.fillStyle = "rgb(100,100,100)"; // Fill with regular colour
+                    canvas.fillStyle = sequencer.backgroundHighlightColour; // Fill with colour every 4th beat
                     canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                 } else {
-                    canvas.fillStyle = colourOff || "rgb(60,60,60)"; // Fill with regular colour
+                    canvas.fillStyle = sequencer.backgroundColour; // Fill with regular colour
                     canvas.fillRect(loopX, loopY, sequencer.squareSize, sequencer.squareSize);
                 }
             }
@@ -383,76 +483,52 @@ function drawGrid(canvas, sequencer, beat, phrase, colourOff, colourOn) { // Dra
 
     if (currentPhrase == sequencer.currentPhrase) {
         // Draw the playhead according to the beat.
-        var visualTempo = beat * ((sequencer.gapSize * 2) + sequencer.squareSize); // size of the playhead
-        canvas.fillStyle = "rgba(102,255,51,0.5)";
+        var visualTempo = sequencer.currentBeat * ((sequencer.gapSize * 2) + sequencer.squareSize); // size of the playhead
+        canvas.fillStyle = sequencer.playheadColour;
         canvas.fillRect(visualTempo, 0, (sequencer.gapSize + sequencer.squareSize), (sequencer.squareSize + (sequencer.gapSize * 2)) * sequencer.buttonsY);
 
     }
 }
 
 // Draw the canvas elements fo' the first time. Defaulting at Beat 1, Phrase 1.
-drawGrid(ctx, sequencerOne, 0, 0);
-drawGrid(ctxTwo, sequencerOnePhrase, 0, 0);
 
-drawGrid(ctxThree, sequencerTwo, 0, 0);
-drawGrid(ctxFour, sequencerTwoPhrase, 0, 0);
 
-drawGrid(ctxFive, sequencerThree, 0, 0);
-drawGrid(ctxSix, sequencerThreePhrase, 0, 0);
-
-drawGrid(ctxSeven, sequencerFour, 0, 0);
-drawGrid(ctxEight, sequencerFourPhrase, 0, 0);
+drawGrid(sequencerObjectArray[0],sequencerObjectArray[0].canvasContext);
+drawGrid(sequencerObjectArray[1],sequencerObjectArray[1].canvasContext);
 
 
 
 
-// Canvas user-input event listeners (on click!)
 
-c.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cOne, e);
+
+/*
+  _   _   ____    _____   ____      ___   _   _   ____    _   _   _____ 
+ | | | | / ___|  | ____| |  _ \    |_ _| | \ | | |  _ \  | | | | |_   _|
+ | | | | \___ \  |  _|   | |_) |    | |  |  \| | | |_) | | | | |   | |  
+ | |_| |  ___) | | |___  |  _ <     | |  | |\  | |  __/  | |_| |   | |  
+  \___/  |____/  |_____| |_| \_\   |___| |_| \_| |_|      \___/    |_|  
+                                                                        
+*/
+
+seqCanvasElement.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
 	
-    clickEdit(clickPosition.x, e.layerY, ctx, sequencerOne, sequencerOne.currentView);
-});
-
-cTwo.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cTwo, e);
+	var clickPosition = getMousePos(seqCanvasElement, e);
+	var sequencerClicker = sequencerObjectArray[currentSequencer * 2];
 	
-    clickEdit(clickPosition.x, e.layerY, ctxTwo, sequencerOnePhrase, 0);
+    clickEdit(clickPosition.x, clickPosition.y, seqCanvasContext, sequencerClicker, sequencerClicker.currentView);
+	//drawGrid(sequencerClicker, sequencerClicker.canvasContext);
 });
 
-
-cThree.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cThree, e);
+phraseCanvasElement.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
+	var clickPosition = getMousePos(phraseCanvasElement, e);
+	var phraseClicker = sequencerObjectArray[(currentSequencer * 2) + 1];
 	
-    clickEdit(clickPosition.x, e.layerY, ctxThree, sequencerTwo, sequencerTwo.currentView);
-});
-
-cFour.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cFour, e);
+    clickEdit(clickPosition.x, clickPosition.y, phraseCanvasContext, phraseClicker, 0);
+	drawGrid(phraseClicker,phraseClicker.canvasContext);
 	
-    clickEdit(clickPosition.x, e.layerY, ctxFour, sequencerTwoPhrase, 0);
 });
 
-cFive.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cFive, e);
-	
-    clickEdit(clickPosition.x, e.layerY, ctxFive, sequencerThree, sequencerThree.currentView);
-});
 
-cSix.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cSix, e);	
-    clickEdit(clickPosition.x, e.layerY, ctxSix, sequencerThreePhrase, 0);
-});
-
-cSeven.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cSeven, e);
-    clickEdit(clickPosition.x, e.layerY, ctxSeven, sequencerFour, sequencerFour.currentView);
-});
-
-cEight.addEventListener("click", function(e) { // when the canvas is clicked, call the draw function and give it the coordinates.
-	clickPosition = getMousePos(cEight, e);
-    clickEdit(clickPosition.x, clickPosition, ctxEight, sequencerFourPhrase, 0); 
-});
 
 function getMousePos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
@@ -501,28 +577,85 @@ function arrayEdit(canvas, sequencer, x, y, phrase) {
         } // end of 'f' loop
     } // end of else if
 
-    drawGrid(canvas, sequencer, sequencer.currentBeat, phrase);
 
 } // end of function
 
+
+
+/*
+var drawSeqGridLoop = setInterval(function(){
+	drawGrid(sequencerObjectArray[currentSequencer],sequencerObjectArray[currentSequencer].canvasContext);
+}, 100)
+*/
+
+/*
+  ____       _      ____    ___    ___      ____    _   _   _____   _____    ___    _   _   ____  
+ |  _ \     / \    |  _ \  |_ _|  / _ \    | __ )  | | | | |_   _| |_   _|  / _ \  | \ | | / ___| 
+ | |_) |   / _ \   | | | |  | |  | | | |   |  _ \  | | | |   | |     | |   | | | | |  \| | \___ \ 
+ |  _ <   / ___ \  | |_| |  | |  | |_| |   | |_) | | |_| |   | |     | |   | |_| | | |\  |  ___) |
+ |_| \_\ /_/   \_\ |____/  |___|  \___/    |____/   \___/    |_|     |_|    \___/  |_| \_| |____/ 
+                                                                                                  
+*/
+
 function viewChanger(sequencer, viewType, viewPhrase) { // used to change the current sequencer view.
     sequencer.viewType = viewType;
-    console.log(viewPhrase);
     sequencer.currentView = viewPhrase;
-    console.log(sequencer.currentView);
+
 }
 
+viewChanger(sequencerOne,"live",0);
 
-
-
-// PLEASE REMOVE THE BIT BELOW AT SOME POINT
-
-function changeSequencer(num){ // get rid of this later, but for now it's to test switching out sequencers etc.
+// DANGEROUS FUNCTION! DANGEROUT FUNCTION!
+function changeSequencer(num){ // Use to change what sequencer the document says we're on... 
 	currentSequencer = num;
-	document.getElementById('currentSeq').innerHTML = "Current Sequencer: " + (num + 1);
+	// switch out colours in the sprite sheet according to selected sequencer
+	var phraseColourArray = ["red","blue","green","orange"];
+	$("#phraseRadioButtons").removeClass("red blue green yellow").addClass(phraseColourArray[currentSequencer]);
+	
+	var nameArray = ['Melody ', 'Harmony ', 'Bass ', 'Percussion ']
+	$('#sequencerHeader').text(nameArray[num]);
+	
+	// drawGrid to make the change instant.
+	drawGrid(sequencerObjectArray[currentSequencer*2],sequencerObjectArray[currentSequencer*2].canvasContext);
+	drawGrid(sequencerObjectArray[currentSequencer*2+1],sequencerObjectArray[currentSequencer*2+1].canvasContext);
 }
 
 changeSequencer(0);
+
+
+// event listeners for radio buttons
+var phraseRadio = document.phraseButtons.radioGroupOne;
+var seqRadio = document.sequencerButtons.radioGroupTwo;
+
+function radioButtoner(buttonElement, type){
+	var rad = buttonElement
+	var prev = null;
+    for(var i = 0; i < rad.length; i++) {
+        rad[i].onclick = function() {
+            //(prev)? console.log(prev.value):null;
+            if(this !== prev) {
+                prev = this;
+            }
+            var sequencerToSend = sequencerObjectArray[currentSequencer * 2];
+			if (type == "phrase"){
+			if (this.value == 'live'){
+				viewChanger(sequencerToSend, 'live', 0);
+			} else {
+				viewChanger(sequencerToSend, 'phrase', this.value - 1);	
+			}
+		} else if (type =='seqSelect'){
+			console.log(this.value);
+			changeSequencer(this.value);
+		}
+		
+			
+		}
+    }
+}
+
+radioButtoner(phraseRadio, 'phrase');
+radioButtoner(seqRadio, 'seqSelect');
+
 
 // PLEASE REMOVE THE BIT ABOVE AT SOME POINT
 
@@ -530,7 +663,20 @@ changeSequencer(0);
 
 
 
-// AUDIO STUFF!
+/*
+	
+     _      _   _   ____    ___    ___  
+    / \    | | | | |  _ \  |_ _|  / _ \ 
+   / _ \   | | | | | | | |  | |  | | | |
+  / ___ \  | |_| | | |_| |  | |  | |_| |
+ /_/   \_\  \___/  |____/  |___|  \___/ 
+                                        
+										
+ /////////////////////// /////////////////////// /////////////////////// /////////////////////// /////////////////////// ///////////////////////                                                                                                                                                                                                                                                
+
+										
+						                                                                                                                       	
+*/
 
 
 Tone.Transport.bpm.value = 120;
@@ -589,33 +735,70 @@ function notes(rootNote, scale, scaleNote, offset) { // real handy function to t
     return noteString;
 }
 
+/*
+  ____   __   __  _   _   _____   _   _   ____         __    ____       _      __  __   ____    _       _____   ____    ____  
+ / ___|  \ \ / / | \ | | |_   _| | | | | / ___|       / /   / ___|     / \    |  \/  | |  _ \  | |     | ____| |  _ \  / ___| 
+ \___ \   \ V /  |  \| |   | |   | |_| | \___ \      / /    \___ \    / _ \   | |\/| | | |_) | | |     |  _|   | |_) | \___ \ 
+  ___) |   | |   | |\  |   | |   |  _  |  ___) |    / /      ___) |  / ___ \  | |  | | |  __/  | |___  | |___  |  _ <   ___) |
+ |____/    |_|   |_| \_|   |_|   |_| |_| |____/    /_/      |____/  /_/   \_\ |_|  |_| |_|     |_____| |_____| |_| \_\ |____/ 
+      
+*/
 
 //setup effects
 // Synth One Effects
-var reverbOne = new Tone.Freeverb();
-var distOne = new Tone.Distortion();
+// var reverbOne = new Tone.Freeverb();
+// var distOne = new Tone.Distortion();
 var delayOne = new Tone.PingPongDelay();
+var crushOne = new Tone.BitCrusher();
+var eqOne = new Tone.EQ3();
 // Synth Two Effects
-var reverbTwo = new Tone.Freeverb();
-var distTwo = new Tone.Distortion();
+//var reverbTwo = new Tone.Freeverb();
+// var distTwo = new Tone.Distortion();
 var delayTwo = new Tone.PingPongDelay();
+var crushTwo = new Tone.BitCrusher();
+var eqTwo = new Tone.EQ3();
+
+
 // Synth Three Effects
-var reverbThree = new Tone.Freeverb();
-var distThree = new Tone.Distortion();
+//var reverbThree = new Tone.Freeverb();
+// var distThree = new Tone.Distortion();
 var delayThree = new Tone.PingPongDelay();
+var crushThree = new Tone.BitCrusher();
+var eqThree = new Tone.EQ3();
+
+
 // Percussion Effects
 // Perc
-var reverbFour = new Tone.Freeverb();
-var distFour = new Tone.Distortion();
+//var reverbFour = new Tone.Freeverb();
+// var distFour = new Tone.Distortion();
 var delayFour = new Tone.PingPongDelay();
+var crushFour = new Tone.BitCrusher();
+var eqFour = new Tone.EQ3();
 
+eqOne.low.value = -100;
+eqTwo.low.value = -100;
+eqThree.low.value = -100;
+eqFour.low.value = -100;
 
+eqOne.high.value = -100;
+eqTwo.high.value = -100;
+eqThree.high.value = -100;
+eqFour.high.value = -100;
 
+eqOne.lowFrequency.value = 19;
+eqTwo.lowFrequency.value = 19;
+eqThree.lowFrequency.value = 19;
+eqFour.lowFrequency.value = 19;
+
+eqOne.highFrequency.value = 20000;
+eqTwo.highFrequency.value = 20000;
+eqThree.highFrequency.value = 20000;
+eqFour.highFrequency.value = 20000;
 
 
 //setup a synth
 
-var synth = new Tone.PolySynth(3, Tone.FMSynth).chain(delayOne, Tone.Master);
+var synth = new Tone.PolySynth(2, Tone.FMSynth).chain(crushOne, eqOne, delayOne, Tone.Master);
 
 synth.set({
     "envelope": {
@@ -629,7 +812,7 @@ synth.set({
 
 
 //synth two
-var synthTwo = new Tone.PolySynth(2, Tone.DuoSynth).chain(delayTwo, Tone.Master);
+var synthTwo = new Tone.PolySynth(2, Tone.MonoSynth).chain(crushTwo,eqTwo,  delayTwo, Tone.Master);
 
 synthTwo.set({
     "envelope": {
@@ -641,7 +824,9 @@ synthTwo.set({
 });
 
 
-var synthThree = new Tone.PolySynth(1, Tone.MonoSynth).chain(delayTwo, Tone.Master);
+var synthThree = new Tone.Sampler( "audio/tomOne.wav", function() {
+    // call function when samples are loaded
+}).chain(crushThree,eqThree,  delayThree, Tone.Master);
 
 
 
@@ -665,65 +850,49 @@ var synthFour = new Tone.MultiPlayer({
     "kickFour": "audio/kickFour.wav",
 }, function() {
     // call function when samples are loaded
-}).chain(delayFour, Tone.Master);
+}).chain(crushFour,eqFour,  delayFour, Tone.Master);
+
 
 
 /*
-//setup perc (toms)
-var perc = new Tone.MultiPlayer({
-    "percOne": "audio/tomOne.wav",
-    "percTwo": "audio/tomTwo.wav",
-    "percThree": "audio/tomThree.wav",
-    "percFour": "audio/tomFour.wav",
-}, function() {
-    // call function when samples are loaded
-}).toMaster();
-// hats
-var hat = new Tone.MultiPlayer({
-    "hatOne": "audio/hatOne.wav",
-    "hatTwo": "audio/hatTwo.wav",
-    "hatThree": "audio/hatThree.wav",
-    "hatFour": "audio/hatFour.wav",
-}, function() {
-    // call function when samples are loaded
-}).toMaster();
-//snare
-var snare = new Tone.MultiPlayer({
-    "snareOne": "audio/snareOne.wav",
-    "snareTwo": "audio/snareTwo.wav",
-    "snareThree": "audio/snareThree.wav",
-    "snareFour": "audio/snareFour.wav",
-}, function() {
-    // call function when samples are loaded
-}).toMaster();
-//kick
-var kick = new Tone.MultiPlayer({
-    "kickOne": "audio/kickOne.wav",
-    "kickTwo": "audio/kickTwo.wav",
-    "kickThree": "audio/kickThree.wav",
-    "kickFour": "audio/kickFour.wav",
-}, function() {
-    // call function when samples are loaded
-}).toMaster();
+  ____    _____    ___    _   _   _____   _   _    ____   _____   ____      _        ___     ___    ____    ____  
+ / ___|  | ____|  / _ \  | | | | | ____| | \ | |  / ___| | ____| |  _ \    | |      / _ \   / _ \  |  _ \  / ___| 
+ \___ \  |  _|   | | | | | | | | |  _|   |  \| | | |     |  _|   | |_) |   | |     | | | | | | | | | |_) | \___ \ 
+  ___) | | |___  | |_| | | |_| | | |___  | |\  | | |___  | |___  |  _ <    | |___  | |_| | | |_| | |  __/   ___) |
+ |____/  |_____|  \__\_\  \___/  |_____| |_| \_|  \____| |_____| |_| \_\   |_____|  \___/   \___/  |_|     |____/ 
+                                                                                                                  
+																												  
 */
 
+// melody sequencer
+var drawGridLoop = new Tone.Sequence(function(time, col) {
+	drawGrid(sequencerObjectArray[currentSequencer*2],sequencerObjectArray[currentSequencer*2].canvasContext); // note sequencer
+	drawGrid(sequencerObjectArray[currentSequencer*2+1],sequencerObjectArray[currentSequencer*2+1].canvasContext); // phrase sequencer
+	
+	var selector = ".radioText" + (sequencerObjectArray[currentSequencer*2].currentPhrase + 1);
+	$(".phraser").removeClass("pulsate");
+	$(selector).addClass("pulsate");
+
+}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
 
 
 // melody sequencer
 var melodyLoop = new Tone.Sequence(function(time, col) {
-
+	// drawGrid(sequencerObjectArray[currentSequencer*2],sequencerObjectArray[currentSequencer*2].canvasContext);
+	// gotta check to see if it's the right one to draw, then draw it!
+	
     var s = sequencerOne;
     sequencerOne.currentBeat = col;
-    drawGrid(ctx, s, col, sequencerOne.currentPhrase);
     var column = s.sequencerArray[sequencerOne.currentPhrase][col];
     var counter = 0;
     for (var i = 0; i < s.buttonsX; i++) {
         var currentBean = column[reverseRange(i, -1, s.buttonsX)];
+		
         if (currentBean >= 1 && counter < 4) {
             var vel = (currentBean * 0.25) + (Math.random() * 0.25);
             counter++;
             synth.triggerAttackRelease(notes(9, 'minor', i, 28), "4n", "+0.05", vel);
-
+			
         }
     }
 }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
@@ -731,10 +900,9 @@ var melodyLoop = new Tone.Sequence(function(time, col) {
 
 // melody phrase sequencer
 var sequencerOnePhraseSequencer = new Tone.Sequence(function(time, col) { // Phrase sequencer (sequencerOne)
-
     var s = sequencerOnePhrase;
     s.currentBeat = (col + phraseOffset) % 16;
-    drawGrid(ctxTwo, s, s.currentBeat, 0);
+    //drawGrid(ctxTwo, s, s.currentBeat, 0);
     var column = s.sequencerArray[0][s.currentBeat];
     for (var i = 0; i < s.buttonsX; i++) {
         if (column[i] == 1) {
@@ -749,10 +917,10 @@ var sequencerOnePhraseSequencer = new Tone.Sequence(function(time, col) { // Phr
 
 // harmony sequencer
 var harmonyLoop = new Tone.Sequence(function(time, col) {
-
+	
     var s = sequencerTwo;
     s.currentBeat = col;
-    drawGrid(ctxThree, s, col, s.currentPhrase);
+    //drawGrid(ctxThree, s, col, s.currentPhrase);
     var column = s.sequencerArray[s.currentPhrase][col];
     var counter = 0;
     for (var i = 0; i < s.buttonsX; i++) {
@@ -761,7 +929,7 @@ var harmonyLoop = new Tone.Sequence(function(time, col) {
 
             var vel = (currentBean * 0.25) + (Math.random() * 0.25);
             counter++;
-            synthTwo.triggerAttackRelease(notes(9, 'minor', i, 28), "8n", "+0.05", vel);
+            synthTwo.triggerAttackRelease(notes(9, 'minor', i, 21), "8n", "+0.05", vel);
         }
     }
 }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
@@ -772,7 +940,7 @@ var sequencerTwoPhraseSequencer = new Tone.Sequence(function(time, col) { // Phr
 
     var s = sequencerTwoPhrase;
     s.currentBeat = (col + phraseOffset) % 16;
-    drawGrid(ctxFour, s, s.currentBeat, 0);
+    //drawGrid(ctxFour, s, s.currentBeat, 0);
     var column = s.sequencerArray[0][s.currentBeat];
     for (var i = 0; i < s.buttonsX; i++) {
         if (column[i] == 1) {
@@ -789,7 +957,7 @@ var bassLoop = new Tone.Sequence(function(time, col) {
 
     var s = sequencerThree;
     s.currentBeat = col;
-    drawGrid(ctxFive, s, col, s.currentPhrase);
+    //drawGrid(ctxFive, s, col, s.currentPhrase);
     var column = s.sequencerArray[s.currentPhrase][col];
     var counter = 0;
     for (var i = 0; i < s.buttonsX; i++) {
@@ -797,7 +965,7 @@ var bassLoop = new Tone.Sequence(function(time, col) {
         if (currentBean >= 1 && counter < 4) {
             var vel = (currentBean * 0.25) + (Math.random() * 0.25);
             counter++;
-            synthThree.triggerAttackRelease(notes(9, 'minor', i, 28), "2n", "+0.05", vel);
+            synthThree.triggerAttackRelease(i-8, "2n", undefined, vel);
 
         }
     }
@@ -809,7 +977,7 @@ var sequencerThreePhraseSequencer = new Tone.Sequence(function(time, col) { // P
 
     var s = sequencerThreePhrase;
     s.currentBeat = (col + phraseOffset) % 16;
-    drawGrid(ctxSix, s, s.currentBeat, 0);
+   // drawGrid(ctxSix, s, s.currentBeat, 0);
     var column = s.sequencerArray[0][s.currentBeat];
     for (var i = 0; i < s.buttonsX; i++) {
         if (column[i] == 1) {
@@ -828,14 +996,13 @@ var percLoop = new Tone.Sequence(function(time, col) {
 
     var s = sequencerFour;
     s.currentBeat = col;
-    drawGrid(ctxSeven, s, col, s.currentPhrase);
+   // drawGrid(ctxSeven, s, col, s.currentPhrase);
     var column = s.sequencerArray[s.currentPhrase][col];
 
     for (var i = 0; i < s.buttonsX; i++) {
         var currentBean = column[reverseRange(i, -1, s.buttonsX)];
         if (currentBean >= 1) {
             var vel = (currentBean * 0.25) + (Math.random() * 0.25);
-			console.log(sequencerFour.Gain)
 			sequencerFour.Gain = vel
             // trigger note - select note is 'i'
 
@@ -899,7 +1066,7 @@ var sequencerFourPhraseSequencer = new Tone.Sequence(function(time, col) { // Ph
 
     var s = sequencerFourPhrase;
     s.currentBeat = (col + phraseOffset) % 16;
-    drawGrid(ctxEight, s, s.currentBeat, 0);
+    //drawGrid(ctxEight, s, s.currentBeat, 0);
     var column = s.sequencerArray[0][s.currentBeat];
     for (var i = 0; i < s.buttonsX; i++) {
         if (column[i] == 1) {
@@ -931,24 +1098,24 @@ var sequencerFourPhraseSequencer = new Tone.Sequence(function(time, col) { // Ph
 
 // slider canvases
 /*
-var volOneElement = document.getElementById("volumeOne");
-var volOne = volOneElement.getContext("2d");
-
-var volTwoElement = document.getElementById("volumeTwo");
-var volTwo = volTwoElement.getContext("2d");
+  ____    _       ___   ____    _____   ____    ____  
+ / ___|  | |     |_ _| |  _ \  | ____| |  _ \  / ___| 
+ \___ \  | |      | |  | | | | |  _|   | |_) | \___ \ 
+  ___) | | |___   | |  | |_| | | |___  |  _ <   ___) |
+ |____/  |_____| |___| |____/  |_____| |_| \_\ |____/ 
+                                                      
 */
+
+
 
 var volElement = document.getElementById("volumeAll");
 var volCanvas = volElement.getContext("2d");
 
-var delayElement = document.getElementById("delay");
-var delayCanvas = delayElement.getContext("2d");
+var synthSettingOneElement = document.getElementById("synthSettingOne");
+var synthSettingOneCanvas = synthSettingOneElement.getContext("2d");
 
-var delayFeedbackElement = document.getElementById("delayFeedback");
-var delayFeedbackCanvas = delayFeedbackElement.getContext("2d");
-
-var delayTimeElement = document.getElementById("delayTime");
-var delayTimeCanvas = delayTimeElement.getContext("2d");
+var synthSettingTwoElement = document.getElementById("synthSettingTwo");
+var synthSettingTwoCanvas = synthSettingTwoElement.getContext("2d");
 
 var attackElement = document.getElementById("attack");
 var attackCanvas = attackElement.getContext("2d");
@@ -962,9 +1129,36 @@ var sustainCanvas = sustainElement.getContext("2d");
 var releaseElement = document.getElementById("release");
 var releaseCanvas = releaseElement.getContext("2d");
 
+var attackModElement = document.getElementById("attackMod");
+var attackModCanvas = attackModElement.getContext("2d");
 
-//var volAllElement = document.getElementById("volumeAll");
-//var volAll = volAllElement.getContext("2d");
+var decayModElement = document.getElementById("decayMod");
+var decayModCanvas = decayModElement.getContext("2d");
+
+var sustainModElement = document.getElementById("sustainMod");
+var sustainModCanvas = sustainModElement.getContext("2d");
+
+var releaseModElement = document.getElementById("releaseMod");
+var releaseModCanvas = releaseModElement.getContext("2d");
+
+var delayElement = document.getElementById("delay");
+var delayCanvas = delayElement.getContext("2d");
+
+var delayFeedbackElement = document.getElementById("delayFeedback");
+var delayFeedbackCanvas = delayFeedbackElement.getContext("2d");
+
+var delayTimeElement = document.getElementById("delayTime");
+var delayTimeCanvas = delayTimeElement.getContext("2d");
+
+var crushElement = document.getElementById("crush");
+var crushCanvas = crushElement.getContext("2d");
+
+var hiPassElement = document.getElementById("hiPass");
+var hiPassCanvas = hiPassElement.getContext("2d");
+
+var lowPassElement = document.getElementById("lowPass");
+var lowPassCanvas = lowPassElement.getContext("2d");
+
 
 
 // making a UI slider in Canvas.
@@ -980,34 +1174,44 @@ function drawHead(canvas, x){
 	canvas.fillRect(x,5,6,20);
 }
 
-function ghostHead(canvas, x){
+function ghostHead(canvas, x, colour){
 	drawLine(canvas);
-	canvas.fillStyle = 'rgb(140,90,90)';
+	canvas.fillStyle = colour;
 	canvas.fillRect(x,5,6,20);
 }
 
-function drawSlider(slider){
+function drawSlider(slider, colour){
 	clearCanvas(slider.canvas);
-	ghostHead(slider.canvas,slider.ghostPosition);
+	ghostHead(slider.canvas,slider.ghostPosition,colour);
 	drawHead(slider.canvas,slider.floatingHeadPosition);
 }
 
-function logSlider(position, minp, maxp, minv, maxv) { // this is not my function, because I cannot maths this well
+function logSlider(position, minp, maxp, minv, maxv, inv) { // this is not my function, because I cannot maths this well. DON'T STICK NEGATIVE NUMBERS/ZERO INTO ME!
 
   // The result should be between 100 an 10000000
   var minz = Math.log(minv);
   var maxz = Math.log(maxv);
-
+  
   // calculate adjustment factor
   var scale = (maxz-minz) / (maxp-minp);
-
-  return Math.exp(minz + scale*(position-minp));
+  
+  var logNormal = Math.exp(minz + scale*(position-minp));
+  var logInverted= minp + (Math.log(position) - minz) / scale; // I have literally no idea how these work, but they do!
+  
+  if(inv == 1){
+	  return logInverted;
+	  
+  } else {
+	  return logNormal;
+	}
 }
 
 function sliderObject (effect, canvas, canvasElement, value, min, max, effectName, seq, mode){
+	
 	this.mode = mode;
 	this.logarithmic = 0;
 	this.sequencerNumber = seq;
+	this.colour
 	this.effectName = effectName;
 	this.buttonName = this.effectName + "Button";
 	this.effect = effect;
@@ -1028,36 +1232,67 @@ function sliderObject (effect, canvas, canvasElement, value, min, max, effectNam
 	this.valueRange = this.maxValue - this.minValue
 	
 	this.floatingHeadPixelToValue = function(pixel){
+		if (this.logarithmic == 1){
+			this.floatingHeadPosition = pixel;
+			var value = logSlider(pixel,0,194,this.minValue,this.maxValue,0);
+			//console.log(logSlider(pixel,0,194,this.minValue,this.maxValue,1))
+			this.floatingHeadValue = value;
+			console.log('floatingHeadPixelToValue: ', value)
+		} else {
 		this.floatingHeadPosition = pixel;
 		var value = ((this.valueRange / 194) * pixel) + this.minValue;
 		// var value = logSlider()
 		this.floatingHeadValue = value;
+	}
 		return value;
 	}
 	
 	
 	this.ghostPixelToValue = function(pixel){ 
+		if (this.logarithmic == 1){
+			this.ghostValue = pixel;
+			var value = logSlider(pixel,0,194,this.minValue,this.maxValue,0);
+			this.ghostValue = value;
+			console.log('ghostPixelToValue: ', pixel)
+			
+		} else {
 		this.ghostPosition = pixel;		
 		var value = ((this.valueRange / 194) * pixel) + this.minValue;
 		this.ghostValue = value;
+	}
 		return value;
 	}
 	
 	
 	this.floatingHeadValueToPixel = function(values){
+		var pixel;
+		if (this.logarithmic == 1){
+			this.floatingHeadValue = values;
+			pixel = logSlider(values,0,194,this.minValue,this.maxValue,1);
+			this.floatingHeadValue = pixel;
+			
+		} else {
 		this.floatingHeadValue = values;
-		var pixel =  ((194 / this.valueRange) * values) - ((194 / this.valueRange) * this.minValue);
-		this.floatingHeadPosition = pixel;	
+		pixel =  ((194 / this.valueRange) * values) - ((194 / this.valueRange) * this.minValue);
+		this.floatingHeadPosition = pixel;
+		}	
 		return pixel;
 	}
 	
 	this.floatingHeadValueToPixel(value);
 	
+	
 	this.ghostValueToPixel = function(values){
+		if (this.logarithmic == 1){
+			this.ghostValue = values;
+			var pixel = logSlider(values,0,194,this.minValue,this.maxValue,1);
+			this.ghostValue = pixel;
+			console.log('ghostValueToPixel: ', pixel)
+		} else {
 		this.ghostValue = values;
 		var pixel =  ((194 / this.valueRange) * values) - ((194 / this.valueRange) * this.minValue);
 		this.ghostPosition = pixel;	
-//		console.log(this.ghostValue, ': ghostValue in valuetopixel function')
+	}
 		return pixel;
 	}
 	
@@ -1070,12 +1305,59 @@ function sliderObject (effect, canvas, canvasElement, value, min, max, effectNam
 	
 	this.buttonName;
 }
+/*
+
+	
+	//	//	//		//		//////	//////	//////	//////	//	//
+	//	//	////  ////		//		//	//	//	//	//	//	//	//
+	//		//	//	//		//////	//	//	//	//	//	//	//	//
+	//		//		//			//	//	//	/////	/////	//////			(for the next 600 lines or so... I mean, it does work! So there's that!)
+	//		//		//			//	//	//	//	//	//	//		//
+	//		//		//		//////	//////	//	//	//	//	//////
+		
+*/
+
 
 // volume sliders
 var volSliderOne = new sliderObject(synth.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 0,'value');
 var volSliderTwo = new sliderObject(synthTwo.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 1,'value');
 var volSliderThree = new sliderObject(synthThree.volume, volCanvas,volElement,-80,-80,0, 'volumeAll', 2,'value');
 var volSliderFour = new sliderObject(synthFour.volume, volCanvas,volElement,-80,-70,10, 'volumeAll', 3,'value');
+
+// synth settings sliders (first)
+var synthOneModValue = new sliderObject(synth, synthSettingOneCanvas,synthSettingOneElement,0,0,100, 'synthSettingOne', 0,'ModValue');
+var synthTwoFilterFreq = new sliderObject(synthTwo, synthSettingOneCanvas,synthSettingOneElement,0,20,20000, 'synthSettingOne', 1,'FilterFreq');
+
+
+
+var synthOneHarmonicity = new sliderObject(synth, synthSettingTwoCanvas,synthSettingTwoElement,0,0.25,6, 'synthSettingTwo', 0,'Harmonicity');
+var synthTwoFilterQ = new sliderObject(synthTwo, synthSettingTwoCanvas,synthSettingTwoElement,1,1,10, 'synthSettingTwo', 1,'FilterQ');
+
+
+	// main envelopes
+// attack
+var attackOne = new sliderObject(synth, attackCanvas,attackElement,0,0,1,'attack',0,'envelope');
+var attackTwo = new sliderObject(synthTwo, attackCanvas,attackElement,0,0,1,'attack',1,'envelope');
+var attackOneMod = new sliderObject(synth, attackModCanvas,attackModElement,0,0,1,'attackMod',0,'envelope');
+var attackTwoMod = new sliderObject(synthTwo, attackModCanvas,attackModElement,0,0,1,'attackMod',1,'envelope');
+
+// decay
+var decayOne = new sliderObject(synth, decayCanvas,decayElement,0,0,1,'decay',0,'envelope');
+var decayTwo = new sliderObject(synthTwo, decayCanvas,decayElement,0,0,1,'decay',1,'envelope');
+var decayOneMod = new sliderObject(synth, decayModCanvas,decayModElement,0,0,1,'decayMod',0,'envelope');
+var decayTwoMod = new sliderObject(synthTwo, decayModCanvas,decayModElement,0,0,1,'decayMod',1,'envelope');
+// sustain
+var sustainOne = new sliderObject(synth, sustainCanvas,sustainElement,0,0,1,'sustain',0,'envelope');
+var sustainTwo = new sliderObject(synthTwo, sustainCanvas,sustainElement,0,0,1,'sustain',1,'envelope');
+var sustainOneMod = new sliderObject(synth, sustainModCanvas,sustainModElement,0,0,1,'sustainMod',0,'envelope');
+var sustainTwoMod = new sliderObject(synthTwo, sustainModCanvas,sustainModElement,0,0,1,'sustainMod',1,'envelope');
+// release
+var releaseOne = new sliderObject(synth, releaseCanvas,releaseElement,0,0,1,'release',0,'envelope');
+var releaseTwo = new sliderObject(synthTwo, releaseCanvas,releaseElement,0,0,1,'release',1,'envelope');
+var releaseOneMod = new sliderObject(synth, releaseModCanvas,releaseModElement,0,0,1,'releaseMod',0,'envelope');
+var releaseTwoMod = new sliderObject(synthTwo, releaseModCanvas,releaseModElement,0,0,1,'releaseMod',1,'envelope');
+
+	// effects
 // delay (wet/dry)
 var delaySliderOne = new sliderObject(delayOne.wet, delayCanvas,delayElement,0,0,1,'delay',0,'value');
 var delaySliderTwo = new sliderObject(delayTwo.wet, delayCanvas,delayElement,0,0,1,'delay',1,'value')
@@ -1087,33 +1369,49 @@ var delayFeedbackTwo = new sliderObject(delayTwo.feedback, delayFeedbackCanvas,d
 var delayFeedbackThree = new sliderObject(delayThree.feedback, delayFeedbackCanvas,delayFeedbackElement,0,0,0.8,'delayFeedback',2,'value');
 var delayFeedbackFour = new sliderObject(delayFour.feedback, delayFeedbackCanvas,delayFeedbackElement,0,0,0.8,'delayFeedback',3,'value');
 // delay time
-var delayTimeOne = new sliderObject(delayOne.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',0,'value');
-var delayTimeTwo = new sliderObject(delayTwo.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',1,'value');
-var delayTimeThree = new sliderObject(delayThree.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',2,'value');
-var delayTimeFour = new sliderObject(delayFour.delayTime, delayTimeCanvas,delayTimeElement,0,0,1,'delayTime',3,'value');
-// attack
-var attackOne = new sliderObject(synth, attackCanvas,attackElement,0,0,1,'attack',0,'envelope');
-var attackTwo = new sliderObject(synthTwo, attackCanvas,attackElement,0,0,1,'attack',1,'envelope');
-var attackThree = new sliderObject(synthThree, attackCanvas,attackElement,0,0,1,'attack',2,'envelope');
-var attackFour = new sliderObject(synthFour, attackCanvas,attackElement,0,0,1,'attack',3,'envelope');
-// decay
-var decayOne = new sliderObject(synth, decayCanvas,decayElement,0,0,1,'decay',0,'envelope');
-var decayTwo = new sliderObject(synthTwo, decayCanvas,decayElement,0,0,1,'decay',1,'envelope');
-var decayThree = new sliderObject(synthThree, decayCanvas,decayElement,0,0,1,'decay',2,'envelope');
-var decayFour = new sliderObject(synthFour, decayCanvas,decayElement,0,0,1,'decay',3,'envelope');
-// sustain
-var sustainOne = new sliderObject(synth, sustainCanvas,sustainElement,0,0,1,'sustain',0,'envelope');
-var sustainTwo = new sliderObject(synthTwo, sustainCanvas,sustainElement,0,0,1,'sustain',1,'envelope');
-var sustainThree = new sliderObject(synthThree, sustainCanvas,sustainElement,0,0,1,'sustain',2,'envelope');
-var sustainFour = new sliderObject(synthFour, sustainCanvas,sustainElement,0,0,1,'sustain',3,'envelope');
-// release
-var releaseOne = new sliderObject(synth, releaseCanvas,releaseElement,0,0,1,'release',0,'envelope');
-var releaseTwo = new sliderObject(synthTwo, releaseCanvas,releaseElement,0,0,1,'release',1,'envelope');
-var releaseThree = new sliderObject(synthThree, releaseCanvas,releaseElement,0,0,1,'release',2,'envelope');
-var releaseFour = new sliderObject(synthFour, releaseCanvas,releaseElement,0,0,1,'release',3,'envelope');
+var delayTimeOne = new sliderObject(delayOne.delayTime, delayTimeCanvas,delayTimeElement,0,0.01,0.4,'delayTime',0,'value');
+var delayTimeTwo = new sliderObject(delayTwo.delayTime, delayTimeCanvas,delayTimeElement,0,0.01,0.4,'delayTime',1,'value');
+var delayTimeThree = new sliderObject(delayThree.delayTime, delayTimeCanvas,delayTimeElement,0,0.01,0.4,'delayTime',2,'value');
+var delayTimeFour = new sliderObject(delayFour.delayTime, delayTimeCanvas,delayTimeElement,0,0.01,0.4,'delayTime',3,'value');
 
-var effectArray = [volSliderOne, volSliderTwo, volSliderThree, volSliderFour, delaySliderOne, delaySliderTwo, delaySliderThree, delaySliderFour, delayFeedbackOne, delayFeedbackTwo,delayFeedbackThree,delayFeedbackFour,delayTimeOne,delayTimeTwo,delayTimeThree,delayTimeFour,attackOne,attackTwo,attackThree,attackFour,decayOne,decayTwo,decayThree,decayFour,sustainOne,sustainTwo,sustainThree,sustainFour,releaseOne,releaseTwo,releaseThree,releaseFour]; // an array of all the slider objects (makes for easy looping, though may be a massive issues in the future!)
+// bitcrush wet/dry
+var crushOne = new sliderObject(crushOne.wet, crushCanvas,crushElement,0,0,1,'crush',0,'value');
+var crushTwo = new sliderObject(crushTwo.wet, crushCanvas,crushElement,0,0,1,'crush',1,'value');
+var crushThree = new sliderObject(crushThree.wet, crushCanvas,crushElement,0,0,1,'crush',2,'value');
+var crushFour = new sliderObject(crushFour.wet, crushCanvas,crushElement,0,0,1,'crush',3,'value');
 
+// filter hipass
+var hiPassOne = new sliderObject(eqOne.highFrequency, hiPassCanvas,hiPassElement,20000,5000,20000,'hiPass',0,'value');
+var hiPassTwo = new sliderObject(eqTwo.highFrequency, hiPassCanvas,hiPassElement,20000,5000,20000,'hiPass',1,'value');
+var hiPassThree = new sliderObject(eqThree.highFrequency, hiPassCanvas,hiPassElement,20000,5000,20000,'hiPass',2,'value');
+var hiPassFour = new sliderObject(eqFour.highFrequency, hiPassCanvas,hiPassElement,20000,5000,20000,'hiPass',3,'value');
+
+// lowpass
+var lowPassOne = new sliderObject(eqOne.lowFrequency, lowPassCanvas,lowPassElement,20,20,5000,'lowPass',0,'value');
+var lowPassTwo = new sliderObject(eqTwo.lowFrequency, lowPassCanvas,lowPassElement,20,20,5000,'lowPass',1,'value');
+var lowPassThree = new sliderObject(eqThree.lowFrequency, lowPassCanvas,lowPassElement,20,20,5000,'lowPass',2,'value');
+var lowPassFour = new sliderObject(eqFour.lowFrequency, lowPassCanvas,lowPassElement,20,20,5000,'lowPass',3,'value');
+
+// Just so you know, (because I am not a smart man), the lowPass filters are actually high pass filters. And vice-versa. Oops.
+
+
+var effectArray = [ // all the line breaks may cause problems
+	volSliderOne, volSliderTwo, volSliderThree, volSliderFour,
+	synthOneModValue,synthTwoFilterFreq,synthOneHarmonicity,synthTwoFilterQ,
+	attackOne,attackTwo,attackOneMod,attackTwoMod,
+	decayOne,decayTwo,decayOneMod,decayTwoMod,
+	sustainOne,sustainTwo,sustainOneMod,sustainTwoMod,
+	releaseOne,releaseTwo,releaseOneMod,releaseTwoMod, 
+	delaySliderOne, delaySliderTwo, delaySliderThree, delaySliderFour, 
+	delayFeedbackOne,delayFeedbackTwo,delayFeedbackThree,delayFeedbackFour,
+	delayTimeOne,delayTimeTwo,delayTimeThree,delayTimeFour,
+	crushOne,crushTwo,crushThree,crushFour,
+	hiPassOne,hiPassTwo,hiPassThree,hiPassFour,
+	lowPassOne,lowPassTwo,lowPassThree,lowPassFour,
+	]; // an array of all the slider objects (makes for easy looping, though may be a massive issues in the future!) 
+	
+
+	
 function addNumbersToSliderObjects(){ // does what it says on the tin! Adds a number value to each slider.
 	for(var x = 0; x<effectArray.length; x++){
 		effectArray[x].number = x;
@@ -1122,9 +1420,42 @@ function addNumbersToSliderObjects(){ // does what it says on the tin! Adds a nu
 addNumbersToSliderObjects(); // this is a really hacky way of doing things, I think. 
 
 socket.on("effectStatus", function(serverArray) {
-	// here we set all the values for the effects and stuff... Yeah, this is not pretty. Seems I like arrays.
+	console.log(serverArray)
+
+	// here we set all the values for the effects and stuff... Yeah, this is not pretty. Seems I like arrays. It's also kinda tricky to change stuff in tone.js, sometimes.
 	for (var x = 0; x<effectArray.length; x++){
-		console.log(effectArray[x]);
+		
+				
+		if (effectArray[x].mode == "ModValue"){
+						effectArray[x].effect.set({ 
+							"modulationIndex": serverArray[x]
+						});
+						effectArray[x].ghostValueToPixel(serverArray[x]);
+						effectArray[x].floatingHeadValueToPixel(serverArray[x]);
+		} else if (effectArray[x].mode == "Harmonicity"){
+						effectArray[x].effect.set({
+							"harmonicity": serverArray[x]
+						});
+						effectArray[x].ghostValueToPixel(serverArray[x]);
+						effectArray[x].floatingHeadValueToPixel(serverArray[x]);
+		} else if (effectArray[x].mode == "FilterFreq"){
+						effectArray[x].effect.set({
+							"filterEnvelope": {
+								"baseFrequency": serverArray[x]
+							}
+						});
+						effectArray[x].ghostValueToPixel(serverArray[x]);
+						effectArray[x].floatingHeadValueToPixel(serverArray[x]);
+		} else if (effectArray[x].mode == "FilterQ"){
+						effectArray[x].effect.set({
+							"filterEnvelope": {
+								"octave": serverArray[x]
+							}
+						});
+						effectArray[x].ghostValueToPixel(serverArray[x]);
+						effectArray[x].floatingHeadValueToPixel(serverArray[x]);		
+		}
+					
 		if (effectArray[x].mode == 'envelope'){
 			if (effectArray[x].effectName == "attack"){
 				var envelopeToUse = effectArray[x].effectName;
@@ -1154,25 +1485,100 @@ socket.on("effectStatus", function(serverArray) {
 						"release": serverArray[x]
 					}
 				});
+			} else if (effectArray[x].effectName == "attackMod"){
+				if (effectArray[x].sequencerNumber == 0){
+					effectArray[x].effect.set({
+						"modulationEnvelope": {
+							"attack": serverArray[x]
+						}
+					});
+				} else if (effectArray[x].sequencerNumber == 1){
+					effectArray[x].effect.set({
+						"filterEnvelope": {
+							"attack": serverArray[x]
+						}
+					});
+				}
+			
+			} else if (effectArray[x].effectName == "decayMod"){
+				if (effectArray[x].sequencerNumber == 0){
+					effectArray[x].effect.set({
+						"modulationEnvelope": {
+							"decay": serverArray[x]
+						}
+					});
+
+				} else if (effectArray[x].sequencerNumber == 1){
+					effectArray[x].effect.set({
+						"filterEnvelope": {
+							"decay": serverArray[x]
+						}
+					});
+				}
+			} else if (effectArray[x].effectName == "sustainMod"){
+				if (effectArray[x].sequencerNumber == 0){
+					effectArray[x].effect.set({
+						"modulationEnvelope": {
+							"sustain": serverArray[x]
+						}
+					});
+			
+				} else if (effectArray[x].sequencerNumber == 1){
+					effectArray[x].effect.set({
+						"filterEnvelope": {
+							"sustain": serverArray[x]
+						}
+					});
+				}	
+			} else if (effectArray[x].effectName == "releaseMod"){
+				if (effectArray[x].sequencerNumber == 0){
+					effectArray[x].effect.set({
+						"modulationEnvelope": {
+							"release": serverArray[x]
+						}
+					
+					});
+				} else if (effectArray[x].sequencerNumber == 1){
+					effectArray[x].effect.set({
+						"filterEnvelope": {
+							"release": serverArray[x]
+						}
+					});
 			}
+		}
 			effectArray[x].ghostValueToPixel(serverArray[x]);
 			effectArray[x].floatingHeadValueToPixel(serverArray[x]);
 			
-		
 			
 		} else if (effectArray[x].mode == 'value'){
 		effectArray[x].effect.value = serverArray[x];
 		effectArray[x].ghostValueToPixel(serverArray[x]);
 		effectArray[x].floatingHeadValueToPixel(serverArray[x]);
-	}
+	} 
+}
 		
-	}
 });
 
-var sliderLoop = setInterval(function(){ // draws the sliders every 100ms
+var synthOneArray = [volSliderOne, synthOneModValue, synthOneHarmonicity, attackOne, decayOne, sustainOne, releaseOne, attackOneMod, decayOneMod, sustainOneMod, releaseOneMod, delaySliderOne, delayTimeOne, delayFeedbackOne, crushOne, hiPassOne, lowPassOne];
+var synthTwoArray = [volSliderTwo, synthTwoFilterFreq, synthTwoFilterQ, attackTwo, decayTwo, sustainTwo, releaseTwo, attackTwoMod, decayTwoMod, sustainTwoMod, releaseTwoMod, delaySliderTwo, delayTimeTwo, delayFeedbackTwo, crushTwo, hiPassTwo, lowPassTwo];
+var synthThreeArray = [volSliderThree, delaySliderThree, delayTimeThree, delayFeedbackThree, crushThree, hiPassThree, lowPassThree];
+var synthFourArray = [volSliderFour, delaySliderFour, delayTimeFour, delayFeedbackFour, crushFour, hiPassFour, lowPassFour];
 
-	for (var x = currentSequencer;x<effectArray.length;x=x+4){ // loops through all effect sliders
-		drawSlider(effectArray[x]); // draws all effect sliders
+var synthArrayHolder = [synthOneArray, synthTwoArray, synthThreeArray, synthFourArray];
+
+
+
+var colourArray = [sequencerOne.colour,sequencerTwo.colour,sequencerThree.colour,sequencerFour.colour]
+
+console.log(colourArray)
+
+
+var sliderLoop = setInterval(function(){ // draws the sliders every 100ms
+	var sequencerNumberLoop = synthArrayHolder[currentSequencer];
+	var currentColour = colourArray[currentSequencer];
+	
+	for (var x = 0;x<sequencerNumberLoop.length;x++){ // loops through all effect sliders
+		drawSlider(sequencerNumberLoop[x], currentColour); // draws all effect sliders
 	}
 }, 100); 
 
@@ -1183,6 +1589,7 @@ var sliderLoop = setInterval(function(){ // draws the sliders every 100ms
 function sliderClicks(slider){ // sorts out all the event listeners for the canvases
 	
 	slider.canvasElement.addEventListener("click", function(e) {
+		console.log(slider)
 		if(slider.sequencerNumber == currentSequencer){
 			var clickPosition = getMousePos(slider.canvasElement, e);
 			if (clickPosition.x<195){
@@ -1244,6 +1651,7 @@ function sliderClicks(slider){ // sorts out all the event listeners for the canv
 	  if(slider.sequencerNumber == currentSequencer){
 		if (slider.goTriggered != 1 && slider.goTriggered != 2 && slider.goTriggered != 3){
 	   	 	slider.goTriggered = 1;
+			
 			slider.valueAtTrigger = slider.floatingHeadValue;
 			var arrayToServer = [slider.number,	slider.floatingHeadValue]
 			socket.emit("effectChangeToServer", arrayToServer);
@@ -1257,7 +1665,6 @@ socket.on("effectServerEdit", function(arrayFromServer){
 		
 	effectArray[arrayFromServer[0]].goTriggered = 2; // the correct slider object selected! Changes the state of the Go! button to server input.
 	effectArray[arrayFromServer[0]].valueAtTrigger = arrayFromServer[1]; // change selected slider's value at trigger to server-recieved number.
-	console.log(arrayFromServer[1]);
 });
 
 function sliderClickStarter(){ // start reading input for all sliders in the effectArray.
@@ -1282,17 +1689,53 @@ Same applies when user presses 'go' button - bool is set to 1 and effect changes
 
 
 function effectAutomation(slider){ // to be called whenever selected effect is to be automated.
-		
-	
+
 	slider.goTriggered = 3; // when goTriggered is 3, it is in 'in progress' mode and this function cannot be called until it is not 3.
 	var totalChange = slider.valueAtTrigger - slider.ghostValue; // get the amount of change between current value (ghostValue) and value when triggered
 	var changeChunk = totalChange / 80 //amount of change needed every 100ms (as 1 bar = 2000ms & we're using 4 bars, this means totalChange / 80)
+	
+	if (slider.mode == "ModValue"){
+		var automationInterval = setInterval(function() { 
+			slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+			slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+			slider.effect.set({ 
+				"modulationIndex": slider.ghostValue
+				}); 
+		}, 100);
 		
-	// for a logarithmic slider. Not yet implemented.
+	} else if (slider.mode ==  "Harmonicity"){
+		var automationInterval = setInterval(function() { 
+			slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+			slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+			slider.effect.set({ 
+				"harmonicity": slider.ghostValue
+				}); 
+		}, 100);
+	} else if (slider.mode ==  "FilterFreq"){
+		var automationInterval = setInterval(function() { 
+			slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+			slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+			slider.effect.set({ 
+				"filterEnvelope":{
+					"baseFrequency" : slider.ghostValue
+					} 
+				}); 
+		}, 100);
+	} else if (slider.mode == "FilterQ"){
+		var automationInterval = setInterval(function() { 
+			slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+			slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+			slider.effect.set({ 
+				"filterEnvelope":{
+					"octave": slider.ghostValue
+				}
+				}); 
+			// console.log(slider.effect.get("filterEnvelope".octave))
+		}, 100);
+	}
+		
 	if(slider.mode == 'envelope'){ // if mode is 'envelope' (because envelopes are annoying and need to be right, so we've got to repeat ourselves a bit)
-		var attackValue = slider.effect.get("envelope".attack);
-		var decayValue =slider.effect.get("envelope".decay);
-		
+
 		if (slider.effectName == 'attack'){
 			var automationInterval = setInterval(function() { 
 				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
@@ -1334,19 +1777,95 @@ function effectAutomation(slider){ // to be called whenever selected effect is t
 		        })) 
 			}, 100);
 		} 
+		
+		if (slider.effectName == 'attackMod' && slider.sequencerNumber == 0){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "modulationEnvelope": {
+		                "attack": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'decayMod' && slider.sequencerNumber == 0){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "modulationEnvelope": {
+		                "decay": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'sustainMod' && slider.sequencerNumber == 0){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "modulationEnvelope": {
+		                "sustain": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'releaseMod' && slider.sequencerNumber == 0){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "modulationEnvelope": {
+		                "decay": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} 
+		
+		if (slider.effectName == 'attackMod' && slider.sequencerNumber == 1){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "filterEnvelope": {
+		                "attack": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'decayMod' && slider.sequencerNumber == 1){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "filterEnvelope": {
+		                "decay": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'sustainMod' && slider.sequencerNumber == 1){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "filterEnvelope": {
+		                "sustain": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		} else if (slider.effectName == 'releaseMod' && slider.sequencerNumber == 1){
+			var automationInterval = setInterval(function() { 
+				slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
+				slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
+				slider.effect.set(({
+		            "filterEnvelope": {
+		                "decay": slider.ghostValue
+		            }
+		        })) 
+			}, 100);
+		}
 	
 		
 	} else if (slider.mode =='value') { // if the synth is set to 'value': changing effects or volume
 		
-	if(slider.logarithmic == 1){
-	var automationInterval = setInterval(function() { 
-		slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
-		slider.ghostValueToPixelLog(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
-		slider.effect.value = slider.ghostValue; // change the effect value
-		console.log('slider name: ', slider.effectName, slider.sequencerNumber, ', slider red value: ', slider.ghostValue, ', effect value: ',slider.effect.value);
-	}, 100);
 	
-	} else {	
 	var automationInterval = setInterval(function() { 
 		slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
 		slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
@@ -1354,10 +1873,7 @@ function effectAutomation(slider){ // to be called whenever selected effect is t
 		console.log('slider name: ', slider.effectName, slider.sequencerNumber, ', slider red value: ', slider.ghostValue, ', effect value: ',slider.effect.value);
 	}, 100);
 	}
-} else {
-	console.log('ERROR!')
-}
-		
+	
 	setTimeout(function() {
 		clearInterval(automationInterval);
 		slider.goTriggered = 0;
@@ -1401,64 +1917,6 @@ var effectLoop = new Tone.Loop(function(time) {
 
 
 
-// Effects and stuff that will certainly need changing!
-
-	function effectChanger(effectName, val){
-		formattingName = '#' + effectName;
-	document.querySelector(formattingName).value = val;
-	if (effectName == 'distortion'){
-	distortion.wet.value = val * 0.01;
-	} else if (effectName =='reverb'){
-		reverb.wet.value = val * 0.01;
-	} else if (effectName=='time'){
-			delay.delayTime.value = val * 0.01;
-	} else if (effectName=='feedback'){
-		delay.feedback.value = val * 0.01;
-	} else if (effectName=='delay'){
-		delay.wet.value = val * 0.01;
-	}
-	}
-
-function synthChanger(effectName, val) {
-    formattingName = '#' + effectName;
-    if (effectName == 'harmonicity') {
-        synth.set(effectName, val * 0.03)
-        document.querySelector(formattingName).value = val * 0.03;
-    } else if (effectName == 'modulationIndex') {
-        synth.set(effectName, val);
-        document.querySelector(formattingName).value = val;
-    } else if (effectName == 'attack') {
-        synth.set({
-            "envelope": {
-                "attack": val * 0.01
-            }
-        })
-        document.querySelector(formattingName).value = val * 0.01;
-    } else if (effectName == 'decay') {
-        synth.set({
-            "envelope": {
-                "decay": val * 0.01
-            }
-        })
-        document.querySelector(formattingName).value = val * 0.01;
-    } else if (effectName == 'sustain') {
-        synth.set({
-            "envelope": {
-                "sustain": val * 0.01
-            }
-        })
-        document.querySelector(formattingName).value = val * 0.01;
-    } else if (effectName == 'release') {
-        synth.set({
-            "envelope": {
-                "release": val * 0.01
-            }
-        })
-        document.querySelector(formattingName).value = val * 0.01;
-    }
-}
-
-
 
 document.getElementById('playButton').addEventListener("click", function(e) {
     startPressed = 1;
@@ -1466,6 +1924,7 @@ document.getElementById('playButton').addEventListener("click", function(e) {
 
 function start() {
     Tone.Transport.start("+0.1");
+	drawGridLoop.start();
     melodyLoop.start();
     harmonyLoop.start();
     bassLoop.start();
@@ -1488,6 +1947,5 @@ function stop() {
 
 // for iOS
 StartAudioContext(Tone.context, "#playButton", function() {
-	Tone.startMobile()
     console.log('context online!');
 })

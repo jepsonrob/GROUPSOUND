@@ -61,6 +61,35 @@ volumeFour
 ---
 volume range: -80 - 0	
 --- 
+synthOneModValue
+synthTwoFilterFreq
+synthOneHarmonicity
+synthTwoFilterQ
+---
+envelopes between 0 & 1
+---
+attackOne
+attackTwo
+attackOneMod
+attackTwoMod
+---
+decayOne
+decayTwo
+decayOneMod
+decayTwoMod
+---
+sustainOne
+sustainTwo
+sustainOneMod
+sustainTwoMod
+---
+releaseOne
+releaseTwo
+releaseOneMod
+releaseTwoMod
+---
+effects
+---
 delayOne
 delayTwo
 delayThree
@@ -73,21 +102,14 @@ delayTimeTwo
 delayTimeThree
 delayTimeFour
 ---
-delay time range: 0.01 - 400 (ms)
+delay time range: 0.01 - 0.4 (400 ms)
 ---
 delayFeedbackOne
 delayFeedbackTwo
 delayFeedbackThree
 delayFeedbackFour
 ---
-delay feedback range: 0 - 100
----
-distOne
-distTwo
-distThree
-distFour
----
-distortion range (wet): 0 - 100
+delay feedback range: 0 - 90
 ---
 crushOne
 crushTwo
@@ -95,7 +117,7 @@ crushThree
 crushFour
 ---
 bitCrush range: 0 - 100
---- // filters can be made using the Tone.EQ3 component: .lowFrequency and .highFrequency are useful here, and have the gain set low!
+--- 
 hiPassOne
 hiPassTwo
 hiPassThree
@@ -113,7 +135,7 @@ filter range: 20 - 20,000 (logarithmic)
 
 Volume (log slider)
 
-Main osciallator (Dropdown)
+Main Osciallator (Dropdown)
 Mod Oscillator (Dropdown)
 
 Mod Value (slider)
@@ -135,12 +157,10 @@ Delay wet/dry (slider)
 Delay Feedback (slider)
 Delay Time (slider)
 
+Bitcrush wet/dry (slider)
+
 Low-pass filter (freq) (log slider)
 High-pass filter (freq) (log slider)
-
-Distortion wet/dry (slider)
-
-Bitcrush wet/dry (slider)
 
 
 --- Synth Two (MonoSynth)
@@ -169,16 +189,15 @@ Delay wet/dry (slider)
 Delay Feedback (slider)
 Delay Time (slider)
 
+Bitcrush wet/dry (slider)
+
 Low-pass filter (freq) (log slider)
 High-pass filter (freq) (log slider)
 
-Distortion wet/dry (slider)
-
-Bitcrush wet/dry (slider)
 
 --- Synth 3 (Sampler) --- different instruments (harp, piano, violin, violin (pizz.), e. piano)
 
-Volume (log slider)
+Volume (slider)
 
 Sample Bank (dropdown)
 
@@ -188,18 +207,18 @@ Delay wet/dry (slider)
 Delay Feedback (slider)
 Delay Time (slider)
 
+Bitcrush wet/dry (slider)
+
 Low-pass filter (freq) (log slider)
 High-pass filter (freq) (log slider)
 
-Distortion wet/dry (slider)
 
-Bitcrush wet/dry (slider)
 
---- Synth 4 (Sampler)
+--- Synth 4 (Sampler) --- Different Percussion kits!
 
 Volume (log slider)
 
-Sample Bank (dropdown) --- Different Percussion kits!
+Sample Bank (dropdown) 
 
 Effects:
 
@@ -207,12 +226,12 @@ Delay wet/dry (slider)
 Delay Feedback (slider)
 Delay Time (slider)
 
+Bitcrush wet/dry (slider)
+
 Low-pass filter (freq) (log slider)
 High-pass filter (freq) (log slider)
 
-Distortion wet/dry (slider)
 
-Bitcrush wet/dry (slider)
 
 
 Synth 1 & 2:
@@ -230,40 +249,40 @@ Percussion - able to swap out sample 'packs' for perc,hat,snare & kick. 4 packs 
 Random little things to-do list:
 
 	- git push after each git commit
-	- make sure the sequencer gets re-drawn even when stopped! (try changing phrase whilst sequencer is stopped. See?!)
+	- make sure the sequencer gets re-drawn even when stopped! (try changing phrase whilst sequencer is stopped. See?!) (will be fixed when canvases have their own loops!)
 	- Continue testing other devices and crying at how bad it runs
-	- need to test and make sure the clients are properly syncronized!
-	- contain all sequencers in their own setInterval draw loop
-	- allow for canvas hotswapping of sequencers and phrasesequencers.
-	- Allowing for logarithmic slider values (for decibels and such)
-	
-	
+	- test how process heavy 4 reverbs is.
+	- you can use .rampTo(1,3) to make effects change. That is useful information I wish I had a while ago! https://github.com/Tonejs/Tone.js/wiki/Effects
+	- Sequencer settigns not being sent to server?!
 	
 	
 DONE SINCE LAST COMMIT:
-	- figured out why the fuck notes aren't being broadcast!
-	- send the velocity values as well as all other data, because it turns out the notes are just getting turned on & off on other computers! Ahh!
-	- Make the sequencer canvases (& phrase sequencers) hot-swap (ANSWER: USE CSS!)
-	- Made it work on shitty devices! Sampling velocity was an issue (using undefined to skip parameters) and now there will be 2 samplers, 2 sequencers. Sequencers have reduced poly. Now it works on iphone! Next test - chromebook.
-	- Final sequencer plan - Figure out exactly what buttons & things are needed! Draw a big ol' plan!
-	
-	
 
-
-	
-	
+	- Figured out how to make scaling logarithmic! ... except it doesn't work for negative numbers. ah well. OR WORK AT ALL IT SEEMS!
+	- made the majority of sliders - but so many issues!
+	- fixed so many things, jeez what a nightmare
+	- ALL SLIDERS NOW IN OPERATION! WOOHOO!
+	- Radio Buttons & random frontend stuff
+	- ... I did so much! The sequencers are coloured. And all in one(/two) canvas(es). It's a much better system now, and works really well on mobile! Woohoo!
+	- Squashed a lotta bugs
+	- Radio button colours switching out
+	- Everything to do with the phrase selector needs sorting!
+		
 	
 
 CURRENTLY WORKING ON:
 
+	- radio buttons for effects (Main Osc + Filter Type & mod osc)
+	
+	
+
+
 	
 NEXT TO DO:
-	- Figure out how to make scaling logarithmic!
-	- completely implement and test the sliders:
-		- create every effect according to the sequencer plan
-		- create sliders for every effect (& make sure they are correctly scaled)
-		- TEST EVERYTHING ALL THE TIME
-	- Put the sequencers on a canvas event loop... Maybe also make them hot-swappable? I mean it can't hurt! And seems pretty easy.
+	
+	- Turn the multiPlayer into a multi buffer thing, then use a sampler to trigger! ... A sampler wrapped in a poly? Hmm.
+
+	- Implement the radio button system for switching out oscillators, filter types (and dropdown for sample banks.)
 	- fully implement final design
 	- Design the front end - what will it look like?!
 	- Find specific samples to use with e

@@ -199,6 +199,40 @@ bankFour
 bankFive
 
 --- 
+
+
+Synth One:
+Synth:
+
+Volume (log slider)
+
+Main osciallator (Dropdown)
+Mod Oscillator (Dropdown)
+
+Mod Value (slider)
+Harmonicity (slider)
+
+Attack (slider)
+Decay (slider)
+Sustain (slider)
+Release (slider)
+
+Low-pass frequency (log slider)
+High-pass frequency (log slider)
+
+Effects:
+
+Delay wet/dry (slider)
+Delay Feedback (slider)
+Delay Time (slider)
+
+Distortion wet/dry (slider)
+
+Bitcrush wet/dry (slider)
+
+
+---
+
 */
 
 var effectObject = {
@@ -206,6 +240,30 @@ var effectObject = {
 	volumeTwo: -15,
 	volumeThree: -30,
 	volumeFour: -5,
+	
+	synthOneModValue:1,
+	synthTwoFilterFreq:15000,
+	
+	synthOneHarmonicity:1,
+	synthTwoFilterQ:1,
+	
+	attackOne:0.05,
+	attackTwo:0.05,
+	attackOneMod:0.05,
+	attackTwoMod:0.05,
+	decayOne:0,
+	decayTwo:0,
+	decayOneMod:0,
+	decayTwoMod:0,
+	sustainOne:1,
+	sustainTwo:1,
+	sustainOneMod:1,
+	sustainTwoMod:1,
+	releaseOne:0.5,
+	releaseTwo:0.5,
+	releaseOneMod:0.5,
+	releaseTwoMod:0.5,
+	
 	delayOne:0,
 	delayTwo:0,
 	delayThree:0,
@@ -218,27 +276,44 @@ var effectObject = {
 	delayTimeTwo:0,
 	delayTimeThree:0,
 	delayTimeFour:0,
-	attackOne:0,
-	attackTwo:0,
-	attackThree:0,
-	attackFour:0,
-	decayOne:0,
-	decayTwo:0,
-	decayThree:0,
-	decayFour:0,
-	sustainOne:0,
-	sustainTwo:0,
-	sustainThree:0,
-	sustainFour:0,
-	releaseOne:0,
-	releaseTwo:0,
-	releaseThree:0,
-	releaseFour:0,
+	
+	crushOne:0,
+	crushTwo:0,
+	crushThree:0,
+	crushFour:0,
+	
+	hiPassOne:20000,
+	hiPassTwo:20000,
+	hiPassThree:20000,
+	hiPassFour:20000,
+	
+	lowPassOne:20,
+	lowPassTwo:20,
+	lowPassThree:20,
+	lowPassFour:20,
+
 }
 
-var effectArray = [effectObject.volume, effectObject.volumeTwo,effectObject.volumeThree,effectObject.volumeFour,effectObject.delayOne,effectObject.delayTwo,effectObject.delayThree,effectObject.delayFour,effectObject.delayFeedbackOne,effectObject.delayFeedbackTwo,effectObject.delayFeedbackThree,effectObject.delayFeedbackFour,effectObject.delayTimeOne,effectObject.delayTimeTwo,effectObject.delayTimeThree,effectObject.delayTimeFour,effectObject.attackOne,effectObject.attackTwo,effectObject.attackThree,effectObject.attackFour,effectObject.decayOne,effectObject.decayTwo,effectObject.decayThree,effectObject.decayFour,effectObject.sustainOne,effectObject.sustainTwo,effectObject.sustainThree,effectObject.sustainFour,effectObject.releaseOne,effectObject.releaseTwo,effectObject.releaseThree,effectObject.releaseFour];
 
 
+
+var effectArray = [
+	effectObject.volumeOne, effectObject.volumeTwo,effectObject.volumeThree,effectObject.volumeFour, //3
+	effectObject.synthOneModValue,effectObject.synthTwoFilterFreq,effectObject.synthOneHarmonicity,effectObject.synthTwoFilterQ, //7
+	effectObject.attackOne,effectObject.attackTwo,effectObject.attackOneMod,effectObject.attackTwoMod, //11
+	effectObject.decayOne,effectObject.decayTwo,effectObject.decayOneMod,effectObject.decayTwoMod, // 15
+	effectObject.sustainOne,effectObject.sustainTwo,effectObject.sustainOneMod,effectObject.sustainTwoMod, //19
+	effectObject.releaseOne,effectObject.releaseTwo,effectObject.releaseOneMod,effectObject.releaseTwoMod,
+	effectObject.delayOne,effectObject.delayTwo,effectObject.delayThree,effectObject.delayFour,
+	effectObject.delayFeedbackOne,effectObject.delayFeedbackTwo,effectObject.delayFeedbackThree,effectObject.delayFeedbackFour,
+	effectObject.delayTimeOne,effectObject.delayTimeTwo,effectObject.delayTimeThree,effectObject.delayTimeFour,
+	effectObject.crushOne,effectObject.crushTwo,effectObject.crushThree,effectObject.crushFour,
+	effectObject.hiPassOne,effectObject.hiPassTwo,effectObject.hiPassThree,effectObject.hiPassFour,
+	effectObject.lowPassOne,effectObject.lowPassTwo,effectObject.lowPassThree,effectObject.lowPassFour
+];
+
+
+console.log('effect array length: ', effectArray.length)
 
 io.on("connection", function(socket) {
 	
