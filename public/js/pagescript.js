@@ -74,7 +74,7 @@ var firstPlay = 0; // set up a variable for the firstPlay of the loop, turned on
 var startPressed = 0; // 1 when the start button has been pressed to trigger loop, 0 when looping.
 
 socket.on("loopStart", function() {
-    console.log('server timer!')
+    // console.log('server timer!')
     // start loop playing! ... hopefully at the correct time!
 
     if (firstPlay == 0 && buffersLoaded == 1) {
@@ -326,7 +326,21 @@ function sequencerObject(sequencerNumber, buttonsX, buttonsY, squareSize, gapSiz
 	this.triggeredNote = invertRGB(this.colourDarkBright(130),"0.5");
 	//playhead colour
 	this.playheadColour = "rgba(0,220,0,0.6)";
-
+	
+	// radio button/settings stuff
+		// One
+	this.selectedValueOne = 0; // selected value from either server or user
+	this.isTriggeredOne = 0; // similar to isTriggered of sliders: is 1 when user, 2 when server.
+	this.triggeredValueOne = 0; //value set at point where go is pressed or the server sends a value.
+	this.settingsNameArrayOne = [];
+		// Two
+	this.selectedValueTwo = 0; // selected value from either server or user
+	this.isTriggeredTwo = 0; // similar to isTriggered of sliders: is 1 when user, 2 when server.
+	this.triggeredValueTwo = 0; //value set at point where go is pressed or the server sends a value.
+	// this.settingsNameArrayTwo = [];
+	
+	
+	this.noteOffset; // for the samplers
 	
 } // end object constructor
 
@@ -340,6 +354,18 @@ var sequencerThree = new sequencerObject(5, 16, 16, 15, 1,[60,240,50],seqCanvasE
 var sequencerThreePhrase = new sequencerObject(6, 16, 10, 15, 1,[60,240,50],phraseCanvasElement,phraseCanvasContext);
 var sequencerFour = new sequencerObject(7, 16, 16, 15, 1,[255, 120, 0],seqCanvasElement,seqCanvasContext); // orange! 
 var sequencerFourPhrase = new sequencerObject(8, 16, 10, 15, 1,[255, 120, 0],phraseCanvasElement,phraseCanvasContext);
+
+/*
+// set initial radio buttons states for each sequencer:
+sequencerOne.settingsNameArrayOne = ['squ',];
+sequencerOne.settingsNameArrayTwo = [''];
+sequencerTwo.settingsNameArrayOne = [''];
+sequencerTwo.settingsNameArrayTwo = [''];
+sequencerThree.settingsNameArrayOne = [''];
+sequencerFour.settingsNameArrayOne = [''];
+*/
+
+
 
 // set the mode on the phrase sequencers
 sequencerOnePhrase.mode = 'phrase';
@@ -588,79 +614,6 @@ var drawSeqGridLoop = setInterval(function(){
 }, 100)
 */
 
-/*
-  ____       _      ____    ___    ___      ____    _   _   _____   _____    ___    _   _   ____  
- |  _ \     / \    |  _ \  |_ _|  / _ \    | __ )  | | | | |_   _| |_   _|  / _ \  | \ | | / ___| 
- | |_) |   / _ \   | | | |  | |  | | | |   |  _ \  | | | |   | |     | |   | | | | |  \| | \___ \ 
- |  _ <   / ___ \  | |_| |  | |  | |_| |   | |_) | | |_| |   | |     | |   | |_| | | |\  |  ___) |
- |_| \_\ /_/   \_\ |____/  |___|  \___/    |____/   \___/    |_|     |_|    \___/  |_| \_| |____/ 
-                                                                                                  
-*/
-
-function viewChanger(sequencer, viewType, viewPhrase) { // used to change the current sequencer view.
-    sequencer.viewType = viewType;
-    sequencer.currentView = viewPhrase;
-
-}
-
-viewChanger(sequencerOne,"live",0);
-
-// DANGEROUS FUNCTION! DANGEROUT FUNCTION!
-function changeSequencer(num){ // Use to change what sequencer the document says we're on... 
-	currentSequencer = num;
-	// switch out colours in the sprite sheet according to selected sequencer
-	var phraseColourArray = ["red","blue","green","orange"];
-	$("#phraseRadioButtons").removeClass("red blue green yellow").addClass(phraseColourArray[currentSequencer]);
-	
-	var nameArray = ['Melody ', 'Harmony ', 'Bass ', 'Percussion ']
-	$('#sequencerHeader').text(nameArray[num]);
-	
-	// drawGrid to make the change instant.
-	drawGrid(sequencerObjectArray[currentSequencer*2],sequencerObjectArray[currentSequencer*2].canvasContext);
-	drawGrid(sequencerObjectArray[currentSequencer*2+1],sequencerObjectArray[currentSequencer*2+1].canvasContext);
-}
-
-changeSequencer(0);
-
-
-// event listeners for radio buttons
-var phraseRadio = document.phraseButtons.radioGroupOne;
-var seqRadio = document.sequencerButtons.radioGroupTwo;
-
-function radioButtoner(buttonElement, type){
-	var rad = buttonElement
-	var prev = null;
-    for(var i = 0; i < rad.length; i++) {
-        rad[i].onclick = function() {
-            //(prev)? console.log(prev.value):null;
-            if(this !== prev) {
-                prev = this;
-            }
-            var sequencerToSend = sequencerObjectArray[currentSequencer * 2];
-			if (type == "phrase"){
-			if (this.value == 'live'){
-				viewChanger(sequencerToSend, 'live', 0);
-			} else {
-				viewChanger(sequencerToSend, 'phrase', this.value - 1);	
-			}
-		} else if (type =='seqSelect'){
-			console.log(this.value);
-			changeSequencer(this.value);
-		}
-		
-			
-		}
-    }
-}
-
-radioButtoner(phraseRadio, 'phrase');
-radioButtoner(seqRadio, 'seqSelect');
-
-
-// PLEASE REMOVE THE BIT ABOVE AT SOME POINT
-
-
-
 
 
 /*
@@ -824,35 +777,172 @@ synthTwo.set({
 });
 
 
-var synthThree = new Tone.Sampler( "audio/tomOne.wav", function() {
+var synthThree = new Tone.MultiPlayer({
+	"piano0": "audio/piano0.wav",
+	"piano1": "audio/piano1.wav",
+	"piano2": "audio/piano2.wav",
+	"piano3": "audio/piano3.wav",
+	"piano4": "audio/piano4.wav",
+	"piano5": "audio/piano5.wav",
+	"piano6": "audio/piano6.wav",
+	"piano7": "audio/piano7.wav",
+	"piano8": "audio/piano8.wav",
+	"piano9": "audio/piano9.wav",
+	"piano10": "audio/piano10.wav",
+	"piano11": "audio/piano11.wav",
+	"piano12": "audio/piano12.wav",
+	"piano13": "audio/piano13.wav",
+	"piano14": "audio/piano14.wav",
+	"piano15": "audio/piano15.wav",
+	"harp0" : "audio/harp_0.wav",
+	"harp1" : "audio/harp_1.wav",
+	"harp2" : "audio/harp_2.wav",
+	"harp3" : "audio/harp_3.wav",
+	"harp4" : "audio/harp_4.wav",
+	"harp5" : "audio/harp_5.wav",
+	"harp6" : "audio/harp_6.wav",
+	"harp7" : "audio/harp_7.wav",
+	"harp8" : "audio/harp_8.wav",
+	"harp9" : "audio/harp_9.wav",
+	"harp10" : "audio/harp_10.wav",
+	"harp11" : "audio/harp_11.wav",
+	"harp12" : "audio/harp_12.wav",
+	"harp13" : "audio/harp_13.wav",
+	"harp14" : "audio/harp_14.wav",
+	"harp15" : "audio/harp_15.wav",
+	"violin0" : "audio/violin_0.wav",
+	"violin1" : "audio/violin_1.wav",
+	"violin2" : "audio/violin_2.wav",
+	"violin3" : "audio/violin_3.wav",
+	"violin4" : "audio/violin_4.wav",
+	"violin5" : "audio/violin_5.wav",
+	"violin6" : "audio/violin_6.wav",
+	"violin7" : "audio/violin_7.wav",
+	"violin8" : "audio/violin_8.wav",
+	"violin9" : "audio/violin_9.wav",
+	"violin10" : "audio/violin_10.wav",
+	"violin11" : "audio/violin_11.wav",
+	"violin12" : "audio/violin_12.wav",
+	"violin13" : "audio/violin_13.wav",
+	"violin14" : "audio/violin_14.wav",
+	"violin15" : "audio/violin_15.wav",
+	"sample0" : "audio/a.wav",
+	"sample1" : "audio/b.wav",
+	"sample2" : "audio/c.wav",
+	"sample3" : "audio/d.wav",
+	"sample4" : "audio/e.wav",
+	"sample5" : "audio/f.wav",
+	"sample6" : "audio/g.wav",
+	"sample7" : "audio/h.wav",
+	"sample8" : "audio/i.wav",
+	"sample9" : "audio/j.wav",
+	"sample10" : "audio/k.wav",
+	"sample11" : "audio/l.wav",
+	"sample12" : "audio/m.wav",
+	"sample13" : "audio/n.wav",
+	"sample14" : "audio/o.wav",
+	"sample15" : "audio/p.wav",
+}, function() {
     // call function when samples are loaded
 }).chain(crushThree,eqThree,  delayThree, Tone.Master);
+
+var synthThreeSampleArray = [
+	"piano0","piano1","piano2","piano3","piano4","piano5","piano6","piano7","piano8","piano9","piano10","piano11","piano12","piano13","piano14","piano15",
+	"harp0","harp1","harp2","harp3","harp4","harp5","harp6","harp7","harp8","harp9","harp10","harp11","harp12","harp13","harp14","harp15",
+	"violin0","violin1","violin2","violin3","violin4","violin5","violin6","violin7","violin8","violin9","violin10","violin11","violin12","violin13","violin14","violin15",
+	"sample0","sample1","sample2","sample3","sample4","sample5","sample6","sample7","sample8","sample9","sample10","sample11","sample12","sample13","sample14","sample15",
+];
 
 
 
 //setup perc (toms)
 var synthFour = new Tone.MultiPlayer({
-    "percOne": "audio/tomOne.wav",
-    "percTwo": "audio/tomTwo.wav",
-    "percThree": "audio/tomThree.wav",
-    "percFour": "audio/tomFour.wav",
-    "hatOne": "audio/hatOne.wav",
-    "hatTwo": "audio/hatTwo.wav",
-    "hatThree": "audio/hatThree.wav",
-    "hatFour": "audio/hatFour.wav",
-    "snareOne": "audio/snareOne.wav",
-    "snareTwo": "audio/snareTwo.wav",
-    "snareThree": "audio/snareThree.wav",
-    "snareFour": "audio/snareFour.wav",
-    "kickOne": "audio/kickOne.wav",
-    "kickTwo": "audio/kickTwo.wav",
-    "kickThree": "audio/kickThree.wav",
-    "kickFour": "audio/kickFour.wav",
+    "percOneBankOne": "audio/tomOneBankOne.wav",
+    "percTwoBankOne": "audio/tomTwoBankOne.wav",
+    "percThreeBankOne": "audio/tomThreeBankOne.wav",
+    "percFourBankOne": "audio/tomFourBankOne.wav",
+    "hatOneBankOne": "audio/hatOneBankOne.wav",
+    "hatTwoBankOne": "audio/hatTwoBankOne.wav",
+    "hatThreeBankOne": "audio/hatThreeBankOne.wav",
+    "hatFourBankOne": "audio/hatFourBankOne.wav",
+    "snareOneBankOne": "audio/snareOneBankOne.wav",
+    "snareTwoBankOne": "audio/snareTwoBankOne.wav",
+    "snareThreeBankOne": "audio/snareThreeBankOne.wav",
+    "snareFourBankOne": "audio/snareFourBankOne.wav",
+    "kickOneBankOne": "audio/kickOneBankOne.wav",
+    "kickTwoBankOne": "audio/kickTwoBankOne.wav",
+    "kickThreeBankOne": "audio/kickThreeBankOne.wav",
+    "kickFourBankOne": "audio/kickFourBankOne.wav",
+    "percOneBankTwo": "audio/tomOneBankTwo.wav",
+    "percTwoBankTwo": "audio/tomTwoBankTwo.wav",
+    "percThreeBankTwo": "audio/tomThreeBankTwo.wav",
+    "percFourBankTwo": "audio/tomFourBankTwo.wav",
+    "hatOneBankTwo": "audio/hatOneBankTwo.wav",
+    "hatTwoBankTwo": "audio/hatTwoBankTwo.wav",
+    "hatThreeBankTwo": "audio/hatThreeBankTwo.wav",
+    "hatFourBankTwo": "audio/hatFourBankTwo.wav",
+    "snareOneBankTwo": "audio/snareOneBankTwo.wav",
+    "snareTwoBankTwo": "audio/snareTwoBankTwo.wav",
+    "snareThreeBankTwo": "audio/snareThreeBankTwo.wav",
+    "snareFourBankTwo": "audio/snareFourBankTwo.wav",
+    "kickOneBankTwo": "audio/kickOneBankTwo.wav",
+    "kickTwoBankTwo": "audio/kickTwoBankTwo.wav",
+    "kickThreeBankTwo": "audio/kickThreeBankTwo.wav",
+    "kickFourBankTwo": "audio/kickFourBankTwo.wav",
+    "percOneBankThree": "audio/tomOneBankThree.wav",
+    "percTwoBankThree": "audio/tomTwoBankThree.wav",
+    "percThreeBankThree": "audio/tomThreeBankThree.wav",
+    "percFourBankThree": "audio/tomFourBankThree.wav",
+    "hatOneBankThree": "audio/hatOneBankThree.wav",
+    "hatTwoBankThree": "audio/hatTwoBankThree.wav",
+    "hatThreeBankThree": "audio/hatThreeBankThree.wav",
+    "hatFourBankThree": "audio/hatFourBankThree.wav",
+    "snareOneBankThree": "audio/snareOneBankThree.wav",
+    "snareTwoBankThree": "audio/snareTwoBankThree.wav",
+    "snareThreeBankThree": "audio/snareThreeBankThree.wav",
+    "snareFourBankThree": "audio/snareFourBankThree.wav",
+    "kickOneBankThree": "audio/kickOneBankThree.wav",
+    "kickTwoBankThree": "audio/kickTwoBankThree.wav",
+    "kickThreeBankThree": "audio/kickThreeBankThree.wav",
+    "kickFourBankThree": "audio/kickFourBankThree.wav",
+    "percOneBankFour": "audio/tomOneBankFour.wav",
+    "percTwoBankFour": "audio/tomTwoBankFour.wav",
+    "percThreeBankFour": "audio/tomThreeBankFour.wav",
+    "percFourBankFour": "audio/tomFourBankFour.wav",
+    "hatOneBankFour": "audio/hatOneBankFour.wav",
+    "hatTwoBankFour": "audio/hatTwoBankFour.wav",
+    "hatThreeBankFour": "audio/hatThreeBankFour.wav",
+    "hatFourBankFour": "audio/hatFourBankFour.wav",
+    "snareOneBankFour": "audio/snareOneBankFour.wav",
+    "snareTwoBankFour": "audio/snareTwoBankFour.wav",
+    "snareThreeBankFour": "audio/snareThreeBankFour.wav",
+    "snareFourBankFour": "audio/snareFourBankFour.wav",
+    "kickOneBankFour": "audio/kickOneBankFour.wav",
+    "kickTwoBankFour": "audio/kickTwoBankFour.wav",
+    "kickThreeBankFour": "audio/kickThreeBankFour.wav",
+    "kickFourBankFour": "audio/kickFourBankFour.wav",
 }, function() {
     // call function when samples are loaded
 }).chain(crushFour,eqFour,  delayFour, Tone.Master);
 
-
+var synthFourSampleArray = [
+	"kickOneBankOne", "kickTwoBankOne", "kickThreeBankOne", "kickFourBankOne", 
+	"snareOneBankOne", "snareTwoBankOne", "snareThreeBankOne", "snareFourBankOne",
+	"hatOneBankOne", "hatTwoBankOne", "hatTwoBankOne", "hatTwoBankOne",
+	"percOneBankOne", "percTwoBankOne", "percThreeBankOne", "percFourBankOne", 
+	"kickOneBankTwo", "kickTwoBankTwo", "kickThreeBankTwo", "kickFourBankTwo", 
+	"snareOneBankTwo", "snareTwoBankTwo", "snareThreeBankTwo", "snareFourBankTwo",
+	"hatOneBankTwo", "hatTwoBankTwo", "hatTwoBankTwo", "hatTwoBankTwo",
+	"percOneBankTwo", "percTwoBankTwo", "percThreeBankTwo", "percFourBankTwo", 
+	"kickOneBankThree", "kickTwoBankThree", "kickThreeBankThree", "kickFourBankThree", 
+	"snareOneBankThree", "snareTwoBankThree", "snareThreeBankThree", "snareFourBankThree",
+	"hatOneBankThree", "hatTwoBankThree", "hatTwoBankThree", "hatTwoBankThree",
+	"percOneBankThree", "percTwoBankThree", "percThreeBankThree", "percFourBankThree", 
+	"kickOneBankFour", "kickTwoBankFour", "kickThreeBankFour", "kickFourBankFour", 
+	"snareOneBankFour", "snareTwoBankFour", "snareThreeBankFour", "snareFourBankFour",
+	"hatOneBankFour", "hatTwoBankFour", "hatTwoBankFour", "hatTwoBankFour",
+	"percOneBankFour", "percTwoBankFour", "percThreeBankFour", "percFourBankFour", 
+	]
 
 /*
   ____    _____    ___    _   _   _____   _   _    ____   _____   ____      _        ___     ___    ____    ____  
@@ -962,10 +1052,13 @@ var bassLoop = new Tone.Sequence(function(time, col) {
     var counter = 0;
     for (var i = 0; i < s.buttonsX; i++) {
         var currentBean = column[reverseRange(i, -1, s.buttonsX)];
-        if (currentBean >= 1 && counter < 4) {
+        if (currentBean >= 1) {
             var vel = (currentBean * 0.25) + (Math.random() * 0.25);
-            counter++;
-            synthThree.triggerAttackRelease(i-8, "2n", undefined, vel);
+			sequencerThree.Gain = vel;
+            // trigger note - select note is 'i'
+			console.log("sequencerThree Offset = ", sequencerFour.noteOffset);
+			var x = i + sequencerThree.noteOffset;
+            synthThree.start(synthThreeSampleArray[x], undefined, undefined,undefined,undefined, vel);
 
         }
     }
@@ -1003,59 +1096,11 @@ var percLoop = new Tone.Sequence(function(time, col) {
         var currentBean = column[reverseRange(i, -1, s.buttonsX)];
         if (currentBean >= 1) {
             var vel = (currentBean * 0.25) + (Math.random() * 0.25);
-			sequencerFour.Gain = vel
+			sequencerFour.Gain = vel;
             // trigger note - select note is 'i'
+			var x = i + sequencerFour.noteOffset;
+            synthFour.start(synthFourSampleArray[x], undefined, undefined,undefined,undefined, vel);
 
-            switch (i) {
-                case 0:
-                    synthFour.start("kickOne", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 1:
-                    synthFour.start("kickTwo", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 2:
-                    synthFour.start("kickThree", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 3:
-                    synthFour.start("kickFour", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 4:
-                    synthFour.start("snareOne", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 5:
-                    synthFour.start("snareTwo", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 6:
-                    synthFour.start("snareThree", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 7:
-                    synthFour.start("snareFour", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 8:
-                    synthFour.start("hatOne", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 9:
-                    synthFour.start("hatTwo", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 10:
-                    synthFour.start("hatThree", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 11:
-                    synthFour.start("hatFour", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 12:
-                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 13:
-                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 14:
-                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
-                    break;
-                case 15:
-                    synthFour.start("percOne", undefined, undefined,undefined,undefined, vel);
-                    break;
-            }
         }
     }
 }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
@@ -1081,7 +1126,230 @@ var sequencerFourPhraseSequencer = new Tone.Sequence(function(time, col) { // Ph
 
 
 
+/*	Radio Buttons
+  ____       _      ____    ___    ___      ____    _   _   _____   _____    ___    _   _   ____  
+ |  _ \     / \    |  _ \  |_ _|  / _ \    | __ )  | | | | |_   _| |_   _|  / _ \  | \ | | / ___| 
+ | |_) |   / _ \   | | | |  | |  | | | |   |  _ \  | | | |   | |     | |   | | | | |  \| | \___ \ 
+ |  _ <   / ___ \  | |_| |  | |  | |_| |   | |_) | | |_| |   | |     | |   | |_| | | |\  |  ___) |
+ |_| \_\ /_/   \_\ |____/  |___|  \___/    |____/   \___/    |_|     |_|    \___/  |_| \_| |____/ 
+                                                                                                  
+*/ 
 
+
+
+// event listeners for radio buttons
+var phraseRadio = document.phraseButtons.radioGroupOne;
+var seqRadio = document.sequencerButtons.radioGroupTwo;
+var settingsOne = document.settingsButtonsOne.radioGroupThree;
+var settingsTwo = document.settingsButtonsTwo.radioGroupFour;
+
+var settingsValueOne = 0;
+var settingsValueTwo = 0;
+
+function clientRadioButton(buttonElement, type){
+	var rad = buttonElement;
+	var prev = null;
+    for(var i = 0; i < rad.length; i++) {
+        rad[i].onclick = function() {
+			
+            //(prev)? // console.log(prev.value):null;
+            if(this !== prev) {
+                prev = this;
+            }
+            var sequencerToSend = sequencerObjectArray[currentSequencer * 2];
+			if (type == "phrase"){ // change phrase
+			if (this.value == 'live'){
+				viewChanger(sequencerToSend, 'live', 0);
+			} else {
+				viewChanger(sequencerToSend, 'phrase', this.value - 1);	
+			}
+		} else if (type =='seqSelect'){ //change sequencer
+			changeSequencer(this.value);
+		} else if (type == 'settingsOneChange'){
+			// console.log('settingsChanger function (1,value) called')
+			
+			settingsChanger(1, this.value);
+		} else if (type == 'settingsTwoChange'){
+			// console.log('settingsChanger function (2,value) called')
+			settingsChanger(2, this.value);
+		}
+					
+		}
+    }
+}
+
+function viewChanger(sequencer, viewType, viewPhrase) { // used to change the current sequencer view. (changes phrase/live etc.)
+    sequencer.viewType = viewType;
+    sequencer.currentView = viewPhrase;
+
+}
+
+viewChanger(sequencerOne,"live",0);
+
+
+function changeSequencer(num){ // Use to change what sequencer we're editing... 
+	currentSequencer = parseInt(num); 
+	
+	// change view to live
+	viewChanger(currentSequencer,"live");
+	document.getElementById("radio0").checked = true;
+	
+	buttonViewChanger()
+	
+	// switch out colours in the sprite sheet according to selected sequencer
+	var phraseColourArray = ["red","blue","green","orange"];
+	$("#phraseRadioButtons").removeClass("red blue green orange").addClass(phraseColourArray[currentSequencer]);
+	$("#settingsOne").removeClass("red blue green orange").addClass(phraseColourArray[currentSequencer]);
+	$("#settingsTwo").removeClass("red blue green orange").addClass(phraseColourArray[currentSequencer]); // changes all the colours to look pretty n shit
+	
+	// TO DO!
+	// we have to change the words on the settings here, too. And hide/show the elements that come with each sequencer.
+	var settingsOneTitleArray = ["Osc Type", "Osc Type", "Bank", "Bank"];
+	var settingsTwoTitleArray = ["Mod Osc", "Filter Type", "Bank", "Bank"];
+	$("#settingsOneTitle").text(settingsOneTitleArray[num]);
+	$("#settingsTwoTitle").text(settingsTwoTitleArray[num]);
+	
+	
+	var nameArray = ['Lead ', 'Bass ', 'Sampler ', 'Percussion ']
+	$('#sequencerHeader').text(nameArray[num]);
+	
+	var oscArray = ["squ", "pulse", "saw", "pwm"];
+	var filtArray = ["lp", "hp", "bp", "notch"];
+	var bankOneArray = ["piano", "harp", "violin", "misc."];
+	var bankTwoArray = ["1", "2", "3", "4"] // maybe worth naming perc. banks? 
+	
+	for(var x = 0;x<4;x++){
+		var namerTwo = ".radioTextTwo" + x;
+		var namerThree = ".radioTextThree" + x;
+			switch (currentSequencer){
+			case 0:
+				$(namerTwo).text(oscArray[x]);
+				$(namerThree).text(oscArray[x]);
+				break;
+			case 1:
+				$(namerTwo).text(oscArray[x]);
+				$(namerThree).text(filtArray[x]);
+				break;
+			case 2:
+				$(namerTwo).text(bankOneArray[x]);
+				$(namerThree).text(bankOneArray[x]);
+				break;
+			case 3:
+				$(namerTwo).text(bankTwoArray[x]);
+				$(namerThree).text(bankTwoArray[x]);
+				break;
+			} 
+	}
+	
+	// drawGrid to make the change instant.
+	drawGrid(sequencerObjectArray[currentSequencer*2],sequencerObjectArray[currentSequencer*2].canvasContext); // yes, this looks ridiculous. 
+	drawGrid(sequencerObjectArray[currentSequencer*2+1],sequencerObjectArray[currentSequencer*2+1].canvasContext); // but it's just selecting the current sequencer
+}
+
+changeSequencer(0); // set initial sequencer state to first sequencer!
+
+
+function settingsChanger(settingNumber, value){ // changes the right sequencer's 'selectedValue(s)' for when 'go' is triggered
+	switch (currentSequencer){
+	case 0:
+		
+		if (settingNumber == 1){
+			sequencerOne.selectedValueOne = value;
+		} else if (settingNumber == 2){
+			sequencerOne.selectedValueTwo = value;
+		}
+		break;
+	case 1:
+		if (settingNumber == 1){
+			sequencerTwo.selectedValueOne = value;
+		} else if (settingNumber == 2){
+			sequencerTwo.selectedValueTwo = value;
+		}
+		break;
+	case 2:
+		
+		if (settingNumber == 1 || settingNumber == 2){
+			sequencerThree.selectedValueOne = value;
+			sequencerThree.selectedValueTwo = value; // sequencerThree.selectedValueTwo isn't actually used, but it's here anyway because why not.
+		}
+		break;
+	case 3:
+		
+		if (settingNumber == 1 || settingNumber == 2){
+			sequencerFour.selectedValueOne = value;
+			sequencerFour.selectedValueTwo = value;
+		}
+		break;
+	}
+}
+
+
+
+clientRadioButton(phraseRadio, 'phrase');
+clientRadioButton(seqRadio, 'seqSelect');
+clientRadioButton(settingsOne, 'settingsOneChange');
+clientRadioButton(settingsTwo, 'settingsTwoChange');
+
+function buttonViewChanger(){
+	// make the currently selected effect's text pulsate
+	$(".setting").removeClass("pulsate"); // removes pulsate from all, clearing it!
+	var firstSetting = ".radioTextTwo" + sequencerObjectArray[currentSequencer*2].triggeredValueOne;
+	var secondSetting = ".radioTextThree" + sequencerObjectArray[currentSequencer*2].triggeredValueTwo;
+	
+	$(firstSetting).addClass("pulsate"); // adds it to the current setting.
+	$(secondSetting).addClass("pulsate"); // adds it to the current setting.
+	
+}
+
+$('#synthSettingsOneGo').click(function(){
+	if(sequencerObjectArray[currentSequencer*2].isTriggeredOne == 0){
+		var emitArray = [(currentSequencer*2),sequencerObjectArray[currentSequencer*2].selectedValueOne]; // IMPORTANT FOR MAKING SERVER BUTTONS WORK (LOOK AT THE KEY/VALUE PAIR!)
+		socket.emit("settingsOneChangeToServer", emitArray);
+		sequencerObjectArray[currentSequencer*2].isTriggeredOne = 1;
+		sequencerObjectArray[currentSequencer*2].triggeredValueOne = sequencerObjectArray[currentSequencer*2].selectedValueOne;
+	}
+})
+
+$('#synthSettingsTwoGo').click(function(){
+	if(sequencerObjectArray[currentSequencer*2].isTriggeredTwo == 0){
+		var emitArray = [(currentSequencer*2+1),sequencerObjectArray[currentSequencer*2].selectedValueTwo];
+		socket.emit("settingsTwoChangeToServer", emitArray);
+		sequencerObjectArray[currentSequencer*2].isTriggeredTwo = 1;
+		sequencerObjectArray[currentSequencer*2].triggeredValueTwo = sequencerObjectArray[currentSequencer*2].selectedValueTwo;
+	}
+})
+
+
+socket.on("settingsStatus", function(array){ // gets settings at startup!
+	for (var x=0;x<array.length;x++){
+		var initialValue = parseInt(array[x]);
+		switch (x){
+		case 0:
+			sequencerOne.triggeredValueOne = initialValue;
+			break;
+		case 1:
+			sequencerOne.triggeredValueTwo = initialValue;
+			break;
+		case 2:
+			sequencerTwo.triggeredValueOne = initialValue;
+			break;
+		case 3:
+			sequencerTwo.triggeredValueTwo = initialValue;
+			break;
+		case 4:
+			sequencerThree.triggeredValueOne = initialValue;
+			sequencerThree.noteOffset = initialValue * 16;
+			console.log(initialValue);
+			console.log(sequencerThree.noteOffset);
+			break;
+		case 6:
+			sequencerFour.triggeredValueOne = initialValue;
+			sequencerFour.noteOffset = initialValue * 16;
+			break;
+		}
+	}
+
+})
 
 
 // Slider Stuff!
@@ -1206,6 +1474,8 @@ function logSlider(position, minp, maxp, minv, maxv, inv) { // this is not my fu
 	}
 }
 
+
+
 function sliderObject (effect, canvas, canvasElement, value, min, max, effectName, seq, mode){
 	
 	this.mode = mode;
@@ -1235,9 +1505,9 @@ function sliderObject (effect, canvas, canvasElement, value, min, max, effectNam
 		if (this.logarithmic == 1){
 			this.floatingHeadPosition = pixel;
 			var value = logSlider(pixel,0,194,this.minValue,this.maxValue,0);
-			//console.log(logSlider(pixel,0,194,this.minValue,this.maxValue,1))
+			//// console.log(logSlider(pixel,0,194,this.minValue,this.maxValue,1))
 			this.floatingHeadValue = value;
-			console.log('floatingHeadPixelToValue: ', value)
+			// console.log('floatingHeadPixelToValue: ', value)
 		} else {
 		this.floatingHeadPosition = pixel;
 		var value = ((this.valueRange / 194) * pixel) + this.minValue;
@@ -1253,7 +1523,7 @@ function sliderObject (effect, canvas, canvasElement, value, min, max, effectNam
 			this.ghostValue = pixel;
 			var value = logSlider(pixel,0,194,this.minValue,this.maxValue,0);
 			this.ghostValue = value;
-			console.log('ghostPixelToValue: ', pixel)
+			// console.log('ghostPixelToValue: ', pixel)
 			
 		} else {
 		this.ghostPosition = pixel;		
@@ -1287,7 +1557,7 @@ function sliderObject (effect, canvas, canvasElement, value, min, max, effectNam
 			this.ghostValue = values;
 			var pixel = logSlider(values,0,194,this.minValue,this.maxValue,1);
 			this.ghostValue = pixel;
-			console.log('ghostValueToPixel: ', pixel)
+			// console.log('ghostValueToPixel: ', pixel)
 		} else {
 		this.ghostValue = values;
 		var pixel =  ((194 / this.valueRange) * values) - ((194 / this.valueRange) * this.minValue);
@@ -1326,9 +1596,7 @@ var volSliderFour = new sliderObject(synthFour.volume, volCanvas,volElement,-80,
 
 // synth settings sliders (first)
 var synthOneModValue = new sliderObject(synth, synthSettingOneCanvas,synthSettingOneElement,0,0,100, 'synthSettingOne', 0,'ModValue');
-var synthTwoFilterFreq = new sliderObject(synthTwo, synthSettingOneCanvas,synthSettingOneElement,0,20,20000, 'synthSettingOne', 1,'FilterFreq');
-
-
+var synthTwoFilterFreq = new sliderObject(synthTwo, synthSettingOneCanvas,synthSettingOneElement,0,20,10000, 'synthSettingOne', 1,'FilterFreq');
 
 var synthOneHarmonicity = new sliderObject(synth, synthSettingTwoCanvas,synthSettingTwoElement,0,0.25,6, 'synthSettingTwo', 0,'Harmonicity');
 var synthTwoFilterQ = new sliderObject(synthTwo, synthSettingTwoCanvas,synthSettingTwoElement,1,1,10, 'synthSettingTwo', 1,'FilterQ');
@@ -1336,26 +1604,27 @@ var synthTwoFilterQ = new sliderObject(synthTwo, synthSettingTwoCanvas,synthSett
 
 	// main envelopes
 // attack
-var attackOne = new sliderObject(synth, attackCanvas,attackElement,0,0,1,'attack',0,'envelope');
-var attackTwo = new sliderObject(synthTwo, attackCanvas,attackElement,0,0,1,'attack',1,'envelope');
-var attackOneMod = new sliderObject(synth, attackModCanvas,attackModElement,0,0,1,'attackMod',0,'envelope');
-var attackTwoMod = new sliderObject(synthTwo, attackModCanvas,attackModElement,0,0,1,'attackMod',1,'envelope');
+var attackOne = new sliderObject(synth, attackCanvas,attackElement,0,0.001,1,'attack',0,'envelope');
+var attackTwo = new sliderObject(synthTwo, attackCanvas,attackElement,0,0.001,1,'attack',1,'envelope');
+var attackThree = new sliderObject(synthTwo, attackCanvas,attackElement,0,0.001,1,'attack',2,'envelope');
+var attackOneMod = new sliderObject(synth, attackModCanvas,attackModElement,0,0.001,1,'attackMod',0,'envelope');
+var attackTwoMod = new sliderObject(synthTwo, attackModCanvas,attackModElement,0,0.001,1,'attackMod',1,'envelope');
 
 // decay
-var decayOne = new sliderObject(synth, decayCanvas,decayElement,0,0,1,'decay',0,'envelope');
-var decayTwo = new sliderObject(synthTwo, decayCanvas,decayElement,0,0,1,'decay',1,'envelope');
-var decayOneMod = new sliderObject(synth, decayModCanvas,decayModElement,0,0,1,'decayMod',0,'envelope');
-var decayTwoMod = new sliderObject(synthTwo, decayModCanvas,decayModElement,0,0,1,'decayMod',1,'envelope');
+var decayOne = new sliderObject(synth, decayCanvas,decayElement,0,0.001,1,'decay',0,'envelope');
+var decayTwo = new sliderObject(synthTwo, decayCanvas,decayElement,0,0.001,1,'decay',1,'envelope');
+var decayOneMod = new sliderObject(synth, decayModCanvas,decayModElement,0,0.001,1,'decayMod',0,'envelope');
+var decayTwoMod = new sliderObject(synthTwo, decayModCanvas,decayModElement,0,0.001,1,'decayMod',1,'envelope');
 // sustain
-var sustainOne = new sliderObject(synth, sustainCanvas,sustainElement,0,0,1,'sustain',0,'envelope');
-var sustainTwo = new sliderObject(synthTwo, sustainCanvas,sustainElement,0,0,1,'sustain',1,'envelope');
-var sustainOneMod = new sliderObject(synth, sustainModCanvas,sustainModElement,0,0,1,'sustainMod',0,'envelope');
-var sustainTwoMod = new sliderObject(synthTwo, sustainModCanvas,sustainModElement,0,0,1,'sustainMod',1,'envelope');
+var sustainOne = new sliderObject(synth, sustainCanvas,sustainElement,0,0.001,1,'sustain',0,'envelope');
+var sustainTwo = new sliderObject(synthTwo, sustainCanvas,sustainElement,0,0.001,1,'sustain',1,'envelope');
+var sustainOneMod = new sliderObject(synth, sustainModCanvas,sustainModElement,0,0.001,1,'sustainMod',0,'envelope');
+var sustainTwoMod = new sliderObject(synthTwo, sustainModCanvas,sustainModElement,0,0.001,1,'sustainMod',1,'envelope');
 // release
-var releaseOne = new sliderObject(synth, releaseCanvas,releaseElement,0,0,1,'release',0,'envelope');
-var releaseTwo = new sliderObject(synthTwo, releaseCanvas,releaseElement,0,0,1,'release',1,'envelope');
-var releaseOneMod = new sliderObject(synth, releaseModCanvas,releaseModElement,0,0,1,'releaseMod',0,'envelope');
-var releaseTwoMod = new sliderObject(synthTwo, releaseModCanvas,releaseModElement,0,0,1,'releaseMod',1,'envelope');
+var releaseOne = new sliderObject(synth, releaseCanvas,releaseElement,0,0.001,1,'release',0,'envelope');
+var releaseTwo = new sliderObject(synthTwo, releaseCanvas,releaseElement,0,0.001,1,'release',1,'envelope');
+var releaseOneMod = new sliderObject(synth, releaseModCanvas,releaseModElement,0,0.001,1,'releaseMod',0,'envelope');
+var releaseTwoMod = new sliderObject(synthTwo, releaseModCanvas,releaseModElement,0,0.001,1,'releaseMod',1,'envelope');
 
 	// effects
 // delay (wet/dry)
@@ -1420,9 +1689,8 @@ function addNumbersToSliderObjects(){ // does what it says on the tin! Adds a nu
 addNumbersToSliderObjects(); // this is a really hacky way of doing things, I think. 
 
 socket.on("effectStatus", function(serverArray) {
-	console.log(serverArray)
 
-	// here we set all the values for the effects and stuff... Yeah, this is not pretty. Seems I like arrays. It's also kinda tricky to change stuff in tone.js, sometimes.
+	// here we set all the values for the effects and stuff... Yeah, this is not pretty. Seems I like arrays. It's also kinda tricky to change stuff in tone.js, sometimes. Or maybe it's me being dumb. It's probably me.
 	for (var x = 0; x<effectArray.length; x++){
 		
 				
@@ -1570,7 +1838,6 @@ var synthArrayHolder = [synthOneArray, synthTwoArray, synthThreeArray, synthFour
 
 var colourArray = [sequencerOne.colour,sequencerTwo.colour,sequencerThree.colour,sequencerFour.colour]
 
-console.log(colourArray)
 
 
 var sliderLoop = setInterval(function(){ // draws the sliders every 100ms
@@ -1589,7 +1856,7 @@ var sliderLoop = setInterval(function(){ // draws the sliders every 100ms
 function sliderClicks(slider){ // sorts out all the event listeners for the canvases
 	
 	slider.canvasElement.addEventListener("click", function(e) {
-		console.log(slider)
+		// console.log(slider)
 		if(slider.sequencerNumber == currentSequencer){
 			var clickPosition = getMousePos(slider.canvasElement, e);
 			if (clickPosition.x<195){
@@ -1667,6 +1934,22 @@ socket.on("effectServerEdit", function(arrayFromServer){
 	effectArray[arrayFromServer[0]].valueAtTrigger = arrayFromServer[1]; // change selected slider's value at trigger to server-recieved number.
 });
 
+socket.on("settingsOneServerEdit", function(arrayFromServer){
+	// console.log("arrayFromServer[1] (the value to change to) = ", arrayFromServer[1]);
+	// console.log("sequencerObjectArray[arrayFromServer[0]] = ", sequencerObjectArray[arrayFromServer[0]]);
+	
+	sequencerObjectArray[arrayFromServer[0]].isTriggeredOne = 2;
+	// console.log(sequencerObjectArray[arrayFromServer[0]].isTriggeredOne);
+	var serverValue = parseInt(arrayFromServer[1]);
+	sequencerObjectArray[arrayFromServer[0]].triggeredValueOne = serverValue;
+});
+
+socket.on("settingsTwoServerEdit", function(arrayFromServer){
+	sequencerObjectArray[arrayFromServer[0]].isTriggeredTwo = 2;
+	var serverValue = parseInt(arrayFromServer[1]);
+	sequencerObjectArray[arrayFromServer[0]].triggeredValueTwo = serverValue;
+});
+
 function sliderClickStarter(){ // start reading input for all sliders in the effectArray.
 	for (var x = 0;x<effectArray.length;x++){ // loops through all effect sliders
 		sliderClicks(effectArray[x]); // starts reading input on all sliders
@@ -1730,7 +2013,7 @@ function effectAutomation(slider){ // to be called whenever selected effect is t
 					"octave": slider.ghostValue
 				}
 				}); 
-			// console.log(slider.effect.get("filterEnvelope".octave))
+			// // console.log(slider.effect.get("filterEnvelope".octave))
 		}, 100);
 	}
 		
@@ -1870,7 +2153,7 @@ function effectAutomation(slider){ // to be called whenever selected effect is t
 		slider.ghostValue = slider.ghostValue + changeChunk; // adds a chunk OF VALUE every run through
 		slider.ghostValueToPixel(slider.ghostValue); // changes the value to the correct pixel and as the canvas is looping it draws this automagically
 		slider.effect.value = slider.ghostValue; // change the effect value
-		console.log('slider name: ', slider.effectName, slider.sequencerNumber, ', slider red value: ', slider.ghostValue, ', effect value: ',slider.effect.value);
+		// console.log('slider name: ', slider.effectName, slider.sequencerNumber, ', slider red value: ', slider.ghostValue, ', effect value: ',slider.effect.value);
 	}, 100);
 	}
 	
@@ -1898,7 +2181,12 @@ document.getElementById('volumeChangerTwo').addEventListener("click", function(e
 });
 */
 
+var oscArray = ["square","pulse","sawtooth","pwm"];
+var filterArray = ["lowpass","highpass","bandpass","notch"];
+
 var effectLoop = new Tone.Loop(function(time) {
+	
+	buttonViewChanger()
 	
 	for (var x = 0;x<effectArray.length;x++){ // loops through all effect sliders to see if any have been called
 		if (effectArray[x].goTriggered == 1){ // 1 is for user pressing the button (takes the value from the current floating head!);
@@ -1909,10 +2197,65 @@ var effectLoop = new Tone.Loop(function(time) {
 		}
 	}
 
+		// READY FOR ANOTHER CONDITIONAL MESS?! OH BOY, HERE WE GOOOooooOOOOO!
+		if (sequencerOne.isTriggeredOne == 1 || sequencerOne.isTriggeredOne == 2){// sequencer one setting one
+			synth.set(({
+	            "oscillator": {
+	                "type": oscArray[sequencerOne.triggeredValueOne]
+	            }
+	        }))
+			sequencerOne.isTriggeredOne = 0;
+		} else if (sequencerOne.isTriggeredTwo == 1 || sequencerOne.isTriggeredTwo == 2){// sequencer one setting two
+			synth.set(({
+	            "modulation": {
+	                "type": oscArray[sequencerOne.triggeredValueOne]
+	            }
+	        }))
+			sequencerOne.isTriggeredTwo = 0;
+		} else if (sequencerTwo.isTriggeredOne == 1 || sequencerTwo.isTriggeredOne == 2){// sequencer two setting one
+			synthTwo.set(({
+	            "oscillator": {
+	                "type": oscArray[sequencerTwo.triggeredValueOne]
+	            }
+	        }))
+			sequencerTwo.isTriggeredOne = 0;
+		} else if (sequencerTwo.isTriggeredTwo == 1 || sequencerTwo.isTriggeredTwo == 2){// sequencer two setting two
+			synthTwo.set(({
+	            "filter": {
+	                "type": filterArray[sequencerTwo.triggeredValueTwo]
+	            }
+	        }))
+			sequencerTwo.isTriggeredTwo = 0;
+		} else if (sequencerThree.isTriggeredOne == 1 || sequencerTwo.isTriggeredOne == 2){// sequencer three setting 
+			sequencerThree.noteOffset = sequencerThree.triggeredValueOne * 16;
+			console.log(sequencerThree.noteOffset)
+			sequencerThree.isTriggeredOne = 0;
+			sequencerThree.isTriggeredTwo = 0;
+			
+		} else if (sequencerFour.isTriggeredOne == 1 || sequencerFour.isTriggeredOne == 2){// sequencer four setting one
+			sequencerFour.noteOffset = sequencerFour.triggeredValueOne * 16;
+			sequencerFour.isTriggeredOne = 0;
+			sequencerThree.isTriggeredTwo = 0;
+			
+			
+		}
+
 }, "1m").start(0);
 
 
-
+/* HELPFUL STUFF
+	// radio button/settings stuff
+		// One
+	this.selectedValueOne = 0; // selected value from user
+	this.isTriggeredOne = 0; // similar to isTriggered of sliders: is 1 when user, 2 when server.
+	this.triggeredValueOne = 0; //value set at point where go is pressed or the server sends a value.
+	this.settingsNameArrayOne = [];
+		// Two
+	this.selectedValueTwo = 0; // selected value from either server or user
+	this.isTriggeredTwo = 0; // similar to isTriggered of sliders: is 1 when user, 2 when server.
+	this.triggeredValueTwo = 0; //value set at point where go is pressed or the server sends a value.
+	// this.settingsNameArrayTwo = [];
+*/
 
 
 
@@ -1947,5 +2290,5 @@ function stop() {
 
 // for iOS
 StartAudioContext(Tone.context, "#playButton", function() {
-    console.log('context online!');
+    // console.log('context online!');
 })

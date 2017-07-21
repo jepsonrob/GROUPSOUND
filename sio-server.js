@@ -235,6 +235,7 @@ Bitcrush wet/dry (slider)
 
 */
 
+
 var effectObject = {
 	volumeOne: -20,
 	volumeTwo: -15,
@@ -294,7 +295,23 @@ var effectObject = {
 
 }
 
+var settingsObject = {
+	synthOneOscOne: 0,
+	synthOneOscTwo: 0,
+	synthTwoOsc: 0,
+	synthTwoFilter: 0,
+	synthThreeBank: 0,
+	synthThreeBankRepeat: 0,
+	synthFourBank: 0,
+	synthFourBankRepeat: 0,
+}
 
+var settingsArray = [
+	settingsObject.synthOneOscOne, settingsObject.synthOneOscTwo, 
+	settingsObject.synthTwoOsc, settingsObject.synthTwoFilter, 
+	settingsObject.synthThreeBank, settingsObject.synthThreeBankRepeat, 
+	settingsObject.synthFourBank, settingsObject.synthFourBankRepeat
+];
 
 
 var effectArray = [
@@ -312,11 +329,21 @@ var effectArray = [
 	effectObject.lowPassOne,effectObject.lowPassTwo,effectObject.lowPassThree,effectObject.lowPassFour
 ];
 
-
-console.log('effect array length: ', effectArray.length)
+var allClients = [];
+var totalClients = 0;
 
 io.on("connection", function(socket) {
 	
+	totalClients++;
+	console.log("Socket Connected! Total Clients: ", totalClients)
+	allClients.push(socket);
+
+	socket.on('disconnect', function() {
+		totalClients = totalClients - 1;
+		console.log("Client disconnected! Total Clients: ", totalClients)
+		var i = allClients.indexOf(socket);
+		allClients.splice(i, 1);
+	   });
 
 
 	socket.emit("sequencerOne", sequencerOne.sequencerArray);
@@ -333,9 +360,11 @@ io.on("connection", function(socket) {
 	
 	socket.emit("effectStatus", effectArray);
 	
+	socket.emit("settingsStatus", settingsArray);
+	
 	socket.emit("phraseStarter", currentPhraseTime);
 	
-	console.log('Socket Connected!');
+	
 	
 	
 
@@ -347,6 +376,25 @@ io.on("connection", function(socket) {
 		var effectChanged = array[0] // first item of array is specific effect number changed
 		var changedEffectValue = array[1]; // select changed effect from second array using first array as the selector!
 		effectArray[effectChanged] = changedEffectValue; // changes the server's effect array to hold the change.
+		// then change the internal array
+	})
+	
+	socket.on("settingsOneChangeToServer", function(array){// IMPORTANT FOR MAKING SERVER BUTTONS WORK! MAKE SURE THE NAME IS RIGHT
+		// IMPORTANT FOR MAKING SERVER BUTTONS WORK: Make sure the array key/value is correct. Right now it sends the sequencer number, not the right array number.
+		socket.broadcast.emit("settingsOneServerEdit", array); // broadcast the effect changes to everyone.
+		console.log("things are changing on the server!");
+		var settingsChanged = array[0] // first item of array is specific effect number changed
+		var changedSettingsValue = array[1]; // select changed effect from second array using first array as the selector!
+		settingsArray[settingsChanged] = changedSettingsValue; // changes the server's effect array to hold the change.
+		// then change the internal array
+	})
+	
+	socket.on("settingsTwoChangeToServer", function(array){// IMPORTANT FOR MAKING SERVER BUTTONS WORK! MAKE SURE THE NAME IS RIGHT
+		// IMPORTANT FOR MAKING SERVER BUTTONS WORK: Make sure the array key/value is correct. Right now it sends the sequencer number, not the right array number.
+		socket.broadcast.emit("settingsTwoServerEdit", array); // broadcast the effect changes to everyone.
+		var settingsChanged = array[0] // first item of array is specific effect number changed
+		var changedSettingsValue = array[1]; // select changed effect from second array using first array as the selector!
+		settingsArray[settingsChanged] = changedSettingsValue; // changes the server's effect array to hold the change.
 		// then change the internal array
 	})
 	

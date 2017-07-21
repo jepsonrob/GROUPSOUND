@@ -61,25 +61,26 @@
 </div>
 
 
-<div class='row'>
+
 <div class='sequencer'>
-	<h4> Note Sequencer </h4>
+	
+<h5 class='seqTitle'> Note Sequencer </h5>
 <canvas id="sequencerOne" width="272" height="272">
 	Canvas isn't supported in your browser!
 </canvas>
-
+</div>
 
 <div class='sequencer'>
-	<h4> Phrase Sequencer </h4>
+<h5 class='seqTitle'> Phrase Sequencer </h5>	
 <canvas id="sequencerOnePhrase" width="272" height="272">
 	Canvas isn't supported in your browser!
 </canvas>
-</div>
+
 </div>
 
 <div class='row'>
 	
-	<div id='phraseRadioButtons col-md-4' class='radioButtonsPhrase'>
+	<div id='phraseRadioButtons' class='radioButtonsPhrase'>
 		<form name='phraseButtons'>
 		<h4> Phrase Select </h4>
 	<input type="radio" class='test' id="radio0" name='radioGroupOne' value='live' checked="checked" />
@@ -132,7 +133,43 @@
 	</div>
 </div>
 <hr>
+<div class='row'>
+	<div id='settingsOne' class='radioButtons'>
+		<form name='settingsButtonsOne'>
+		<h4 id='settingsOneTitle'>  </h4>
+	<input type="radio" id="settingsOneButtonOne" name='radioGroupThree' value='0' checked="checked" />
+	    <label for="settingsOneButtonOne"><span><span class='radioTextTwo0 setting'>squ</span></span></label>
+	 <input type="radio" id="settingsOneButtonTwo" name='radioGroupThree' value='1'/>
+	    <label for="settingsOneButtonTwo"><span><span class='radioTextTwo1 setting'>sine</span></span></label>
+	 <input type="radio" id="settingsOneButtonThree" name='radioGroupThree'/ value='2'>
+	    <label for="settingsOneButtonThree"><span><span class='radioTextTwo2 setting'>saw</span></span></label>
+	 <input type="radio" id="settingsOneButtonFour" name='radioGroupThree' value='3'/>
+	    <label for="settingsOneButtonFour"><span><span class='radioTextTwo3 setting'>tri</span></span></label>
 
+	</form>
+	<button id='synthSettingsOneGo'> Go! </button>
+	</div>
+	
+
+<div class='row'>
+	<div id='settingsTwo' class='radioButtonsSynthSetTwo'>
+		<form name='settingsButtonsTwo'>
+		<h4 id='settingsTwoTitle'>  </h4>
+	<input type="radio" id="settingsTwoButtonOne" name='radioGroupFour' value='0' checked="checked" />
+	    <label for="settingsTwoButtonOne"><span><span class='radioTextThree0 setting'>squ</span></span></label>
+	 <input type="radio" id="settingsTwoButtonTwo" name='radioGroupFour' value='1'/>
+	    <label for="settingsTwoButtonTwo"><span><span class='radioTextThree1 setting'>sine</span></span></label>
+	 <input type="radio" id="settingsTwoButtonThree" name='radioGroupFour'/ value='2'>
+	    <label for="settingsTwoButtonThree"><span><span class='radioTextThree2 setting'>saw</span></span></label>
+	 <input type="radio" id="settingsTwoButtonFour" name='radioGroupFour' value='3'/>
+	    <label for="settingsTwoButtonFour"><span><span class='radioTextThree3 setting'>tri</span></span></label>
+
+	</form>
+	<button id='synthSettingsTwoGo'> Go! </button>
+	</div>
+	
+	
+</div>
 <div class='row'>
 <div class='slider col-sm-3'>	
 <p> Attack </p>

@@ -58,8 +58,8 @@
 			  
 			  .radioButtonsPhrase input[type="radio"] + label span {
 			      display:inline-block;
-			      width:19px;
-			      height:19px;
+			      width:37px;
+			      height:37px;
 			      margin:0px 10px 0 0;
 			      vertical-align:middle;
 			      background:url(/img/checkbox.png) left top no-repeat;
@@ -72,7 +72,7 @@
 			  
 			  
 			  .radioButtonsPhrase input[type="radio"]:checked + label span {
-			      background:url(/img/checkboxsmall.png) -19px top no-repeat;
+			      background:url(/img/checkbox.png) -37px top no-repeat;
 				  text-align:left;
 				   font-size:10px;
 				   padding-top:1px;
@@ -94,29 +94,37 @@
 			  }
 			  
 			  input[type="radio"]:checked + label span {
-			      background:url(/img/checkbox.png) -38px top no-repeat;
+			      background:url(/img/checkbox.png) -37px top no-repeat;
 				  text-align:left;
 				   font-size:10px;
 				   padding-top:1px;
 				   padding-left:1px;
 			  }
+			  
+			  .red input[type="radio"]:checked + label span {
+   		    	background:url(/img/checkbox.png) -37px top no-repeat;
+   			  	text-align:left;
+   			   	font-size:10px;
+   			   	padding-top:1px;
+   			   	padding-left:1px;
+   		 	 }
 
-			  .blue input[type="radio"]:checked + label span {
+			 .blue input[type="radio"]:checked + label span {
 		      	background:url(/img/checkbox.png) -76px top no-repeat;
 			 	text-align:left;
 			   	font-size:10px;
 			   	padding-top:1px;
 			   	padding-left:1px;
 			  }
-				  
-		   .red input[type="radio"]:checked + label span {
-		    	background:url(/img/checkbox.png) -38px top no-repeat;
-			  	text-align:left;
-			   	font-size:10px;
-			   	padding-top:1px;
-			   	padding-left:1px;
-		 	 }
-		  
+			  
+	   	   .green input[type="radio"]:checked + label span {
+	   	      background:url(/img/checkbox.png) -114px top no-repeat;
+	   		  text-align:left;
+	   		   font-size:10px;
+	   		   padding-top:1px;
+	   		   padding-left:1px;
+	   	  }	
+				   
    	   .orange input[type="radio"]:checked + label span {
    	   		background:url(/img/checkbox.png) -152px top no-repeat;
    		  text-align:left;
@@ -125,13 +133,7 @@
    		   padding-left:1px;
    	  }	
 		  
-	   .green input[type="radio"]:checked + label span {
-	      background:url(/img/checkbox.png) -114px top no-repeat;
-		  text-align:left;
-		   font-size:10px;
-		   padding-top:1px;
-		   padding-left:1px;
-	  }	
+
 			  
 			  .pulsate {
 			      -webkit-animation: pulsate 1s ease-out;

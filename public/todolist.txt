@@ -131,6 +131,15 @@ lowPassFour
 filter range: 20 - 20,000 (logarithmic)
 ---
 
+	THE DEAL WITH THE SLIDERS:
+	
+	* Slider Objects: Contains all kinds of useful info (slider's canvas, values at certain points, whether it has been triggered etc.)
+	* WE THEN SET UP EVERY SLIDER!
+	* effectArray: a piece of shit made to make for easy looping. Contains every slider object (in the same order as the server!), which is useful for loops.
+	* addNumberstoSequencerObject: uses effectArray to number every effect incrementally. This has purpose, at some point, I'm sure.
+	* socket.on("effectStatus", function(serverArray) then happens! The serverArray is an array with all the server's stored effect values, in the exact same order as the effectArray! For this reason, we're then able to change effectArray[x] - the selected/correctly numbered effect in the client.
+	* We then loop through x for the length of effectArray and use a shitload of conditionals to see where the value ought to go. This is the bad bit, but it makes sense.
+
 --- Synth One - FM
 
 Volume (log slider)
@@ -258,32 +267,26 @@ Random little things to-do list:
 	
 DONE SINCE LAST COMMIT:
 
-	- Figured out how to make scaling logarithmic! ... except it doesn't work for negative numbers. ah well. OR WORK AT ALL IT SEEMS!
-	- made the majority of sliders - but so many issues!
-	- fixed so many things, jeez what a nightmare
-	- ALL SLIDERS NOW IN OPERATION! WOOHOO!
-	- Radio Buttons & random frontend stuff
-	- ... I did so much! The sequencers are coloured. And all in one(/two) canvas(es). It's a much better system now, and works really well on mobile! Woohoo!
-	- Squashed a lotta bugs
-	- Radio button colours switching out
-	- Everything to do with the phrase selector needs sorting!
+	- Confused myself about what is going on with this to do list, but commit anyway because I'm just like that.
+	- made Synth 3 & 4 Work! And the banks can now be switched out!
+	- Implemented the radio button system for switching out oscillators, filter types (and dropdown for sample banks.)
+	- Made the 8 banks for the 2 samplers. And made it so they could work on an offset. And made it all work via the server, too!
+	- Basically, ALMOST ALL THE BACK END IS FINISHED! :D
 		
 	
 
 CURRENTLY WORKING ON:
 
-	- radio buttons for effects (Main Osc + Filter Type & mod osc)
-	
-	
+
 
 
 	
 NEXT TO DO:
 	
-	- Turn the multiPlayer into a multi buffer thing, then use a sampler to trigger! ... A sampler wrapped in a poly? Hmm.
-
-	- Implement the radio button system for switching out oscillators, filter types (and dropdown for sample banks.)
+	- Make a loading screen
+	- Implement the frontend
+	- Squash bugs, obviously.
+	- Volume needs to be sorted: the effects (I think) go through to their own wet/dry outputs - we need to connect everything in the chain to one volume/gain node!
 	- fully implement final design
 	- Design the front end - what will it look like?!
-	- Find specific samples to use with e
 	
