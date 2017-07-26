@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Canvas Stuffs">
+    <meta name="author" content="Rob Jepson">
+
+    <title>Canvas Test</title>
+	
+    <!-- Bootstrap -->
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+
+      <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+		  <link rel = "stylesheet"
+		     type = "text/css"
+		     href = "css/pagestyle.css" />
+			 
+		
+
+</head>
+
+<div id='app'>
+
+<div class='startStopButtons'>
+<button class='btn-xs btn-default' id='playButton'><span class='glyphicon glyphicon-play'></span></button>
+<button class='btn-xs btn-default' id='stopButton'><span class='glyphicon glyphicon-stop'></span></button>
+</div>
+
+<div id='sequencerRadioButtons' class='radioButtonsSequencer'>
+	<form name='sequencerButtons'>
+	<h4> Sequencer Select </h4><span class='red'>
+<input type="radio" class='sequencerRadio0' id="radioSeq0" name='radioGroupTwo' value='0' checked="checked" />
+    <label for="radioSeq0"><span class='sequencerRadio0'></span></label>
+	</span>
+	<span class='blue'>
+ <input type="radio" id="radioSeq1" name='radioGroupTwo' value='1'/>
+    <label for="radioSeq1"><span><span class='sequencerRadioTwo'></span></span></label>
+</span>
+<span class='green'>
+ <input type="radio" id="radioSeq2" name='radioGroupTwo'/ value='2'>
+    <label for="radioSeq2"><span><span class='sequencerRadioThree'></span></span></label>
+</span>
+	<span class='orange'>
+ <input type="radio" id="radioSeq3" name='radioGroupTwo' value='3'/>
+    <label for="radioSeq3"><span><span class='sequencerRadioFour'></span></span></label>
+</span>
+</form>
+</div>
+
+<h2 id='sequencerHeader'>  </h2>
+
+
+
+
+
+<div class='sequencer'>
+	
+<h5 class='seqTitle'> Note Sequencer </h5>
+<canvas id="sequencerOne" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+</div>
+
+<div class='sequencer'>
+<h5 class='seqTitle'> Phrase Sequencer </h5>	
+<canvas id="sequencerOnePhrase" width="272" height="272">
+	Canvas isn't supported in your browser!
+</canvas>
+
+</div>
+
+<div class='row'>
+	
+	<div id='phraseRadioButtons' class='radioButtonsPhrase'>
+		<form name='phraseButtons'>
+		<h4> Phrase Select </h4>
+	<input type="radio" class='test' id="radio0" name='radioGroupOne' value='live' checked="checked" />
+	    <label for="radio0"><span><span class='phraser radioText0'>LIVE</span></span></label>
+	 <input type="radio" id="radio1" name='radioGroupOne' value='1'/>
+	    <label for="radio1"><span><span class='phraser radioText1'>1</span></span></label>
+	 <input type="radio" id="radio2" name='radioGroupOne'/ value='2'>
+	    <label for="radio2"><span><span class='phraser radioText2'>2</span></span></label>
+	 <input type="radio" id="radio3" name='radioGroupOne' value='3'/>
+	    <label for="radio3"><span><span class='phraser radioText3'>3</span></span></label>
+	 <input type="radio" id="radio4" name='radioGroupOne' value='4'/>
+	    <label for="radio4"><span><span class='phraser radioText4'>4</span></span></label>
+	 <input type="radio" id="radio5" name='radioGroupOne' value='5'/>
+	    <label for="radio5"><span><span class='phraser radioText5'>5</span></span></label>
+	 <input type="radio" id="radio6" name='radioGroupOne' value='6'/>
+	    <label for="radio6"><span><span class='phraser radioText6'>6</span></span></label>
+	 <input type="radio" id="radio7" name='radioGroupOne' value='7'/>
+	    <label for="radio7"><span><span class='phraser radioText7'>7</span></span></label>
+	 <input type="radio" id="radio8" name='radioGroupOne' value='8'/>
+	    <label for="radio8"><span><span class='phraser radioText8'>8</span></span></label>
+	 <input type="radio" id="radio9" name='radioGroupOne' value='9'/>
+	    <label for="radio9"><span><span class='phraser radioText9'>9</span></span></label>
+	 <input type="radio" id="radio10" name='radioGroupOne' value='10'/>
+	    <label for="radio10"><span><span class='phraser radioText10'>10</span></span></label>
+	</form>
+	</div>
+	
+
+</div>
+<h1 class='status'></h1>
+
+
+<div class="row">
+	<div class='slider col-sm-4'>
+<p> Volume </p>
+<canvas class='innerSlider' id='volumeAll' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='volumeAllButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+
+
+<div class='slider col-sm-4'>
+<p> Synth Setting 1 </p>
+<canvas class='innerSlider' id='synthSettingOne' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='synthSettingOneButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-4'>
+<p> Synth Setting 2 </p>
+<canvas class='innerSlider' id='synthSettingTwo' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='synthSettingTwoButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+</div>
+<hr>
+
+	<div id='settingsOne' class='radioButtons'>
+		<form name='settingsButtonsOne'>
+		<h4 id='settingsOneTitle'>  </h4>
+	<input type="radio" id="settingsOneButtonOne" name='radioGroupThree' value='0' checked="checked" />
+	    <label for="settingsOneButtonOne"><span><span class='radioTextTwo0 setting'>squ</span></span></label>
+	 <input type="radio" id="settingsOneButtonTwo" name='radioGroupThree' value='1'/>
+	    <label for="settingsOneButtonTwo"><span><span class='radioTextTwo1 setting'>sine</span></span></label>
+	 <input type="radio" id="settingsOneButtonThree" name='radioGroupThree'/ value='2'>
+	    <label for="settingsOneButtonThree"><span><span class='radioTextTwo2 setting'>saw</span></span></label>
+	 <input type="radio" id="settingsOneButtonFour" name='radioGroupThree' value='3'/>
+	    <label for="settingsOneButtonFour"><span><span class='radioTextTwo3 setting'>tri</span></span></label>
+		<button type='button' class='btn-sm btn-default radioGo'  id='synthSettingsOneGo'> <span class='glyphicon glyphicon-ok'></span> </button>
+	</form>
+	
+	</div>
+	
+
+<div class='row'>
+	<div id='settingsTwo' class='radioButtonsSynthSetTwo'>
+		<form name='settingsButtonsTwo'>
+		<h4 id='settingsTwoTitle'>  </h4>
+	<input type="radio" id="settingsTwoButtonOne" name='radioGroupFour' value='0' checked="checked" />
+	    <label for="settingsTwoButtonOne"><span><span class='radioTextThree0 setting'>squ</span></span></label>
+	 <input type="radio" id="settingsTwoButtonTwo" name='radioGroupFour' value='1'/>
+	    <label for="settingsTwoButtonTwo"><span><span class='radioTextThree1 setting'>sine</span></span></label>
+	 <input type="radio" id="settingsTwoButtonThree" name='radioGroupFour'/ value='2'>
+	    <label for="settingsTwoButtonThree"><span><span class='radioTextThree2 setting'>saw</span></span></label>
+	 <input type="radio" id="settingsTwoButtonFour" name='radioGroupFour' value='3'/>
+	    <label for="settingsTwoButtonFour"><span><span class='radioTextThree3 setting'>tri</span></span></label>
+	<button type='button' class='btn-sm btn-default radioGo'  id='synthSettingsTwoGo'> <span class='glyphicon glyphicon-ok'></span> </button>
+
+	</form>
+</div>
+	
+	
+</div>
+<div class='row'>
+<div class='slider col-sm-3'>	
+<p> Attack </p>
+<canvas class='innerSlider' id='attack' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='attackButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Decay </p>
+<canvas class='innerSlider' id='decay' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='decayButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Sustain </p>
+<canvas class='innerSlider' id='sustain' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='sustainButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Release </p>
+<canvas class='innerSlider' id='release' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='releaseButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+</div>
+<hr>
+<div class='row'>
+<div class='slider col-sm-3'>	
+<p> Attack </p>
+<canvas class='innerSlider' id='attackMod' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='attackModButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Decay </p>
+<canvas class='innerSlider' id='decayMod' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='decayModButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Sustain </p>
+<canvas class='innerSlider' id='sustainMod' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='sustainModButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Release </p>
+<canvas class='innerSlider' id='releaseMod' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='releaseModButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+</div>
+<hr>
+<div class="row">
+<div class='slider col-sm-3'>
+<p> Delay Wet/Dry </p>
+<canvas class='innerSlider' id='delay' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='delayButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Delay Feedback </p>
+<canvas class='innerSlider' id='delayFeedback' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='delayFeedbackButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> Delay Time </p>
+<canvas class='innerSlider' id='delayTime' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='delayTimeButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-3'>
+<p> BitCrush Wet/Dry </p>
+<canvas class='innerSlider' id='crush' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='crushButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+</div>
+
+
+<div class='row'>
+<div class='slider col-sm-6'>
+<p> High-Pass Filter </p>
+<canvas class='innerSlider' id='lowPass' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='lowPassButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+<div class='slider col-sm-6'>
+<p> Low-Pass Filter </p>
+<canvas class='innerSlider' id='hiPass' width='200' height='30'></canvas>
+<button class='sliderGo btn-xs btn-default' id='hiPassButton'> <span class='glyphicon glyphicon-ok'></span> </button>
+</div>
+</div>
+
+
+
+
+</div> <!-- End of 'app' div -->
+
+<div id='loader'>
+	<h1 class='title'> GROUPSOUND </h1>
+	<p><i> Making music multiplayer </i></p>
+	<hr>
+	<div id='moreloading'>
+	<h4> Please wait, loading... </h4>
+	<div class='spinner'></div>
+	</div>
+</div>
+
+
+</body>
+<script src="/socket.io/socket.io.js" type="text/javascript"> </script>
+<script src="js/Tone.js" type="text/javascript"></script> 
+<script src="js/StartAudioContext.js"></script>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+<script src="js/pagescript.js" type="text/javascript"> </script>
+
+
+</html>

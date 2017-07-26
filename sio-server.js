@@ -13,12 +13,18 @@ THINGS ONLY SEEM TO HAPPEN EACH BAR, THIS IS NOT GOOOOOD!
 */
 
 
+
 var express = require("express");
 var http = require("http");
 var app = express();
 var server = http.createServer(app).listen(8080);
 var io = require("socket.io")(server);
 var interval = 0;
+
+app.use(express.static(__dirname + '/public', {
+  extensions: ['html']
+}));
+
 
 
 function sequencerObject(sequencerNumber, buttonsX, buttonsY){ // Constructor for the sequencer object
@@ -345,7 +351,7 @@ io.on("connection", function(socket) {
 		allClients.splice(i, 1);
 	   });
 
-
+	socket.emit("clientNumber", totalClients);
 	socket.emit("sequencerOne", sequencerOne.sequencerArray);
 	socket.emit("sequencerOnePhrase", sequencerOnePhrase.sequencerArray);
 	
@@ -366,7 +372,9 @@ io.on("connection", function(socket) {
 	
 	
 	
-	
+    socket.on("chat", function(chatMessage) {
+    	socket.broadcast.emit("chatMessage", chatMessage);
+    });
 
 	// NOTE: everything coming into the server (effects) needs to have already been formatted according to the effect, the client can't/shouldn't have to do it on the other end.
 	// for effects, we'll need a similar function to the 'seqChangeToServer' below. 

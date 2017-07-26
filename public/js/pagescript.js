@@ -1,38 +1,15 @@
 
 /*
-    o__ __o      o__ __o__/_       o__ __o        o         o    o__ __o__/_   o          o        o__ __o     o__ __o__/_   o__ __o       
-   /v     v\    <|    v           /v     v\      <|>       <|>  <|    v       <|\        <|>      /v     v\   <|    v       <|     v\      
-  />       <\   < >              />       <\     / \       / \  < >           / \\o      / \     />       <\  < >           / \     <\     
- _\o____         |             o/           \o   \o/       \o/   |            \o/ v\     \o/   o/              |            \o/     o/     
-      \_\__o__   o__/_        <|             |>   |         |    o__/_         |   <\     |   <|               o__/_         |__  _<|      
-            \    |             \\           //   < >       < >   |            / \    \o  / \   \\              |             |       \     
-  \         /   <o>              \       \o/      \         /   <o>           \o/     v\ \o/     \         /  <o>           <o>       \o   
-   o       o     |                o       |        o       o     |             |       <\ |       o       o    |             |         v\  
-   <\__ __/>    / \  _\o__/_      <\__   / \       <\__ __/>    / \  _\o__/_  / \        < \      <\__ __/>   / \  _\o__/_  / \         <\ 
-                                                                                                                                           
-                                                                                                                                           
-                                                                                                                                           
-	  									o              o   __o__  ____o__ __o____   o         o  
-	  									 <|>            <|>    |     /   \   /   \   <|>       <|> 
-	  									 / \            / \   / \         \o/        < >       < > 
-	  									 \o/            \o/   \o/          |          |         |  
-	  									  |              |     |          < >         o__/_ _\__o  
-	  									 < >            < >   < >          |          |         |  
-	  									  \o    o/\o    o/     |           o         <o>       <o> 
-	  									   v\  /v  v\  /v      o          <|          |         |  
-	  									    <\/>    <\/>     __|>_        / \        / \       / \ 
-                                                           
 
 
-	 												o          o    o__ __o__/_   
-													<|\        /|>  <|    v        
-  	 												/ \\o    o// \  < >            
-  	 												\o/ v\  /v \o/   |             
- 	 												|    <\/>   |    o__/_         
- 	 												/ \        / \   |            
- 	 												\o/        \o/  <o>                 
- 	 												|          |    |             
- 	 												/ \        / \  / \  _\o__/_  
+
+  	 		 ######   ########   #######  ##     ## ########   ######   #######  ##     ## ##    ## ########  
+			##    ##  ##     ## ##     ## ##     ## ##     ## ##    ## ##     ## ##     ## ###   ## ##     ## 
+			##        ##     ## ##     ## ##     ## ##     ## ##       ##     ## ##     ## ####  ## ##     ## 
+			##   #### ########  ##     ## ##     ## ########   ######  ##     ## ##     ## ## ## ## ##     ## 
+			##    ##  ##   ##   ##     ## ##     ## ##              ## ##     ## ##     ## ##  #### ##     ## 
+			##    ##  ##    ##  ##     ## ##     ## ##        ##    ## ##     ## ##     ## ##   ### ##     ## 
+	 		 ######   ##     ##  #######   #######  ##         ######   #######   #######  ##    ## ########  
                                      
                                      												by Rob Jepson
 																							(www.robjepson.com)
@@ -49,11 +26,10 @@
 	                                                             
 */
 
-
 var socket = io.connect();
 var phraseOffset = 0; // offset given by server connection initial start up
 var buffersLoaded = 0; // 1 when all buffers are loaded.
-
+var totalFriends = 0; // amount of other connections
 // event listeners
 
 socket.on("disconnect", function() {
@@ -65,9 +41,40 @@ socket.on("connect", function() {
     // loadSequence();
 });
 
+socket.on("clientNumber", function(clients){
+	totalFriends = clients - 1;
+	var quoteSeed = Math.floor(Math.random() * 5);
+	var quoteArray = [" other happy people!", " similarly minded folk.", " bears, for some reason.", " people? Wow, that's certainly something.", " men, women and children.", " Übermensch, all staring intently at a cup.", " types of pudding, all of them disgusting."]
+	var friendMessage = "Connected with " + totalFriends + quoteArray[quoteSeed];
+	console.log(totalFriends, quoteSeed, quoteArray)
+	setTitle(friendMessage)
+})
+
 Tone.Buffer.on('load', function() {
     buffersLoaded = 1;
+	if (introTimer == 1){
+	$('#app').fadeIn(400)
+	$('#loader').hide(1000)
+	// $('.container').css("background-color", "rgba(255,255,255,1)")
+	}
 })
+
+var introTimer = 0;
+
+setTimeout(function(){
+	introTimer = 1;	
+	if (buffersLoaded == 1){
+	$('#app').fadeIn(400)
+	$('#loader').hide(1000)
+	//$('.container').css("background-color", "rgba(255,255,255,1)")
+		
+	}
+}, 3000)
+
+setTimeout(function(){
+	$('#moreloading').fadeIn(300)
+},1500)
+
 
 
 var firstPlay = 0; // set up a variable for the firstPlay of the loop, turned on by the server.
@@ -408,9 +415,12 @@ var gridDrawLoop = setInterval(function(){
 
 // Canvas & UI functions
 function clearCanvas(canvas) {
+	canvas.clearRect(0, 0, 500, 500);
+	/*
     canvas.clearRect(0, 0, 500, 500);
     canvas.fillStyle = 'rgba(255,255,255,1)'; // fill with white
     canvas.fillRect(0, 0, 500, 500);
+	*/
 }
 
 function clearGrid(canvas, sequencer, phrase) {
@@ -928,19 +938,19 @@ var synthFour = new Tone.MultiPlayer({
 var synthFourSampleArray = [
 	"kickOneBankOne", "kickTwoBankOne", "kickThreeBankOne", "kickFourBankOne", 
 	"snareOneBankOne", "snareTwoBankOne", "snareThreeBankOne", "snareFourBankOne",
-	"hatOneBankOne", "hatTwoBankOne", "hatTwoBankOne", "hatTwoBankOne",
+	"hatOneBankOne", "hatTwoBankOne", "hatThreeBankOne", "hatFourBankOne",
 	"percOneBankOne", "percTwoBankOne", "percThreeBankOne", "percFourBankOne", 
 	"kickOneBankTwo", "kickTwoBankTwo", "kickThreeBankTwo", "kickFourBankTwo", 
 	"snareOneBankTwo", "snareTwoBankTwo", "snareThreeBankTwo", "snareFourBankTwo",
-	"hatOneBankTwo", "hatTwoBankTwo", "hatTwoBankTwo", "hatTwoBankTwo",
+	"hatOneBankTwo", "hatTwoBankTwo", "hatThreeBankTwo", "hatFourBankTwo",
 	"percOneBankTwo", "percTwoBankTwo", "percThreeBankTwo", "percFourBankTwo", 
 	"kickOneBankThree", "kickTwoBankThree", "kickThreeBankThree", "kickFourBankThree", 
 	"snareOneBankThree", "snareTwoBankThree", "snareThreeBankThree", "snareFourBankThree",
-	"hatOneBankThree", "hatTwoBankThree", "hatTwoBankThree", "hatTwoBankThree",
+	"hatOneBankThree", "hatTwoBankThree", "hatThreeBankThree", "hatFourBankThree",
 	"percOneBankThree", "percTwoBankThree", "percThreeBankThree", "percFourBankThree", 
 	"kickOneBankFour", "kickTwoBankFour", "kickThreeBankFour", "kickFourBankFour", 
 	"snareOneBankFour", "snareTwoBankFour", "snareThreeBankFour", "snareFourBankFour",
-	"hatOneBankFour", "hatTwoBankFour", "hatTwoBankFour", "hatTwoBankFour",
+	"hatOneBankFour", "hatTwoBankFour", "hatThreeBankFour", "hatFourBankFour",
 	"percOneBankFour", "percTwoBankFour", "percThreeBankFour", "percFourBankFour", 
 	]
 
@@ -1190,6 +1200,19 @@ viewChanger(sequencerOne,"live",0);
 function changeSequencer(num){ // Use to change what sequencer we're editing... 
 	currentSequencer = parseInt(num); 
 	
+	if (currentSequencer == 0 || currentSequencer == 1){
+		$('.seqThreeFourHide').show();
+		$('.hackyFixRadioButton').removeClass('col-md-offset-3')
+		$('.hackyFixSlider').removeClass('col-md-offset-4')
+		$('.hackyFixRadioButtonTwo').addClass('box')
+	} else if (currentSequencer == 2 || currentSequencer == 3){
+		$('.seqThreeFourHide').hide();
+		$('.hackyFixRadioButton').addClass('col-md-offset-3')
+		$('.hackyFixRadioButtonTwo').removeClass('box')
+		$('.hackyFixSlider').addClass('col-md-offset-4')
+		
+	}
+	
 	// change view to live
 	viewChanger(currentSequencer,"live");
 	document.getElementById("radio0").checked = true;
@@ -1206,9 +1229,15 @@ function changeSequencer(num){ // Use to change what sequencer we're editing...
 	// we have to change the words on the settings here, too. And hide/show the elements that come with each sequencer.
 	var settingsOneTitleArray = ["Osc Type", "Osc Type", "Bank", "Bank"];
 	var settingsTwoTitleArray = ["Mod Osc", "Filter Type", "Bank", "Bank"];
+	var settingsOneSliderArray = ["Mod Value", "Frequency"];
+	var settingsTwoSliderArray = ["Harmonicity", "Octaves"];
+	var envTypeArray = ["Mod Envelope", "Filter Envelope"]
 	$("#settingsOneTitle").text(settingsOneTitleArray[num]);
 	$("#settingsTwoTitle").text(settingsTwoTitleArray[num]);
+	$('#envType').text(envTypeArray[num]);
 	
+	$('#synthSettingOneName').text(settingsOneSliderArray[num]);
+	$('#synthSettingTwoName').text(settingsTwoSliderArray[num]);
 	
 	var nameArray = ['Lead ', 'Bass ', 'Sampler ', 'Percussion ']
 	$('#sequencerHeader').text(nameArray[num]);
@@ -2265,6 +2294,10 @@ document.getElementById('playButton').addEventListener("click", function(e) {
     startPressed = 1;
 })
 
+document.getElementById('stopButton').addEventListener("click", function(e) {
+    stopThis();
+})
+
 function start() {
     Tone.Transport.start("+0.1");
 	drawGridLoop.start();
@@ -2279,7 +2312,7 @@ function start() {
 }
 
 
-function stop() {
+function stopThis() {
     harmonyLoop.stop();
     melodyLoop.stop();
     bassLoop.stop();
@@ -2292,3 +2325,91 @@ function stop() {
 StartAudioContext(Tone.context, "#playButton", function() {
     // console.log('context online!');
 })
+
+
+// UI SHIT
+var userView = 1;
+var viewArray = ['Chat', 'Sequencer', 'Effects'];
+$('#left').click(function(){
+	if(userView > 0){
+		userView = userView - 1;
+	}
+	switch(userView){
+	case 0:
+		$('#leftShowHide').hide()
+		$('#rightText').text(viewArray[userView + 1]);
+		$('#chatPage').show();
+		$('#sequencerPage').hide();
+		$('#effectsPage').hide();
+		$('.headerBit').hide();
+		break;
+	case 1:
+		$('#rightShowHide').show()
+		$('#leftShowHide').show()
+		$('#leftText').text(viewArray[userView - 1])
+		$('#rightText').text(viewArray[userView + 1]);
+		$('#chatPage').hide();
+		$('#sequencerPage').show();
+		$('#effectsPage').hide();
+		$('.headerBit').show();
+		break;
+	}
+	
+})
+$('#right').click(function(){
+	if(userView < 2){
+		userView = userView + 1;
+	}
+	switch(userView){
+	case 2:
+		$('#rightShowHide').hide()
+		$('#leftText').text(viewArray[userView - 1]);
+		$('#chatPage').hide();
+		$('#sequencerPage').hide();
+		$('#effectsPage').show();
+		$('.headerBit').show();
+		break;
+	case 1:
+		$('#rightShowHide').show()
+		$('#leftShowHide').show()
+		$('#leftText').text(viewArray[userView - 1])
+		$('#rightText').text(viewArray[userView + 1]);
+		$('#chatPage').hide();
+		$('#sequencerPage').show();
+		$('#effectsPage').hide();
+		$('.headerBit').show();
+		break;
+	}
+})
+
+//chatroom
+var userName = 'placeholder';
+
+socket.on("chatMessage", function(message) {
+		printMessage(message);
+});
+
+$('#userForm').submit(function() {
+	userName = document.getElementById("user").value;
+	$('.userFormDiv').hide();
+	$('.chatMessages').show();
+	$('.chatRoom').show()
+})
+
+$('#chatRoomForm').submit(function() {
+	
+	var input = document.getElementById("message");
+	var messageArray = [userName, input.value];
+    printMessage(messageArray);
+    socket.emit("chat", messageArray);
+    input.value = '';
+});
+
+function printMessage(messageArray) {
+	var newMessage = "<p><b>" + messageArray[0] + ":    </b>" + messageArray[1] + "</p>";
+	$('.chatMessages').append(newMessage);
+	//var scroller = $('.chatMessages');
+	//console.log(scroller.scrollHeight);
+	$(".chatMessages").animate({ scrollTop: $('.chatMessages').prop("scrollHeight")}, 300);
+	// scroller.scrollTop = scroller.scrollHeight;
+}
