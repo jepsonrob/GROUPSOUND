@@ -1,1 +1,9 @@
-Am I a readme? I hope so!
+GROUPSOUND
+
+
+A MULTIPLAYER NODE.JS SEQUENCER SUITE
+
+POWERED BY TONE.JS
+
+(note: node server file = server-sio.js & client page = public/index.html)
+(extra note about previous note: I'm still figuring out how to use github!)
