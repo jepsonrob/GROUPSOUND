@@ -241,6 +241,76 @@ Bitcrush wet/dry (slider)
 
 */
 
+var effectObjectDefault = {
+	volumeOne: -20,
+	volumeTwo: -15,
+	volumeThree: -30,
+	volumeFour: -5,
+	
+	synthOneModValue:1,
+	synthTwoFilterFreq:15000,
+	
+	synthOneHarmonicity:1,
+	synthTwoFilterQ:1,
+	
+	attackOne:0.05,
+	attackTwo:0.05,
+	attackOneMod:0.05,
+	attackTwoMod:0.05,
+	decayOne:0,
+	decayTwo:0,
+	decayOneMod:0,
+	decayTwoMod:0,
+	sustainOne:1,
+	sustainTwo:1,
+	sustainOneMod:1,
+	sustainTwoMod:1,
+	releaseOne:0.5,
+	releaseTwo:0.5,
+	releaseOneMod:0.5,
+	releaseTwoMod:0.5,
+	
+	delayOne:0,
+	delayTwo:0,
+	delayThree:0,
+	delayFour:0,
+	delayFeedbackOne:0,
+	delayFeedbackTwo:0,
+	delayFeedbackThree:0,
+	delayFeedbackFour:0,
+	delayTimeOne:0,
+	delayTimeTwo:0,
+	delayTimeThree:0,
+	delayTimeFour:0,
+	
+	crushOne:0,
+	crushTwo:0,
+	crushThree:0,
+	crushFour:0,
+	
+	hiPassOne:20000,
+	hiPassTwo:20000,
+	hiPassThree:20000,
+	hiPassFour:20000,
+	
+	lowPassOne:20,
+	lowPassTwo:20,
+	lowPassThree:20,
+	lowPassFour:20,
+
+}
+
+var settingsObjectDefault = {
+	synthOneOscOne: 0,
+	synthOneOscTwo: 0,
+	synthTwoOsc: 0,
+	synthTwoFilter: 0,
+	synthThreeBank: 0,
+	synthThreeBankRepeat: 0,
+	synthFourBank: 0,
+	synthFourBankRepeat: 0,
+}
+
 
 var effectObject = {
 	volumeOne: -20,
@@ -338,20 +408,27 @@ var effectArray = [
 var allClients = [];
 var totalClients = 0;
 
+function encodeHTML(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+}
+
 io.on("connection", function(socket) {
 	
 	totalClients++;
 	console.log("Socket Connected! Total Clients: ", totalClients)
 	allClients.push(socket);
-
+	
+	io.emit('clientNumber', totalClients);
+	
 	socket.on('disconnect', function() {
 		totalClients = totalClients - 1;
 		console.log("Client disconnected! Total Clients: ", totalClients)
 		var i = allClients.indexOf(socket);
 		allClients.splice(i, 1);
+		io.emit('clientNumber', totalClients);
 	   });
-
-	socket.emit("clientNumber", totalClients);
+	
+	// socket.emit("clientNumber", totalClients);
 	socket.emit("sequencerOne", sequencerOne.sequencerArray);
 	socket.emit("sequencerOnePhrase", sequencerOnePhrase.sequencerArray);
 	
@@ -373,7 +450,13 @@ io.on("connection", function(socket) {
 	
 	
     socket.on("chat", function(chatMessage) {
-    	socket.broadcast.emit("chatMessage", chatMessage);
+		if (chatMessage[0] == 'SecretUserName123'){
+		var adjustedMessage = ['<large>GODKING:CREATOR OF THIS REALM</large>', chatMessage[1], 1];
+		} else {
+		var adjustedMessage = [encodeHTML(chatMessage[0]), encodeHTML(chatMessage[1]), 0];
+		console.log(adjustedMessage)
+	}
+    	socket.broadcast.emit("chatMessage", adjustedMessage);
     });
 
 	// NOTE: everything coming into the server (effects) needs to have already been formatted according to the effect, the client can't/shouldn't have to do it on the other end.
@@ -485,6 +568,36 @@ setInterval(() => { // Woo! I'm using arrow functions!
 	currentPhraseTime = (currentPhraseTime + 1) % 16;
 	console.log(currentPhraseTime);
 }, 2000);
+
+setInterval(() => {
+	var timerMessage = ['SERVER','Resetting Sequencers!'];
+
+	sequencerOne = new sequencerObject(1,16,16);
+	sequencerOnePhrase = new sequencerObject(2,16,10);
+	sequencerTwo = new sequencerObject(3,16,16);
+	sequencerTwoPhrase = new sequencerObject(4,16,10);
+	sequencerThree = new sequencerObject(5,16,16);
+	sequencerThreePhrase = new sequencerObject(6,16,10);
+	sequencerFour = new sequencerObject(7,16,16);
+	sequencerFourPhrase = new sequencerObject(8,16,10);
+	
+	socket.broadcast.emit("chatMessage", adjustedMessage);
+	
+	socket.broadcast.emit("sequencerOne", sequencerOne.sequencerArray);
+	socket.broadcast.emit("sequencerOnePhrase", sequencerOnePhrase.sequencerArray);
+	
+	socket.broadcast.emit("sequencerTwo", sequencerTwo.sequencerArray);
+	socket.broadcast.emit("sequencerTwoPhrase", sequencerTwoPhrase.sequencerArray);
+	
+	socket.broadcast.emit("sequencerThree", sequencerThree.sequencerArray);
+	socket.broadcast.emit("sequencerThreePhrase", sequencerThreePhrase.sequencerArray);
+	
+	socket.broadcast.emit("sequencerFour", sequencerFour.sequencerArray);
+	socket.broadcast.emit("sequencerFourPhrase", sequencerFourPhrase.sequencerArray);
+	
+	
+	
+}, 900000)
 
 console.log("Starting Socket App - http://localhost:8080");
 
